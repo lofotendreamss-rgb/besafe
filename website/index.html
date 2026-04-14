@@ -687,9 +687,7 @@ function toggleRegBilling(){
   }
 }
 
-const API_URL = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
-  ? 'http://127.0.0.1:4000'
-  : 'https://besafe-oga3.onrender.com';
+const API_URL = 'https://besafe-oga3.onrender.com';
 
 function showRegError(msg) {
   const el = document.getElementById('reg-error');
