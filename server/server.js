@@ -13,6 +13,7 @@ const allowedOrigins = new Set([
   "https://besafe.fyi",
   "https://www.besafe.fyi",
   "https://besafe-beta.vercel.app",
+  "https://besafe-oga3.onrender.com",
 ]);
 
 const ALLOWED_TRANSACTION_TYPES = new Set(["income", "expense"]);

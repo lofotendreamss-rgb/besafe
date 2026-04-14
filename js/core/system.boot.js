@@ -34,8 +34,12 @@ export async function bootSystem() {
       registry.clear();
     }
 
+    const isLocal = typeof window !== "undefined" &&
+      (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost");
+    const apiBase = isLocal ? "http://127.0.0.1:3001" : "https://besafe-oga3.onrender.com";
+
     const api = new ApiService({
-      baseUrl: "http://127.0.0.1:3001",
+      baseUrl: apiBase,
       timeoutMs: 8000,
     });
 
