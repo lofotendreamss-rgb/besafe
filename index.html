@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>BeSafe</title>
+
+  <meta
+    name="description"
+    content="BeSafe helps people understand their financial situation clearly, choose calmly, and see one clear next step."
+  />
+
+  <meta name="theme-color" content="#0b1514" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:," />
+  <link rel="manifest" href="manifest.json" />
+</head>
+
+<body>
+  <main class="app-shell app-shell--besafe">
+    <section
+      id="language-screen"
+      class="screen language-screen"
+      aria-labelledby="language-title"
+      aria-describedby="language-description"
+    >
+      <div class="splash" id="splash-root">
+        <div class="splash__center">
+          <h1 class="splash__logo" id="language-title">BeSafe</h1>
+          <p class="splash__phrase" data-splash-lang="lt" data-text="Leisk BeSafe dirbti už tave."></p>
+          <p class="splash__phrase" data-splash-lang="en" data-text="Let BeSafe work for you."></p>
+          <p class="splash__phrase" data-splash-lang="pl" data-text="Pozwól BeSafe pracować za ciebie."></p>
+          <p class="splash__phrase" data-splash-lang="de" data-text="Lass BeSafe für dich arbeiten."></p>
+          <p class="splash__phrase" data-splash-lang="es" data-text="Deja que BeSafe trabaje por ti."></p>
+          <p class="splash__phrase" data-splash-lang="ru" data-text="Позволь BeSafe работать за тебя."></p>
+          <p class="splash__phrase" data-splash-lang="no" data-text="La BeSafe jobbe for deg."></p>
+          <p class="splash__phrase" data-splash-lang="sv" data-text="Låt BeSafe jobba för dig."></p>
+          <p class="splash__phrase" data-splash-lang="ja" data-text="BeSafeがあなたのために働きます。"></p>
+          <p class="splash__phrase" data-splash-lang="zh" data-text="让BeSafe为您工作。"></p>
+        </div>
+
+        <div class="splash__bottom">
+          <p class="splash__hint">
+            <span data-splash-lang="lt">Pasirinkite kalbą</span>
+            <span data-splash-lang="en">Choose your language</span>
+            <span data-splash-lang="pl">Wybierz język</span>
+            <span data-splash-lang="de">Sprache wählen</span>
+            <span data-splash-lang="es">Elige tu idioma</span>
+            <span data-splash-lang="ru">Выберите язык</span>
+            <span data-splash-lang="no">Velg språk</span>
+            <span data-splash-lang="sv">Välj språk</span>
+            <span data-splash-lang="ja">言語を選択</span>
+            <span data-splash-lang="zh">选择语言</span>
+          </p>
+          <div class="splash__languages" role="group" aria-label="Language selection">
+            <button data-lang="de" type="button" class="splash__lang-btn" aria-label="Deutsche Sprache">
+              Deutsch
+            </button>
+            <button data-lang="en" type="button" class="splash__lang-btn" aria-label="English language">
+              English
+            </button>
+            <button data-lang="es" type="button" class="splash__lang-btn" aria-label="Idioma español">
+              Español
+            </button>
+            <button data-lang="lt" type="button" class="splash__lang-btn" aria-label="Lietuvių kalba">
+              Lietuvių
+            </button>
+            <button data-lang="no" type="button" class="splash__lang-btn" aria-label="Norsk språk">
+              Norsk
+            </button>
+            <button data-lang="pl" type="button" class="splash__lang-btn" aria-label="Polski język">
+              Polski
+            </button>
+            <button data-lang="sv" type="button" class="splash__lang-btn" aria-label="Svenska språket">
+              Svenska
+            </button>
+            <button data-lang="ru" type="button" class="splash__lang-btn" aria-label="Русский язык">
+              Русский
+            </button>
+            <button data-lang="zh" type="button" class="splash__lang-btn" aria-label="中文">
+              中文
+            </button>
+            <button data-lang="ja" type="button" class="splash__lang-btn" aria-label="日本語">
+              日本語
+            </button>
+          </div>
+
+          <button id="splash-start" type="button" class="shortcut-btn button-primary splash__start" disabled>
+            <span data-splash-lang="lt">Pradėti</span>
+            <span data-splash-lang="en">Start</span>
+            <span data-splash-lang="pl">Rozpocznij</span>
+            <span data-splash-lang="de">Starten</span>
+            <span data-splash-lang="es">Comenzar</span>
+            <span data-splash-lang="ru">Начать</span>
+            <span data-splash-lang="no">Start</span>
+            <span data-splash-lang="sv">Starta</span>
+            <span data-splash-lang="ja">始める</span>
+            <span data-splash-lang="zh">开始</span>
+          </button>
+        </div>
+      </div>
+
+      <script>
+        (function() {
+          // Splash: rodyti numatytąją kalbą, typewriter, mygtukai
+          var supportedLangs = ["lt", "en", "pl", "de", "es", "ru", "no", "sv", "ja", "zh"];
+          var defaultLang = "lt";
+          try {
+            var saved = localStorage.getItem("besafe_lang");
+            if (saved && supportedLangs.indexOf(saved) !== -1) defaultLang = saved;
+          } catch(e) {}
+
+          // Pridėti is-visible klasę teisingos kalbos elementams
+          var splashEls = document.querySelectorAll("[data-splash-lang]");
+          for (var i = 0; i < splashEls.length; i++) {
+            if (splashEls[i].getAttribute("data-splash-lang") === defaultLang) {
+              splashEls[i].classList.add("is-visible");
+            } else {
+              splashEls[i].classList.remove("is-visible");
+            }
+          }
+
+          // Typewriter efektas
+          setTimeout(function() {
+            var phrase = document.querySelector(".splash__phrase.is-visible");
+            if (!phrase) return;
+            var text = phrase.getAttribute("data-text") || "";
+            if (!text) return;
+
+            phrase.textContent = "";
+            var cursor = document.createElement("span");
+            cursor.className = "splash__cursor";
+            phrase.appendChild(cursor);
+
+            var idx = 0;
+            var timer = setInterval(function() {
+              if (!cursor.parentNode) { clearInterval(timer); return; }
+              if (idx < text.length) {
+                cursor.parentNode.insertBefore(document.createTextNode(text[idx]), cursor);
+                idx++;
+              } else {
+                clearInterval(timer);
+                setTimeout(function() {
+                  cursor.classList.add("splash__cursor--hidden");
+                  setTimeout(function() { cursor.remove(); }, 300);
+                }, 1000);
+              }
+            }, 120);
+          }, 500);
+
+          // Kalbos mygtukai
+          var langBtns = document.querySelectorAll(".splash__lang-btn[data-lang]");
+          var startBtn = document.getElementById("splash-start");
+
+          for (var j = 0; j < langBtns.length; j++) {
+            langBtns[j].addEventListener("click", function() {
+              for (var k = 0; k < langBtns.length; k++) {
+                langBtns[k].classList.remove("is-selected");
+              }
+              this.classList.add("is-selected");
+
+              var lang = this.getAttribute("data-lang");
+              var els = document.querySelectorAll("[data-splash-lang]");
+              for (var m = 0; m < els.length; m++) {
+                if (els[m].getAttribute("data-splash-lang") === lang) {
+                  els[m].classList.add("is-visible");
+                } else {
+                  els[m].classList.remove("is-visible");
+                }
+              }
+
+              // Išvalyti visas frazes
+              var allPhrases = document.querySelectorAll(".splash__phrase");
+              for (var n = 0; n < allPhrases.length; n++) {
+                allPhrases[n].textContent = "";
+              }
+              // Užpildyti pasirinktos kalbos frazę
+              var newPhrase = document.querySelector('.splash__phrase[data-splash-lang="' + lang + '"]');
+              if (newPhrase) {
+                newPhrase.textContent = newPhrase.getAttribute("data-text") || "";
+              }
+
+              if (startBtn) startBtn.disabled = false;
+            });
+          }
+
+          // Pradėti mygtukas — dispatch event kurį app.js pagauna
+          if (startBtn) {
+            startBtn.addEventListener("click", function() {
+              if (startBtn.disabled) return;
+              startBtn.disabled = true;
+
+              var selectedBtn = document.querySelector(".splash__lang-btn.is-selected");
+              var selectedLang = selectedBtn ? selectedBtn.getAttribute("data-lang") : defaultLang;
+
+              // Išsaugoti kalbą ir onboarding statusą
+              try {
+                localStorage.setItem("besafe_lang", selectedLang);
+                localStorage.setItem("besafe:language", selectedLang);
+                localStorage.setItem("besafe_onboarding_done", "true");
+              } catch(e) {}
+
+              // Fade out
+              var splashRoot = document.getElementById("splash-root");
+              if (splashRoot) {
+                splashRoot.style.transition = "opacity 0.5s ease-out";
+                splashRoot.style.opacity = "0";
+              }
+
+              // Nustatyti global flag kurį app.js perskaitys kai bus pasiruošęs
+              window.__besafe_splash_done = selectedLang;
+            });
+          }
+
+        })();
+      </script>
+    </section>
+
+    <section
+      id="app-screen"
+      class="screen app-screen"
+      hidden
+      aria-live="polite"
+      aria-labelledby="page-title"
+    >
+      <div id="app-root" class="app-root">
+        <header class="section section--hero app-header">
+          <div class="app-header__topbar">
+            <button
+              id="app-language-switch"
+              type="button"
+              class="shortcut-btn button-secondary app-header__language-btn"
+              data-open-language
+              aria-label="Open language selection"
+            >
+              Language
+            </button>
+          </div>
+
+          <div class="home-section-header home-section-header--compact">
+            <p class="home-section-header__eyebrow">BeSafe</p>
+
+            <h1 id="page-title" class="home-section-header__title"></h1>
+
+            <p id="page-subtitle" class="home-section-header__subtitle"></p>
+          </div>
+        </header>
+
+        <section
+          id="page-home"
+          class="page-slot page-slot--home"
+          hidden
+          data-dynamic="true"
+          aria-label="Home page"
+        ></section>
+
+        <section
+          id="page-advisor"
+          class="page-slot page-slot--advisor"
+          hidden
+          data-dynamic="true"
+          aria-label="Advisor page"
+        ></section>
+
+        <section
+          id="page-transactions"
+          class="page-slot page-slot--transactions"
+          hidden
+          data-dynamic="true"
+          aria-label="Transactions page"
+        ></section>
+
+        <section
+          id="page-reports"
+          class="page-slot page-slot--reports"
+          hidden
+          data-dynamic="true"
+          aria-label="Reports page"
+        ></section>
+
+        <section
+          id="page-places"
+          class="page-slot page-slot--places"
+          hidden
+          data-dynamic="true"
+          aria-label="Places page"
+        ></section>
+
+        <section
+          id="page-categories"
+          class="page-slot page-slot--categories"
+          hidden
+          data-dynamic="true"
+          aria-label="Categories page"
+        ></section>
+
+        <section
+          id="page-onboarding"
+          class="page-slot page-slot--onboarding"
+          hidden
+          data-dynamic="true"
+          aria-label="Onboarding page"
+        ></section>
+      </div>
+
+      <nav id="app-nav" class="section app-nav app-nav--shell" aria-label="Primary navigation">
+        <div class="button-row">
+          <button
+            id="nav-home"
+            data-nav="home"
+            type="button"
+            class="shortcut-btn button-secondary"
+            aria-label="Open Home page"
+          >
+            Home
+          </button>
+
+          <button
+            id="nav-transactions"
+            data-nav="transactions"
+            type="button"
+            class="shortcut-btn button-secondary"
+            aria-label="Open Transactions page"
+          >
+            Transactions
+          </button>
+
+          <button
+            id="nav-advisor"
+            data-nav="advisor"
+            type="button"
+            class="shortcut-btn button-secondary"
+            aria-label="Open Advisor page"
+          >
+            Calculations
+          </button>
+
+          <button
+            id="nav-reports"
+            data-nav="reports"
+            type="button"
+            class="shortcut-btn button-secondary"
+            aria-label="Open Reports page"
+          >
+            Reports
+          </button>
+
+          <button
+            id="nav-places"
+            data-nav="places"
+            type="button"
+            class="shortcut-btn button-secondary"
+            aria-label="Open Places page"
+          >
+            Places
+          </button>
+
+          <button
+            id="nav-categories"
+            data-nav="categories"
+            type="button"
+            class="shortcut-btn button-secondary"
+            aria-label="Open Categories page"
+          >
+            Categories
+          </button>
+
+          <button
+            id="nav-language"
+            data-open-language
+            type="button"
+            class="shortcut-btn button-secondary"
+            aria-label="Open language selection"
+          >
+            Language
+          </button>
+        </div>
+      </nav>
+    </section>
+  </main>
+
+  <script type="module">
+    import {
+      createTranslator,
+      getCurrentLanguage,
+      setCurrentLanguage,
+      getSupportedLanguages,
+    } from "./js/core/i18n.js";
+
+    (function syncShellLanguage() {
+      const SUPPORTED = Array.isArray(getSupportedLanguages?.())
+        ? getSupportedLanguages()
+        : ["en", "lt"];
+
+      function normalizeLanguage(value) {
+        const normalized = String(value || "").trim().toLowerCase();
+        return SUPPORTED.includes(normalized) ? normalized : null;
+      }
+
+      function resolveLanguage() {
+        try {
+          const current = normalizeLanguage(getCurrentLanguage?.());
+          if (current) return current;
+        } catch {}
+
+        try {
+          const primary = normalizeLanguage(localStorage.getItem("besafe_lang"));
+          if (primary) return primary;
+
+          const legacy = normalizeLanguage(localStorage.getItem("besafe:language"));
+          if (legacy) return legacy;
+        } catch {}
+
+        return normalizeLanguage(document.documentElement.lang) || "en";
+      }
+
+      function syncLanguageState(lang) {
+        const normalized = normalizeLanguage(lang) || "en";
+
+        try {
+          localStorage.setItem("besafe_lang", normalized);
+        } catch {}
+
+        try {
+          localStorage.setItem("besafe:language", normalized);
+        } catch {}
+
+        try {
+          setCurrentLanguage(normalized);
+        } catch {}
+
+        document.documentElement.lang = normalized;
+
+        return normalized;
+      }
+
+      function getTranslator(lang) {
+        return createTranslator(lang);
+      }
+
+      function applyShellCopy(lang) {
+        const t = getTranslator(lang);
+
+        const languageTitle = document.getElementById("language-title");
+        const languageDescription = document.getElementById("language-description");
+        const languagePromise = document.getElementById("language-promise");
+
+        const pageTitle = document.getElementById("page-title");
+        const pageSubtitle = document.getElementById("page-subtitle");
+
+        const pageHome = document.getElementById("page-home");
+        const pageAdvisor = document.getElementById("page-advisor");
+        const pageTransactions = document.getElementById("page-transactions");
+        const pageReports = document.getElementById("page-reports");
+        const pagePlaces = document.getElementById("page-places");
+        const pageCategories = document.getElementById("page-categories");
+
+        const appNav = document.getElementById("app-nav");
+        const navHome = document.getElementById("nav-home");
+        const navTransactions = document.getElementById("nav-transactions");
+        const navAdvisor = document.getElementById("nav-advisor");
+        const navReports = document.getElementById("nav-reports");
+        const navPlaces = document.getElementById("nav-places");
+        const navCategories = document.getElementById("nav-categories");
+        const navLanguage = document.getElementById("nav-language");
+
+        const appLanguageSwitch = document.getElementById("app-language-switch");
+
+        const langEn = document.getElementById("lang-en");
+        const langLt = document.getElementById("lang-lt");
+
+
+        if (languageDescription) {
+          languageDescription.textContent = t(
+            "language.screen.description",
+            "BeSafe helps you understand your financial situation calmly and clearly."
+          );
+        }
+
+        if (languagePromise) {
+          languagePromise.textContent = t(
+            "language.screen.promise",
+            "Precise information, a calm tone, and one clear next step — without pressure and without guesswork."
+          );
+        }
+
+        if (pageTitle) {
+          pageTitle.textContent = t("app.home", "Home");
+        }
+
+        if (pageSubtitle) {
+          pageSubtitle.textContent = t(
+            "app.subtitle.home",
+            "A calm and clear overview of your financial situation."
+          );
+        }
+
+        if (pageHome) {
+          pageHome.setAttribute("aria-label", t("app.home", "Home"));
+        }
+
+        if (pageAdvisor) {
+          pageAdvisor.setAttribute(
+            "aria-label",
+            t("app.advisor", "Financial calculations")
+          );
+        }
+
+        if (pageTransactions) {
+          pageTransactions.setAttribute("aria-label", t("app.transactions", "Transactions"));
+        }
+
+        if (pageReports) {
+          pageReports.setAttribute("aria-label", t("app.reports", "Reports"));
+        }
+
+        if (pagePlaces) {
+          pagePlaces.setAttribute("aria-label", t("app.places", "Places"));
+        }
+
+        if (pageCategories) {
+          pageCategories.setAttribute(
+            "aria-label",
+            t("app.categories", "Categories")
+          );
+        }
+
+        if (appNav) {
+          appNav.setAttribute("aria-label", t("home.shortcuts.aria", "Primary navigation"));
+        }
+
+        if (navHome) {
+          navHome.textContent = t("app.home", "Home");
+          navHome.setAttribute(
+            "aria-label",
+            t("navigation.open.home", "Open Home page")
+          );
+        }
+
+        if (navTransactions) {
+          navTransactions.textContent = t("app.transactions", "Transactions");
+          navTransactions.setAttribute(
+            "aria-label",
+            t("navigation.open.transactions", "Open Transactions page")
+          );
+        }
+
+        if (navAdvisor) {
+          navAdvisor.textContent = t("app.advisor", "Financial calculations");
+          navAdvisor.setAttribute(
+            "aria-label",
+            t("navigation.open.advisor", "Open Financial Calculations page")
+          );
+        }
+
+        if (navReports) {
+          navReports.textContent = t("app.reports", "Reports");
+          navReports.setAttribute(
+            "aria-label",
+            t("navigation.open.reports", "Open Reports page")
+          );
+        }
+
+        if (navPlaces) {
+          navPlaces.textContent = t("app.places", "Places");
+          navPlaces.setAttribute(
+            "aria-label",
+            t("navigation.open.places", "Open Places page")
+          );
+        }
+
+        if (navCategories) {
+          navCategories.textContent = t("app.categories", "Categories");
+          navCategories.setAttribute(
+            "aria-label",
+            t("navigation.open.categories", "Open Categories page")
+          );
+        }
+
+        if (navLanguage) {
+          navLanguage.textContent = t(
+            "advisor.topActions.languageLabel",
+            "Language"
+          );
+          navLanguage.setAttribute(
+            "aria-label",
+            t("advisor.topActions.languageAria", "Open language selection")
+          );
+          navLanguage.setAttribute(
+            "title",
+            t("advisor.topActions.languageLabel", "Language")
+          );
+        }
+
+        if (appLanguageSwitch) {
+          appLanguageSwitch.textContent = t(
+            "advisor.topActions.languageLabel",
+            "Language"
+          );
+          appLanguageSwitch.setAttribute(
+            "aria-label",
+            t("advisor.topActions.languageAria", "Open language selection")
+          );
+          appLanguageSwitch.setAttribute(
+            "title",
+            t("advisor.topActions.languageLabel", "Language")
+          );
+        }
+
+        if (langEn) {
+          langEn.textContent = t("language.option.en", "English");
+          langEn.setAttribute(
+            "aria-label",
+            t("language.option.en.aria", "Choose English language")
+          );
+        }
+
+        if (langLt) {
+          langLt.textContent = t("language.option.lt", "Lietuvių");
+          langLt.setAttribute(
+            "aria-label",
+            t("language.option.lt.aria", "Choose Lithuanian language")
+          );
+        }
+      }
+
+      function refreshShellFromCurrentLanguage(event) {
+        const eventLang = event?.detail?.language;
+        const lang = eventLang
+          ? syncLanguageState(eventLang)
+          : syncLanguageState(resolveLanguage());
+        applyShellCopy(lang);
+      }
+
+      function dispatchLanguageChanged(lang) {
+        window.dispatchEvent(
+          new CustomEvent("besafe:language-changed", {
+            detail: { language: lang },
+          })
+        );
+
+        window.dispatchEvent(
+          new CustomEvent("language:changed", {
+            detail: { language: lang },
+          })
+        );
+      }
+
+      function handleLanguageSelection(event) {
+        const button = event.target.closest("[data-lang]");
+        if (!button) return;
+
+        const nextLanguage = normalizeLanguage(button.dataset.lang);
+        if (!nextLanguage) return;
+
+        const appliedLanguage = syncLanguageState(nextLanguage);
+        applyShellCopy(appliedLanguage);
+        dispatchLanguageChanged(appliedLanguage);
+      }
+
+      function bindLanguageButtons() {
+        document.removeEventListener("click", handleLanguageSelection, true);
+        document.addEventListener("click", handleLanguageSelection, true);
+      }
+
+      function bindLanguageRefreshEvents() {
+        window.removeEventListener(
+          "besafe:language-changed",
+          refreshShellFromCurrentLanguage
+        );
+        window.removeEventListener(
+          "language:changed",
+          refreshShellFromCurrentLanguage
+        );
+
+        window.addEventListener(
+          "besafe:language-changed",
+          refreshShellFromCurrentLanguage
+        );
+        window.addEventListener(
+          "language:changed",
+          refreshShellFromCurrentLanguage
+        );
+      }
+
+      /* ---- Splash: is-visible + typewriter + mygtukai ---- */
+
+      function updateSplashLang(lang) {
+        document.querySelectorAll("[data-splash-lang]").forEach((el) => {
+          el.classList.toggle("is-visible", el.dataset.splashLang === lang);
+        });
+      }
+
+      function startTypewriter() {
+        let phrase = document.querySelector(".splash__phrase.is-visible");
+        if (!phrase) {
+          phrase = document.querySelector('.splash__phrase[data-splash-lang="lt"]');
+          if (phrase) phrase.classList.add("is-visible");
+        }
+        if (!phrase) return;
+
+        const text = phrase.dataset.text || "";
+        if (!text) return;
+
+        phrase.textContent = "";
+        const cursor = document.createElement("span");
+        cursor.className = "splash__cursor";
+        phrase.appendChild(cursor);
+
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < text.length) {
+            cursor.before(text[i]);
+            i++;
+          } else {
+            clearInterval(interval);
+            setTimeout(() => {
+              cursor.classList.add("splash__cursor--hidden");
+              setTimeout(() => cursor.remove(), 300);
+            }, 1000);
+          }
+        }, 120);
+      }
+
+      function initSplashButtons() {
+        const langBtns = document.querySelectorAll(".splash__lang-btn[data-lang]");
+        const startBtn = document.getElementById("splash-start");
+
+        langBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            langBtns.forEach((b) => b.classList.remove("is-selected"));
+            btn.classList.add("is-selected");
+            updateSplashLang(btn.dataset.lang);
+            if (startBtn) startBtn.disabled = false;
+          });
+        });
+      }
+
+      function start() {
+        const lang = syncLanguageState(resolveLanguage());
+        applyShellCopy(lang);
+        updateSplashLang(lang);
+        bindLanguageButtons();
+        bindLanguageRefreshEvents();
+        initSplashButtons();
+        setTimeout(startTypewriter, 500);
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start, { once: true });
+      } else {
+        start();
+      }
+    })();
+  </script>
+
+  <!-- Tesseract.js OCR biblioteka čekių nuskaitymui -->
+  <script src="js/services/ocr/lib/tesseract.min.js"></script>
+  <script src="js/services/ocr/receipt_ocr.js"></script>
+
+  <script type="module" src="js/app/app.js"></script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js")
+          .then(reg => console.log("[SW] Registered:", reg.scope))
+          .catch(err => console.warn("[SW] Registration failed:", err));
+      });
+    }
+
+    // Listen for besafe:// protocol activation
+    if (window.electronAPI && typeof window.electronAPI.onLicenseActivate === "function") {
+      window.electronAPI.onLicenseActivate(function(key) {
+        console.log("[License] Activation received:", key);
+        if (!key) return;
+
+        // Save license key
+        try {
+          localStorage.setItem("besafe_license_key", key);
+          localStorage.setItem("besafe_onboarding_done", "true");
+        } catch(e) {}
+
+        // Show notification
+        var notification = document.createElement("div");
+        notification.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2d5a32;color:#e8f5e9;padding:16px 28px;border-radius:12px;font-size:15px;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.4);text-align:center;";
+        notification.innerHTML = "<strong>Licencija aktyvuota!</strong><br><span style='font-family:monospace;color:#2ecc8a;font-size:13px;letter-spacing:0.1em'>" + key + "</span>";
+        document.body.appendChild(notification);
+        setTimeout(function() { notification.remove(); }, 5000);
+
+        // If app is loaded, start it
+        if (window.__app && typeof window.__app.startApp === "function") {
+          var lang = localStorage.getItem("besafe_lang") || "lt";
+          window.__app.startApp(lang);
+        }
+      });
+    }
+  </script>
+
+  <!-- Kalbos pasirinkimo modalas -->
+  <div id="lang-modal" class="lang-modal" role="dialog" aria-modal="true" aria-label="Language selection">
+    <div class="lang-modal__overlay" data-lang-modal-close></div>
+    <div class="lang-modal__panel">
+      <div class="lang-modal__header">
+        <h2 class="lang-modal__title">Kalba / Language</h2>
+        <button type="button" class="lang-modal__close" data-lang-modal-close aria-label="Close">&times;</button>
+      </div>
+      <div class="lang-modal__list">
+        <button type="button" class="lang-modal__option" data-lang-select="de">
+          <span class="lang-modal__flag">&#127465;&#127466;</span>
+          <span class="lang-modal__label">Deutsch</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="en">
+          <span class="lang-modal__flag">&#127468;&#127463;</span>
+          <span class="lang-modal__label">English</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="es">
+          <span class="lang-modal__flag">&#127466;&#127480;</span>
+          <span class="lang-modal__label">Español</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="lt">
+          <span class="lang-modal__flag">&#127473;&#127481;</span>
+          <span class="lang-modal__label">Lietuvių</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="no">
+          <span class="lang-modal__flag">&#127475;&#127476;</span>
+          <span class="lang-modal__label">Norsk</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="pl">
+          <span class="lang-modal__flag">&#127477;&#127473;</span>
+          <span class="lang-modal__label">Polski</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="sv">
+          <span class="lang-modal__flag">&#127480;&#127466;</span>
+          <span class="lang-modal__label">Svenska</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="ru">
+          <span class="lang-modal__flag">&#127479;&#127482;</span>
+          <span class="lang-modal__label">Русский</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="zh">
+          <span class="lang-modal__flag">&#127464;&#127475;</span>
+          <span class="lang-modal__label">中文</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="ja">
+          <span class="lang-modal__flag">&#127471;&#127477;</span>
+          <span class="lang-modal__label">日本語</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var modal = document.getElementById("lang-modal");
+      if (!modal) return;
+
+      function getActiveLang() {
+        try { return localStorage.getItem("besafe_lang") || "lt"; } catch(e) { return "lt"; }
+      }
+
+      function markActive() {
+        var lang = getActiveLang();
+        var opts = modal.querySelectorAll("[data-lang-select]");
+        for (var i = 0; i < opts.length; i++) {
+          if (opts[i].getAttribute("data-lang-select") === lang) {
+            opts[i].classList.add("is-active");
+          } else {
+            opts[i].classList.remove("is-active");
+          }
+        }
+      }
+
+      // Atidaryti modalą — global funkcija kurią navigation.controller kviečia
+      window.__openLanguageModal = function() {
+        markActive();
+        modal.classList.add("is-open");
+      };
+
+      // Uždaryti
+      function closeModal() {
+        modal.classList.remove("is-open");
+      }
+
+      // Uždaryti paspaudus overlay arba X
+      var closeBtns = modal.querySelectorAll("[data-lang-modal-close]");
+      for (var i = 0; i < closeBtns.length; i++) {
+        closeBtns[i].addEventListener("click", closeModal);
+      }
+
+      // Escape
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && modal.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+
+      // Kalbos pasirinkimas
+      var langOpts = modal.querySelectorAll("[data-lang-select]");
+      for (var j = 0; j < langOpts.length; j++) {
+        langOpts[j].addEventListener("click", function() {
+          var lang = this.getAttribute("data-lang-select");
+          var currentLang = getActiveLang();
+          if (lang === currentLang) {
+            closeModal();
+            return;
+          }
+
+          // Išsaugoti kalbą
+          try {
+            localStorage.setItem("besafe_lang", lang);
+            localStorage.setItem("besafe:language", lang);
+          } catch(e) {}
+
+          document.documentElement.lang = lang;
+
+          // Pažymėti aktyvią
+          markActive();
+
+          // Uždaryti modalą
+          closeModal();
+
+          // Dispatch event — app.js ir navigation.controller pagaus
+          window.dispatchEvent(new CustomEvent("besafe:language-changed", {
+            detail: { language: lang }
+          }));
+
+          // Perkrauti aktyvų puslapį
+          var app = window.__app;
+          if (app && typeof app.syncLanguageState === "function") {
+            try { app.syncLanguageState(lang); } catch(e) {}
+          }
+          if (app && typeof app.rerenderActivePage === "function") {
+            app.rerenderActivePage().catch(function(e) {
+              console.error("[LangModal] rerenderActivePage failed:", e);
+            });
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "besafe-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node besafe-server.js",
+    "start:old": "node server.js",
+    "dev": "node --watch besafe-server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.103.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.22.1",
+    "nodemailer": "^8.0.5",
+    "stripe": "^22.0.1"
+  },
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

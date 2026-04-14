@@ -1,0 +1,908 @@
+{
+  "places": [
+    {
+      "id": "place_1775946251571-982mht",
+      "name": "Maksima",
+      "normalizedName": "maksima",
+      "type": "store",
+      "brand": "",
+      "country": "",
+      "city": "",
+      "address": "",
+      "purpose": "expense",
+      "notes": "Maisto prekiu parduotuve",
+      "aliases": [],
+      "tags": [],
+      "isFavorite": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-11T22:24:11.571Z",
+      "updatedAt": "2026-04-11T22:24:11.571Z"
+    },
+    {
+      "id": "place_1775946322139-ra0e8d",
+      "name": "Transportas, Prieziura, Degalines",
+      "normalizedName": "transportas prieziura degalines",
+      "type": "transport",
+      "brand": "",
+      "country": "",
+      "city": "",
+      "address": "",
+      "purpose": "expense",
+      "notes": "",
+      "aliases": [],
+      "tags": [],
+      "isFavorite": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-11T22:25:22.139Z",
+      "updatedAt": "2026-04-11T22:25:22.139Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat_1775946371602-11ui87",
+      "name": "Imones automobilis",
+      "normalizedName": "imones automobilis",
+      "type": "expense",
+      "note": "",
+      "isArchived": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-11T22:26:11.602Z",
+      "updatedAt": "2026-04-11T22:26:11.602Z"
+    },
+    {
+      "id": "cat_1775679549914-2t44py",
+      "name": "Maistas",
+      "normalizedName": "maistas",
+      "type": "expense",
+      "note": "",
+      "isArchived": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-08T20:19:09.914Z",
+      "updatedAt": "2026-04-08T20:19:09.914Z"
+    },
+    {
+      "id": "cat_1775743396897-x2bxar",
+      "name": "Transportas",
+      "normalizedName": "transportas",
+      "type": "expense",
+      "note": "",
+      "isArchived": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-09T14:03:16.897Z",
+      "updatedAt": "2026-04-09T14:03:16.897Z"
+    },
+    {
+      "id": "cat_1775736420849-z9xe4g",
+      "name": "Atlyginimas",
+      "normalizedName": "atlyginimas",
+      "type": "income",
+      "note": "",
+      "isArchived": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-09T12:07:00.849Z",
+      "updatedAt": "2026-04-09T12:07:00.849Z"
+    },
+    {
+      "id": "cat_1775679398167-6sir20",
+      "name": "Busto nuoma",
+      "normalizedName": "busto nuoma",
+      "type": "income",
+      "note": "",
+      "isArchived": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-08T20:16:38.167Z",
+      "updatedAt": "2026-04-08T20:16:38.167Z"
+    },
+    {
+      "id": "cat_1775847904598-8jk5zy",
+      "name": "parduotos prekes",
+      "normalizedName": "parduotos prekes",
+      "type": "income",
+      "note": "",
+      "isArchived": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-10T19:05:04.598Z",
+      "updatedAt": "2026-04-10T19:05:04.598Z"
+    },
+    {
+      "id": "cat_1775767110254-h7f28g",
+      "name": "Zvejyba",
+      "normalizedName": "zvejyba",
+      "type": "income",
+      "note": "",
+      "isArchived": false,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown"
+      },
+      "createdAt": "2026-04-09T20:38:30.254Z",
+      "updatedAt": "2026-04-09T20:38:30.254Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx_1775946493034-k7p4v4",
+      "type": "expense",
+      "amount": 150,
+      "category": "other",
+      "categoryId": null,
+      "categoryDetail": "",
+      "note": "",
+      "date": "2026-04-11",
+      "financialDate": "2026-04-11",
+      "currency": "EUR",
+      "locale": "en",
+      "placeId": "place_1775946322139-ra0e8d",
+      "meta": {
+        "placeId": "place_1775946322139-ra0e8d",
+        "placeName": "Transportas, Prieziura, Degalines",
+        "source": "manual",
+        "entryPoint": "unknown",
+        "categoryId": "cat_1775946371602-11ui87"
+      },
+      "receipt": {
+        "receiptId": "receipt_1775946493034-j6dbfd",
+        "source": "manual",
+        "placeId": "place_1775946322139-ra0e8d",
+        "storeName": null,
+        "purchaseDate": "2026-04-11",
+        "totalAmount": 150,
+        "currency": "EUR",
+        "locale": "en",
+        "rawText": null,
+        "scanConfidence": null,
+        "userConfirmed": null,
+        "items": [],
+        "categorySummary": []
+      },
+      "createdAt": "2026-04-11T22:28:13.034Z",
+      "updatedAt": "2026-04-11T22:28:13.034Z"
+    },
+    {
+      "id": "tx_1775946465487-5dktxn",
+      "type": "expense",
+      "amount": 150,
+      "category": "other",
+      "categoryId": null,
+      "categoryDetail": "",
+      "note": "Automobilio remontas",
+      "date": "2026-04-11",
+      "financialDate": "2026-04-11",
+      "currency": "EUR",
+      "locale": "en",
+      "placeId": "place_1775946322139-ra0e8d",
+      "meta": {
+        "placeId": "place_1775946322139-ra0e8d",
+        "placeName": "Transportas, Prieziura, Degalines",
+        "source": "manual",
+        "entryPoint": "unknown",
+        "categoryId": "cat_1775946371602-11ui87"
+      },
+      "receipt": {
+        "receiptId": "receipt_1775946465488-hzvfos",
+        "source": "manual",
+        "placeId": "place_1775946322139-ra0e8d",
+        "storeName": null,
+        "purchaseDate": "2026-04-11",
+        "totalAmount": 150,
+        "currency": "EUR",
+        "locale": "en",
+        "rawText": null,
+        "scanConfidence": null,
+        "userConfirmed": null,
+        "items": [],
+        "categorySummary": []
+      },
+      "createdAt": "2026-04-11T22:27:45.487Z",
+      "updatedAt": "2026-04-11T22:27:45.487Z"
+    },
+    {
+      "id": "tx_1775939058951-6597h5",
+      "type": "income",
+      "amount": 5000,
+      "category": "other",
+      "categoryId": null,
+      "categoryDetail": "",
+      "note": "Parduotos prekes turguje",
+      "date": "2026-04-11",
+      "financialDate": "2026-04-11",
+      "currency": "EUR",
+      "locale": "en",
+      "placeId": null,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown",
+        "categoryId": "cat_1775847904598-8jk5zy"
+      },
+      "receipt": {
+        "receiptId": "receipt_1775939058951-zup9hp",
+        "source": "manual",
+        "placeId": null,
+        "storeName": null,
+        "purchaseDate": "2026-04-11",
+        "totalAmount": 5000,
+        "currency": "EUR",
+        "locale": "en",
+        "rawText": null,
+        "scanConfidence": null,
+        "userConfirmed": null,
+        "items": [],
+        "categorySummary": []
+      },
+      "createdAt": "2026-04-11T20:24:18.951Z",
+      "updatedAt": "2026-04-11T20:24:18.951Z"
+    },
+    {
+      "id": "tx_1775847976725-2pw65j",
+      "type": "income",
+      "amount": 7000,
+      "category": "other",
+      "categoryId": null,
+      "categoryDetail": "",
+      "note": "Turguje parduotos prekes",
+      "date": "2026-04-10",
+      "financialDate": "2026-04-10",
+      "currency": "EUR",
+      "locale": "en",
+      "placeId": null,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown",
+        "categoryId": "cat_1775847904598-8jk5zy"
+      },
+      "receipt": {
+        "receiptId": "receipt_1775847976725-us7joy",
+        "source": "manual",
+        "placeId": null,
+        "storeName": null,
+        "purchaseDate": "2026-04-10",
+        "totalAmount": 7000,
+        "currency": "EUR",
+        "locale": "en",
+        "rawText": null,
+        "scanConfidence": null,
+        "userConfirmed": null,
+        "items": [],
+        "categorySummary": []
+      },
+      "createdAt": "2026-04-10T19:06:16.725Z",
+      "updatedAt": "2026-04-10T19:06:16.725Z"
+    },
+    {
+      "id": "tx_1775828318478-h73wf8",
+      "type": "expense",
+      "amount": 190,
+      "category": "other",
+      "categoryId": null,
+      "categoryDetail": "",
+      "note": "",
+      "date": "2026-04-10",
+      "financialDate": "2026-04-10",
+      "currency": "EUR",
+      "locale": "en",
+      "placeId": null,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown",
+        "categoryId": "cat_1775743396897-x2bxar"
+      },
+      "receipt": {
+        "receiptId": "receipt_1775828318478-dzjo7s",
+        "source": "manual",
+        "placeId": null,
+        "storeName": null,
+        "purchaseDate": "2026-04-10",
+        "totalAmount": 190,
+        "currency": "EUR",
+        "locale": "en",
+        "rawText": null,
+        "scanConfidence": null,
+        "userConfirmed": null,
+        "items": [],
+        "categorySummary": []
+      },
+      "createdAt": "2026-04-10T13:38:38.478Z",
+      "updatedAt": "2026-04-10T13:38:38.478Z"
+    },
+    {
+      "id": "tx_1775826551986-xwkbzf",
+      "type": "income",
+      "amount": 2500,
+      "category": "other",
+      "categoryId": null,
+      "categoryDetail": "",
+      "note": "Uz darba",
+      "date": "2026-04-10",
+      "financialDate": "2026-04-10",
+      "currency": "EUR",
+      "locale": "en",
+      "placeId": null,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown",
+        "categoryId": "cat_1775736420849-z9xe4g"
+      },
+      "receipt": {
+        "receiptId": "receipt_1775826551986-t2jox2",
+        "source": "manual",
+        "placeId": null,
+        "storeName": null,
+        "purchaseDate": "2026-04-10",
+        "totalAmount": 2500,
+        "currency": "EUR",
+        "locale": "en",
+        "rawText": null,
+        "scanConfidence": null,
+        "userConfirmed": null,
+        "items": [],
+        "categorySummary": []
+      },
+      "createdAt": "2026-04-10T13:09:11.986Z",
+      "updatedAt": "2026-04-10T13:09:11.986Z"
+    },
+    {
+      "id": "tx_1775797345875-6u8vbl",
+      "type": "expense",
+      "amount": 300,
+      "category": "other",
+      "categoryId": null,
+      "categoryDetail": "",
+      "note": "",
+      "date": "2026-04-10",
+      "financialDate": "2026-04-10",
+      "currency": "EUR",
+      "locale": "en",
+      "placeId": null,
+      "meta": {
+        "source": "manual",
+        "entryPoint": "unknown",
+        "categoryId": "cat_1775769429659-te6a08"
+      },
+      "receipt": {
+        "receiptId": "receipt_1775797345875-zryilr",
+        "source": "manual",
+        "placeId": null,
+        "storeName": null,
+        "purchaseDate": "2026-04-10",
+        "totalAmount": 300,
+        "currency": "EUR",
+        "locale": "en",
+        "rawText": null,
+        "scanConfidence": null,
+        "userConfirmed": null,
+        "items": [],
+        "categorySummary": []
+      },
+      "createdAt": "2026-04-10T05:02:25.875Z",
+      "updatedAt": "2026-04-10T05:02:25.875Z"
+    }
+  ],
+  "savedCalculations": [
+    {
+      "id": "calc_1775946584925-lm7tv6",
+      "name": "Imones transportas",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-12",
+      "type": "expense",
+      "categories": [
+        "cat_1775946371602-11ui87"
+      ],
+      "placeId": null,
+      "baseAmount": 300,
+      "percentage": 5,
+      "vat": 25,
+      "result": 390,
+      "createdAt": "2026-04-11T22:29:44.926Z",
+      "updatedAt": "2026-04-11T22:29:44.926Z"
+    },
+    {
+      "id": "calc_1775945553651-hvfxws",
+      "name": "Transporto islaidos",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-12",
+      "type": "expense",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 490,
+      "percentage": 5,
+      "vat": 25,
+      "result": 637,
+      "createdAt": "2026-04-11T22:12:33.651Z",
+      "updatedAt": "2026-04-11T22:12:33.651Z"
+    },
+    {
+      "id": "calc_1775944966754-a39yax",
+      "name": "Trnsporto islaidos",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-12",
+      "type": "expense",
+      "categories": [
+        "cat_1775679549914-2t44py",
+        "cat_1775743396897-x2bxar"
+      ],
+      "placeId": null,
+      "baseAmount": 190,
+      "percentage": 5,
+      "vat": 25,
+      "result": 247,
+      "createdAt": "2026-04-11T22:02:46.754Z",
+      "updatedAt": "2026-04-11T22:02:46.754Z"
+    },
+    {
+      "id": "calc_1775944259863-w551jh",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "income",
+      "categories": [
+        "cat_1775847904598-8jk5zy"
+      ],
+      "placeId": null,
+      "baseAmount": 12000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 12000,
+      "createdAt": "2026-04-11T21:50:59.864Z",
+      "updatedAt": "2026-04-11T21:50:59.864Z"
+    },
+    {
+      "id": "calc_1775941108622-u7o4zn",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "expense",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 490,
+      "percentage": 0,
+      "vat": 0,
+      "result": 490,
+      "createdAt": "2026-04-11T20:58:28.622Z",
+      "updatedAt": "2026-04-11T20:58:28.622Z"
+    },
+    {
+      "id": "calc_1775939091601-niofi4",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "income",
+      "categories": [
+        "cat_1775847904598-8jk5zy"
+      ],
+      "placeId": null,
+      "baseAmount": 12000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 12000,
+      "createdAt": "2026-04-11T20:24:51.601Z",
+      "updatedAt": "2026-04-11T20:24:51.601Z"
+    },
+    {
+      "id": "calc_1775935221898-r1ujmy",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "expense",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 490,
+      "percentage": 0,
+      "vat": 0,
+      "result": 490,
+      "createdAt": "2026-04-11T19:20:21.898Z",
+      "updatedAt": "2026-04-11T19:20:21.898Z"
+    },
+    {
+      "id": "calc_1775935017157-4jfqu6",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "income",
+      "categories": [
+        "cat_1775847904598-8jk5zy"
+      ],
+      "placeId": null,
+      "baseAmount": 7000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 7000,
+      "createdAt": "2026-04-11T19:16:57.157Z",
+      "updatedAt": "2026-04-11T19:16:57.157Z"
+    },
+    {
+      "id": "calc_1775934737515-awn0dp",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "expense",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 490,
+      "percentage": 0,
+      "vat": 0,
+      "result": 490,
+      "createdAt": "2026-04-11T19:12:17.515Z",
+      "updatedAt": "2026-04-11T19:12:17.515Z"
+    },
+    {
+      "id": "calc_1775934117895-v7dyta",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "expense",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 490,
+      "percentage": 0,
+      "vat": 0,
+      "result": 490,
+      "createdAt": "2026-04-11T19:01:57.896Z",
+      "updatedAt": "2026-04-11T19:01:57.896Z"
+    },
+    {
+      "id": "calc_1775933186255-ojiagt",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "expense",
+      "categories": [
+        "cat_1775679549914-2t44py",
+        "cat_1775743396897-x2bxar"
+      ],
+      "placeId": null,
+      "baseAmount": 190,
+      "percentage": 0,
+      "vat": 0,
+      "result": 190,
+      "createdAt": "2026-04-11T18:46:26.255Z",
+      "updatedAt": "2026-04-11T18:46:26.255Z"
+    },
+    {
+      "id": "calc_1775933133959-toqfrx",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "income",
+      "categories": [
+        "cat_1775847904598-8jk5zy"
+      ],
+      "placeId": null,
+      "baseAmount": 7000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 7000,
+      "createdAt": "2026-04-11T18:45:33.959Z",
+      "updatedAt": "2026-04-11T18:45:33.959Z"
+    },
+    {
+      "id": "calc_1775932888716-exv90o",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "income",
+      "categories": [
+        "cat_1775847904598-8jk5zy"
+      ],
+      "placeId": null,
+      "baseAmount": 7000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 7000,
+      "createdAt": "2026-04-11T18:41:28.716Z",
+      "updatedAt": "2026-04-11T18:41:28.716Z"
+    },
+    {
+      "id": "calc_1775932833691-cus50c",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "expense",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 490,
+      "percentage": 0,
+      "vat": 0,
+      "result": 490,
+      "createdAt": "2026-04-11T18:40:33.691Z",
+      "updatedAt": "2026-04-11T18:40:33.691Z"
+    },
+    {
+      "id": "calc_1775932382505-76upis",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "expense",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 490,
+      "percentage": 0,
+      "vat": 0,
+      "result": 490,
+      "createdAt": "2026-04-11T18:33:02.505Z",
+      "updatedAt": "2026-04-11T18:33:02.505Z"
+    },
+    {
+      "id": "calc_1775931842086-u1p4w9",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "income",
+      "categories": [
+        "cat_1775847904598-8jk5zy",
+        "cat_1775736420849-z9xe4g"
+      ],
+      "placeId": null,
+      "baseAmount": 9500,
+      "percentage": 0,
+      "vat": 0,
+      "result": 9500,
+      "createdAt": "2026-04-11T18:24:02.086Z",
+      "updatedAt": "2026-04-11T18:24:02.086Z"
+    },
+    {
+      "id": "calc_1775931147973-cmzr02",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-11",
+      "type": "expense",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 490,
+      "percentage": 0,
+      "vat": 0,
+      "result": 490,
+      "createdAt": "2026-04-11T18:12:27.973Z",
+      "updatedAt": "2026-04-11T18:12:27.973Z"
+    },
+    {
+      "id": "calc_1775754055204-vo4xdt",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-09",
+      "type": "income",
+      "categories": [
+        "cat_1775736420849-z9xe4g"
+      ],
+      "placeId": null,
+      "baseAmount": 5000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 5000,
+      "createdAt": "2026-04-09T17:00:55.204Z",
+      "updatedAt": "2026-04-09T17:00:55.204Z"
+    },
+    {
+      "id": "calc_1775753976374-mqg1d0",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-09",
+      "type": "both",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 231,
+      "percentage": 0,
+      "vat": 0,
+      "result": 231,
+      "createdAt": "2026-04-09T16:59:36.375Z",
+      "updatedAt": "2026-04-09T16:59:36.375Z"
+    },
+    {
+      "id": "calc_1775747231552-bhxu6m",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-09",
+      "type": "both",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 231,
+      "percentage": 0,
+      "vat": 0,
+      "result": 231,
+      "createdAt": "2026-04-09T15:07:11.552Z",
+      "updatedAt": "2026-04-09T15:07:11.552Z"
+    },
+    {
+      "id": "calc_1775745047331-w9rta7",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-09",
+      "type": "both",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 231,
+      "percentage": 0,
+      "vat": 0,
+      "result": 231,
+      "createdAt": "2026-04-09T14:30:47.331Z",
+      "updatedAt": "2026-04-09T14:30:47.331Z"
+    },
+    {
+      "id": "calc_1775744763268-4q0llb",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-09",
+      "type": "both",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 231,
+      "percentage": 0,
+      "vat": 0,
+      "result": 231,
+      "createdAt": "2026-04-09T14:26:03.269Z",
+      "updatedAt": "2026-04-09T14:26:03.269Z"
+    },
+    {
+      "id": "calc_1775744743195-peu4wf",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-09",
+      "type": "both",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 231,
+      "percentage": 0,
+      "vat": 0,
+      "result": 231,
+      "createdAt": "2026-04-09T14:25:43.195Z",
+      "updatedAt": "2026-04-09T14:25:43.195Z"
+    },
+    {
+      "id": "calc_1775634857408-1bidlx",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-08",
+      "type": "both",
+      "categories": [],
+      "placeId": null,
+      "baseAmount": 0,
+      "percentage": 0,
+      "vat": 0,
+      "result": 0,
+      "createdAt": "2026-04-08T07:54:17.408Z",
+      "updatedAt": "2026-04-08T07:54:17.408Z"
+    },
+    {
+      "id": "calc_1775594189853-cf4f7x",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-07",
+      "type": "income",
+      "categories": [
+        "cat_1775594012298-0nl96d"
+      ],
+      "placeId": null,
+      "baseAmount": 1000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 1000,
+      "createdAt": "2026-04-07T20:36:29.853Z",
+      "updatedAt": "2026-04-07T20:36:29.853Z"
+    },
+    {
+      "id": "calc_1775369242288-o5hg1x",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-05",
+      "type": "both",
+      "categories": [
+        "cat_1775045577683-743u4v"
+      ],
+      "placeId": "place_1774726669191-oojx00",
+      "baseAmount": 150,
+      "percentage": 12,
+      "vat": 21,
+      "result": 199.5,
+      "createdAt": "2026-04-05T06:07:22.289Z",
+      "updatedAt": "2026-04-05T06:07:22.289Z"
+    },
+    {
+      "id": "calc_1775214429734-xfp8ai",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-03",
+      "type": "expense",
+      "categories": [
+        "cat_1775214335110-qamd43"
+      ],
+      "placeId": "place_1774773185889-o6mwus",
+      "baseAmount": 300,
+      "percentage": 5,
+      "vat": 21,
+      "result": 378,
+      "createdAt": "2026-04-03T11:07:09.734Z",
+      "updatedAt": "2026-04-03T11:07:09.734Z"
+    },
+    {
+      "id": "calc_1775214281638-cye1z9",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-03",
+      "type": "both",
+      "categories": [
+        "cat_1775038378342-ll5uf7"
+      ],
+      "placeId": "place_1774773185889-o6mwus",
+      "baseAmount": 300,
+      "percentage": 0,
+      "vat": 0,
+      "result": 300,
+      "createdAt": "2026-04-03T11:04:41.638Z",
+      "updatedAt": "2026-04-03T11:04:41.638Z"
+    },
+    {
+      "id": "calc_1775167245582-hj1jp7",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-02",
+      "type": "income",
+      "categories": [
+        "cat_1774531292688-salary-main"
+      ],
+      "placeId": null,
+      "baseAmount": 10000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 10000,
+      "createdAt": "2026-04-02T22:00:45.583Z",
+      "updatedAt": "2026-04-02T22:00:45.583Z"
+    },
+    {
+      "id": "calc_1775164123484-mdeagf",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-02",
+      "type": "income",
+      "categories": [
+        "cat_1774531292688-salary-main"
+      ],
+      "placeId": null,
+      "baseAmount": 2000,
+      "percentage": 0,
+      "vat": 0,
+      "result": 2000,
+      "createdAt": "2026-04-02T21:08:43.484Z",
+      "updatedAt": "2026-04-02T21:08:43.484Z"
+    },
+    {
+      "id": "calc_1775162563224-7zog7o",
+      "name": "Calculation",
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-02",
+      "type": "both",
+      "categories": [
+        "cat_1774758613357-food-main"
+      ],
+      "placeId": "place_1775081117740-r11s6n",
+      "baseAmount": 147,
+      "percentage": 0,
+      "vat": 0,
+      "result": 147,
+      "createdAt": "2026-04-02T20:42:43.224Z",
+      "updatedAt": "2026-04-02T20:42:43.224Z"
+    }
+  ]
+}

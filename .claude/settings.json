@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ':*)",
+      "Bash(node --input-type=module -e ':*)",
+      "Bash(cmd.exe /c \"start \\\\\"\\\\\" \\\\\"C:\\\\\\\\Projects\\\\\\\\BeSafe\\\\\\\\website\\\\\\\\index.html\\\\\"\")",
+      "Bash(node server/server.js)",
+      "Bash(npx -y serve -l 5500 -s .)",
+      "Bash(cmd.exe /c \"start \\\\\"\\\\\" \\\\\"http://127.0.0.1:5500\\\\\"\")",
+      "Bash(cmd.exe /c \"start \\\\\"\\\\\" \\\\\"C:\\\\\\\\Projects\\\\\\\\BeSafe\\\\\\\\website\\\\\\\\.env\\\\\"\")",
+      "Bash(node besafe-server.js)",
+      "Bash(curl -s http://127.0.0.1:3001/api/health)",
+      "Bash(cmd.exe /c \"taskkill /F /IM node.exe\")",
+      "Bash(cmd.exe /c \"netstat -ano | findstr :3001\")",
+      "Bash(PORT=4000 node besafe-server.js)",
+      "Bash(curl -s http://127.0.0.1:4000/api/health)",
+      "Bash(cmd.exe /c \"start \\\\\"\\\\\" \\\\\"http://127.0.0.1:4000\\\\\"\")",
+      "Bash(cmd.exe /c \"netstat -ano | findstr :3001 | findstr LISTENING\")",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3001 -ErrorAction SilentlyContinue | Select-Object LocalPort, OwningProcess, State\")",
+      "Bash(cmd.exe /c \"taskkill /F /PID 2008 & taskkill /F /PID 10924\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:4000/)",
+      "Bash(powershell -Command 'Get-NetTCPConnection -LocalPort 4000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }')",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" http://127.0.0.1:4000/)",
+      "Bash(curl -s -X POST http://127.0.0.1:4000/api/register -H 'Content-Type: application/json' -d '{\"email\":\"test@test.com\",\"plan\":\"personal\",\"billing\":\"monthly\"}')",
+      "Bash(curl -s -X POST http://127.0.0.1:4000/api/register -H \"Content-Type: application/json\" -d '{\"email\":\"testas@test.com\",\"plan\":\"personal\",\"billing\":\"monthly\"}')",
+      "Bash(curl -s -X POST http://127.0.0.1:4000/api/register -H \"Content-Type: application/json\" -d '{\"email\":\"testas123@test.com\",\"plan\":\"personal\",\"billing\":\"monthly\"}')",
+      "Bash(curl -s -X POST http://127.0.0.1:4000/api/register -H 'Content-Type: application/json' -d '{\"email\":\"testas777@test.com\",\"plan\":\"personal\",\"billing\":\"monthly\"}')"
+    ],
+    "additionalDirectories": [
+      "C:\\Projects\\BeSafe",
+      "C:\\Projects\\BeSafe\\website"
+    ]
+  }
+}

@@ -1,0 +1,1803 @@
+import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
+import { registry } from "../core/service.registry.js";
+
+export class PlacesPage {
+  constructor() {
+    this.transactionService = null;
+
+    this.plan = "personal";
+
+    this.isCreateOpen = false;
+    this.isSaving = false;
+    this.isDeletingPlaceId = "";
+
+    this.isCategoryCreateOpen = false;
+    this.isCategorySaving = false;
+    this.isDeletingCategoryId = "";
+
+    this.currentPlaces = [];
+    this.currentCategories = [];
+
+    this.lastCreatedPlaceId = "";
+    this.lastCreatedCategoryId = "";
+
+    this.lastSuccessAction = "";
+    this.status = {
+      type: "idle",
+      message: "",
+    };
+
+    this.formDraft = this.createEmptyDraft();
+    this.categoryDraft = this.createEmptyCategoryDraft();
+
+    this.handleClick = this.handleClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    console.log("[PlacesPage] constructor loaded");
+  }
+
+  setPlan(plan) {
+    const normalizedPlan = this.normalizeText(plan).toLowerCase();
+    this.plan = normalizedPlan === "business" ? "business" : "personal";
+  }
+
+  isBusinessPlan() {
+    return this.plan === "business";
+  }
+
+  createEmptyDraft() {
+    return {
+      name: "",
+      type: "",
+      note: "",
+      purpose: "expense",
+    };
+  }
+
+  createEmptyCategoryDraft() {
+    return {
+      name: "",
+      type: "expense",
+    };
+  }
+
+  resetDraft() {
+    this.formDraft = this.createEmptyDraft();
+  }
+
+  resetCategoryDraft() {
+    this.categoryDraft = this.createEmptyCategoryDraft();
+  }
+
+  updateDraft(values = {}) {
+    this.formDraft = {
+      ...this.createEmptyDraft(),
+      ...this.formDraft,
+      name: this.normalizeText(values.name ?? this.formDraft.name),
+      type: this.normalizePlaceType(values.type ?? this.formDraft.type),
+      note: this.normalizeText(values.note ?? this.formDraft.note),
+      purpose:
+        this.normalizeText(values.purpose ?? this.formDraft.purpose) ||
+        "expense",
+    };
+  }
+
+  updateCategoryDraft(values = {}) {
+    this.categoryDraft = {
+      ...this.createEmptyCategoryDraft(),
+      ...this.categoryDraft,
+      name: this.normalizeText(values.name ?? this.categoryDraft.name),
+      type: this.normalizeCategoryType(values.type ?? this.categoryDraft.type),
+    };
+  }
+
+  getTranslator() {
+    return createTranslator(getCurrentLanguage());
+  }
+
+  t(key, fallback, variables) {
+    const translate = this.getTranslator();
+    return translate(key, fallback, variables);
+  }
+
+  getTransactionService() {
+    if (this.transactionService) {
+      return this.transactionService;
+    }
+
+    try {
+      this.transactionService = registry.get("transactions");
+      return this.transactionService;
+    } catch (error) {
+      console.warn("[PlacesPage] Failed to get transactions service:", error);
+      return null;
+    }
+  }
+
+  logDebug(label, data = {}) {
+    console.log(`[PlacesPage][debug] ${label}`, data);
+  }
+
+  escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  normalizeNumber(value) {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : 0;
+  }
+
+  normalizeText(value) {
+    return typeof value === "string" ? value.trim() : "";
+  }
+
+  normalizeComparableText(value) {
+    return this.normalizeText(value)
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
+  normalizePlaceType(value) {
+    const normalized = this.normalizeText(value).toLowerCase();
+
+    if (!normalized) {
+      return "";
+    }
+
+    const compact = normalized
+      .replaceAll("-", "")
+      .replaceAll("_", "")
+      .replaceAll(" ", "");
+
+    if (
+      compact === "store" ||
+      compact === "shop" ||
+      compact === "parduotuve" ||
+      compact === "parduotuvė" ||
+      compact === "apsipirkimas"
+    ) {
+      return "store";
+    }
+
+    if (
+      compact === "transport" ||
+      compact === "station" ||
+      compact === "fuelstation" ||
+      compact === "gasstation" ||
+      compact === "petrolstation" ||
+      compact === "degaline" ||
+      compact === "degalinė" ||
+      compact === "transportas"
+    ) {
+      return "transport";
+    }
+
+    if (
+      compact === "housing" ||
+      compact === "home" ||
+      compact === "bustas" ||
+      compact === "būstas"
+    ) {
+      return "housing";
+    }
+
+    if (compact === "bank" || compact === "bankas") {
+      return "bank";
+    }
+
+    if (compact === "other" || compact === "kita") {
+      return "other";
+    }
+
+    if (compact === "goods" || compact === "prekes" || compact === "prekės") {
+      return "goods";
+    }
+
+    if (
+      compact === "utilities" ||
+      compact === "komunalinespaslaugos" ||
+      compact === "komunalinėspaslaugos"
+    ) {
+      return "utilities";
+    }
+
+    if (compact === "health" || compact === "sveikata") {
+      return "health";
+    }
+
+    if (compact === "leisure" || compact === "laisvalaikis") {
+      return "leisure";
+    }
+
+    return normalized;
+  }
+
+  normalizeCategoryType(value) {
+    const normalized = this.normalizeText(value).toLowerCase();
+    return normalized === "income" ? "income" : "expense";
+  }
+
+  getPageRoot() {
+    return document.getElementById("page-places");
+  }
+
+  isPageActive() {
+    const pageRoot = this.getPageRoot();
+    if (!pageRoot) return false;
+    if (pageRoot.hidden) return false;
+    return !pageRoot.closest("[hidden]");
+  }
+
+  setStatus(type = "idle", message = "") {
+    this.status = {
+      type,
+      message,
+    };
+  }
+
+  renderStatus() {
+    const message = this.status?.message || "";
+    const type = this.status?.type || "idle";
+
+    if (!message) {
+      return "";
+    }
+
+    const statusClass =
+      type === "error"
+        ? "reports-status reports-status--error"
+        : type === "success"
+          ? "reports-status reports-status--success"
+          : "reports-status reports-status--info";
+
+    return `
+      <div class="${statusClass}" role="status" aria-live="polite">
+        ${this.escapeHtml(message)}
+      </div>
+    `;
+  }
+
+  getPlaceTypeLabel(type) {
+    const normalized = this.normalizePlaceType(type);
+
+    if (normalized === "store") {
+      return this.t("places.types.store", "Store");
+    }
+
+    if (normalized === "transport") {
+      return this.t("places.types.transport", "Transport");
+    }
+
+    if (normalized === "housing") {
+      return this.t("places.types.housing", "Housing");
+    }
+
+    if (normalized === "bank") {
+      return this.t("places.types.bank", "Bank");
+    }
+
+    return this.t("places.types.other", "Other");
+  }
+
+  getCategoryTypeLabel(type) {
+    const normalized = this.normalizeCategoryType(type);
+
+    if (normalized === "income") {
+      return this.t("categories.types.income", "Income");
+    }
+
+    return this.t("categories.types.expense", "Expense");
+  }
+
+  normalizePlace(place = {}) {
+    const id = this.normalizeText(place?.id || place?.placeId);
+    const name = this.normalizeText(
+      place?.name ||
+        place?.title ||
+        place?.merchantName ||
+        place?.stationName ||
+        place?.storeName ||
+        place?.transportName ||
+        place?.housingName ||
+        place?.bankName
+    );
+    const type = this.normalizePlaceType(place?.type || place?.placeType);
+    const note = this.normalizeText(place?.note || place?.notes);
+    const purpose = this.normalizeText(place?.purpose || "expense");
+    const linkedEntries = this.normalizeNumber(
+      place?.linkedEntriesCount ??
+        place?.transactionCount ??
+        place?.usageCount ??
+        0
+    );
+
+    return {
+      id,
+      name,
+      type,
+      note,
+      purpose,
+      linkedEntries,
+    };
+  }
+
+  normalizeCategory(category = {}) {
+    const id = this.normalizeText(category?.id || category?.categoryId);
+    const name = this.normalizeText(
+      category?.name || category?.title || category?.label
+    );
+    const type = this.normalizeCategoryType(category?.type);
+    const note = this.normalizeText(category?.note || category?.notes);
+    const linkedEntries = this.normalizeNumber(
+      category?.linkedEntriesCount ??
+        category?.transactionCount ??
+        category?.usageCount ??
+        0
+    );
+
+    return {
+      id,
+      name,
+      type,
+      note,
+      linkedEntries,
+    };
+  }
+
+  async loadPlaces() {
+    const transactionService = this.getTransactionService();
+
+    if (
+      !transactionService ||
+      typeof transactionService.getPlaces !== "function"
+    ) {
+      return [];
+    }
+
+    try {
+      const places = await transactionService.getPlaces();
+      if (!Array.isArray(places)) {
+        return [];
+      }
+
+      return places
+        .map((place) => this.normalizePlace(place))
+        .filter((place) => place.name || place.id);
+    } catch (error) {
+      console.warn("[PlacesPage] Failed to load places:", error);
+      return [];
+    }
+  }
+
+  async loadCategories() {
+    if (!this.isBusinessPlan()) {
+      return [];
+    }
+
+    const transactionService = this.getTransactionService();
+
+    if (
+      !transactionService ||
+      typeof transactionService.getCategories !== "function"
+    ) {
+      return [];
+    }
+
+    try {
+      const categories = await transactionService.getCategories();
+      if (!Array.isArray(categories)) {
+        return [];
+      }
+
+      return categories
+        .map((category) => this.normalizeCategory(category))
+        .filter((category) => category.name || category.id);
+    } catch (error) {
+      console.warn("[PlacesPage] Failed to load categories:", error);
+      return [];
+    }
+  }
+
+  async createPlace(payload) {
+    const transactionService = this.getTransactionService();
+
+    if (
+      !transactionService ||
+      typeof transactionService.createPlace !== "function"
+    ) {
+      throw new Error(
+        this.t(
+          "places.status.saveFailed",
+          "Could not save the place right now."
+        )
+      );
+    }
+
+    return transactionService.createPlace(payload);
+  }
+
+  async createCategory(payload) {
+    const transactionService = this.getTransactionService();
+
+    if (
+      !transactionService ||
+      typeof transactionService.createCategory !== "function"
+    ) {
+      throw new Error(
+        this.t(
+          "categories.status.saveFailed",
+          "Could not save the category right now."
+        )
+      );
+    }
+
+    return transactionService.createCategory(payload);
+  }
+
+  async deletePlace(placeId) {
+    const transactionService = this.getTransactionService();
+
+    if (
+      !transactionService ||
+      typeof transactionService.deletePlace !== "function"
+    ) {
+      throw new Error(
+        this.t(
+          "places.status.deleteFailed",
+          "Could not remove the place right now."
+        )
+      );
+    }
+
+    return transactionService.deletePlace(placeId);
+  }
+
+  async deleteCategory(categoryId) {
+    const transactionService = this.getTransactionService();
+
+    if (
+      !transactionService ||
+      typeof transactionService.deleteCategory !== "function"
+    ) {
+      throw new Error(
+        this.t(
+          "categories.status.deleteFailed",
+          "Could not remove the category right now."
+        )
+      );
+    }
+
+    return transactionService.deleteCategory(categoryId);
+  }
+
+  buildTypeOptions(selectedType = "") {
+    const safeSelected = this.normalizePlaceType(selectedType);
+
+    const options = [
+      { value: "store", label: this.t("places.types.store", "Parduotuvė") },
+      { value: "goods", label: this.t("places.types.goods", "Prekės") },
+      {
+        value: "transport",
+        label: this.t("places.types.transport", "Transportas"),
+      },
+      { value: "bank", label: this.t("places.types.bank", "Bankas") },
+      { value: "housing", label: this.t("places.types.housing", "Būstas") },
+      {
+        value: "utilities",
+        label: this.t("places.types.utilities", "Komunalinės paslaugos"),
+      },
+      { value: "health", label: this.t("places.types.health", "Sveikata") },
+      { value: "leisure", label: this.t("places.types.leisure", "Laisvalaikis") },
+      { value: "other", label: this.t("places.types.other", "Kita") },
+    ];
+
+    return options
+      .map((option) => {
+        const isSelected = safeSelected === option.value;
+        return `
+          <option value="${this.escapeHtml(option.value)}" ${
+            isSelected ? "selected" : ""
+          }>
+            ${this.escapeHtml(option.label)}
+          </option>
+        `;
+      })
+      .join("");
+  }
+
+  buildCategoryTypeOptions(selectedType = "expense") {
+    const safeSelected = this.normalizeCategoryType(selectedType);
+
+    const options = [
+      {
+        value: "expense",
+        label: this.t("categories.types.expense", "Expense"),
+      },
+      { value: "income", label: this.t("categories.types.income", "Income") },
+    ];
+
+    return options
+      .map((option) => {
+        const isSelected = safeSelected === option.value;
+        return `
+          <option value="${this.escapeHtml(option.value)}" ${
+            isSelected ? "selected" : ""
+          }>
+            ${this.escapeHtml(option.label)}
+          </option>
+        `;
+      })
+      .join("");
+  }
+
+  renderPlanSummary() {
+    const isBusiness = this.isBusinessPlan();
+
+    const eyebrow = isBusiness
+      ? this.t("places.plan.businessEyebrow", "Business structure")
+      : this.t("places.plan.personalEyebrow", "Simple places");
+
+    const title = isBusiness
+      ? this.t("places.plan.businessTitle", "Places and categories")
+      : this.t("places.plan.personalTitle", "Your places");
+
+    const subtitle = isBusiness
+      ? this.t(
+          "places.plan.businessText",
+          "Business mode gives you a wider structure layer: places for records, categories for work logic, and a calmer base for later reports and calculations."
+        )
+      : this.t(
+          "places.plan.personalText",
+          "Personal mode keeps places simple: add only the real places you use so records stay clearer without extra structure work."
+        );
+
+    return `
+      <section class="section section--card" aria-label="${this.escapeHtml(
+        title
+      )}">
+        <div class="home-section-header home-section-header--compact">
+          <p class="home-section-header__eyebrow">
+            ${this.escapeHtml(eyebrow)}
+          </p>
+
+         <h3 class="home-section-header__title">
+           ${this.escapeHtml(
+             this.t("places.empty.title", "Add your first place")
+           )}
+         </h3>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(subtitle)}
+          </p>
+        </div>
+      </section>
+    `;
+  }
+
+  renderCreateForm() {
+    if (!this.isCreateOpen) {
+      return "";
+    }
+
+    return `
+      <section class="section section--card" aria-label="${this.escapeHtml(
+        this.t("places.actions.add", "Add place")
+      )}">
+        <div class="home-section-header home-section-header--compact">
+          <h3 class="home-section-header__title">
+            ${this.escapeHtml(this.t("places.actions.add", "Add place"))}
+          </h3>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(this.t("places.form.subtitle", "Add a place."))}
+          </p>
+        </div>
+
+        ${this.renderStatus()}
+
+        <form id="places-create-form" class="quick-action-form" novalidate>
+
+          <div class="quick-action-form__field">
+            <label class="quick-action-form__label" for="places-purpose">
+            ${this.escapeHtml(this.t("places.form.purposeLabel", "Place purpose"))}
+          </label>
+          <select
+            id="places-purpose"
+            name="purpose"
+            class="quick-action-form__input"
+            ${this.isSaving ? "disabled" : ""}
+          >
+            <option
+              value="expense"
+              ${this.formDraft.purpose === "income" ? "" : "selected"}
+            >
+              ${this.escapeHtml(this.t("places.form.purposeExpense", "Expense place"))}
+            </option>
+            ${
+              this.isBusinessPlan()
+                ? `
+                  <option
+                    value="income"
+                    ${this.formDraft.purpose === "income" ? "selected" : ""}
+                  >
+                    ${this.escapeHtml(this.t("places.form.purposeIncome", "Income place"))}
+                  </option>
+                `
+                : ""
+            }
+          </select>
+        </div>
+
+          <div class="quick-action-form__field">
+            <label class="quick-action-form__label" for="places-name">
+              ${this.escapeHtml(this.t("places.form.nameLabel", "Place name"))}
+            </label>
+            <input
+              id="places-name"
+              name="name"
+              type="text"
+              class="quick-action-form__input"
+              placeholder="${this.escapeHtml(
+                this.t("places.form.namePlaceholder", "Add the place name")
+              )}"
+              maxlength="120"
+              value="${this.escapeHtml(this.formDraft.name)}"
+              ${this.isSaving ? "disabled" : ""}
+            />
+          </div>
+
+          <div class="quick-action-form__field">
+            <label class="quick-action-form__label" for="places-type">
+              ${this.escapeHtml(this.t("places.form.typeLabel", "Type"))}
+            </label>
+            <select
+              id="places-type"
+              name="type"
+              class="quick-action-form__input"
+              ${this.isSaving ? "disabled" : ""}
+            >
+              <option value="">
+                ${this.escapeHtml(
+                  this.t("places.form.typePlaceholder", "Type")
+                )}
+              </option>
+              ${this.buildTypeOptions(this.formDraft.type)}
+            </select>
+          </div>
+
+          <div class="quick-action-form__field">
+            <label class="quick-action-form__label" for="places-note">
+              ${this.escapeHtml(this.t("places.form.noteLabel", "Optional note"))}
+            </label>
+            <textarea
+              id="places-note"
+              name="note"
+              class="quick-action-form__textarea"
+              rows="3"
+              placeholder="${this.escapeHtml(
+                this.t("places.form.notePlaceholder", "Note")
+              )}"
+              ${this.isSaving ? "disabled" : ""}
+            >${this.escapeHtml(this.formDraft.note)}</textarea>
+          </div>
+
+          <div class="button-row">
+            <button
+              type="submit"
+              class="shortcut-btn button-secondary"
+              ${this.isSaving ? "disabled" : ""}
+            >
+              ${this.escapeHtml(this.t("places.actions.save", "Save"))}
+            </button>
+
+            <button
+              type="button"
+              class="shortcut-btn button-secondary"
+              data-places-action="cancel-create"
+              ${this.isSaving ? "disabled" : ""}
+            >
+              ${this.escapeHtml(this.t("places.actions.cancel", "Close"))}
+            </button>
+          </div>
+        </form>
+      </section>
+    `;
+  }
+
+  renderCategoryCreateForm() {
+    if (!this.isBusinessPlan() || !this.isCategoryCreateOpen) {
+      return "";
+    }
+
+    return `
+      <section class="section section--card" aria-label="${this.escapeHtml(
+        this.t("categories.actions.add", "Add category")
+      )}">
+        <div class="home-section-header home-section-header--compact">
+          <h3 class="home-section-header__title">
+            ${this.escapeHtml(this.t("categories.actions.add", "Add category"))}
+          </h3>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(
+              this.t(
+                "categories.form.subtitle",
+                "Create the categories you want to use later in records and calculations."
+              )
+            )}
+          </p>
+        </div>
+
+        ${this.renderStatus()}
+
+        <form id="categories-create-form" class="quick-action-form" novalidate>
+          <div class="quick-action-form__field">
+            <label class="quick-action-form__label" for="categories-name">
+              ${this.escapeHtml(
+                this.t("categories.form.nameLabel", "Category name")
+              )}
+            </label>
+            <input
+              id="categories-name"
+              name="name"
+              type="text"
+              class="quick-action-form__input"
+              placeholder="${this.escapeHtml(
+                this.t("categories.form.namePlaceholder", "Add the category name")
+              )}"
+              maxlength="120"
+              value="${this.escapeHtml(this.categoryDraft.name)}"
+              ${this.isCategorySaving ? "disabled" : ""}
+            />
+          </div>
+
+          <div class="quick-action-form__field">
+            <label class="quick-action-form__label" for="categories-type">
+              ${this.escapeHtml(
+                this.t("categories.form.typeLabel", "Category type")
+              )}
+            </label>
+            <select
+              id="categories-type"
+              name="type"
+              class="quick-action-form__input"
+              ${this.isCategorySaving ? "disabled" : ""}
+            >
+              ${this.buildCategoryTypeOptions(this.categoryDraft.type)}
+            </select>
+          </div>
+
+          <div class="button-row">
+            <button
+              type="submit"
+              class="shortcut-btn button-secondary"
+              ${this.isCategorySaving ? "disabled" : ""}
+            >
+              ${this.escapeHtml(
+                this.t("categories.actions.save", "Save category")
+              )}
+            </button>
+
+            <button
+              type="button"
+              class="shortcut-btn button-secondary"
+              data-places-action="cancel-category-create"
+              ${this.isCategorySaving ? "disabled" : ""}
+            >
+              ${this.escapeHtml(this.t("categories.actions.cancel", "Cancel"))}
+            </button>
+          </div>
+        </form>
+      </section>
+    `;
+  }
+
+  renderSuccessSummary() {
+    if (this.status?.type !== "success" || !this.status?.message) {
+      return "";
+    }
+
+    const isDeleteSuccess =
+      this.lastSuccessAction === "delete-place" ||
+      this.lastSuccessAction === "delete-category";
+
+    const isCategoryAction =
+      this.lastSuccessAction === "create-category" ||
+      this.lastSuccessAction === "delete-category";
+
+    const title = isCategoryAction
+      ? isDeleteSuccess
+        ? this.t("categories.status.deleted", "Category removed.")
+        : this.t("categories.status.saved", "Category saved.")
+      : isDeleteSuccess
+        ? this.t("places.status.deleted", "Place removed.")
+        : this.t("places.status.saved", "Place saved.");
+
+    const subtitle = isCategoryAction
+      ? isDeleteSuccess
+        ? this.currentCategories.length
+          ? this.t(
+              "categories.success.deleteNextStep",
+              "The category was removed from your saved categories list. Next clear step: keep only the categories you really need."
+            )
+          : this.t(
+              "categories.success.deleteLastCategoryNextStep",
+              "The category was removed and your saved categories list is now empty. Next clear step: add a category only when you need one."
+            )
+        : this.currentCategories.length <= 1
+          ? this.t(
+              "categories.success.firstCategoryNextStep",
+              "You now have your first saved category. Next clear step: add another category only if you need one."
+            )
+          : this.t(
+              "categories.success.nextStep",
+              "The new category is now part of your saved categories list. Next clear step: add another category only if you need one."
+            )
+      : isDeleteSuccess
+        ? this.currentPlaces.length
+          ? this.t(
+              "places.success.deleteNextStep",
+              "The place was removed from your saved places list. Next clear step: keep only the places you really use."
+            )
+          : this.t(
+              "places.success.deleteLastPlaceNextStep",
+              "The place was removed and your saved places list is now empty. Next clear step: add a place only when you need one."
+            )
+        : this.currentPlaces.length <= 1
+          ? this.t(
+              "places.success.firstPlaceNextStep",
+              "You now have your first saved place. Next clear step: add another place or keep using BeSafe normally."
+            )
+          : this.t(
+              "places.success.nextStep",
+              "The new place is now part of your saved places list. Next clear step: add another place only if you need one."
+            );
+
+    return `
+      <section class="section section--card" aria-label="${this.escapeHtml(
+        title
+      )}">
+        <div class="home-section-header home-section-header--compact">
+          <h3 class="home-section-header__title">
+            ${this.escapeHtml(title)}
+          </h3>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(subtitle)}
+          </p>
+        </div>
+      </section>
+    `;
+  }
+
+  renderEmptyState() {
+    return `
+      <section class="section section--card" aria-label="${this.escapeHtml(
+        this.t("places.empty.title", "No places")
+      )}">
+        <div class="home-section-header home-section-header--compact">
+          <h3 class="home-section-header__title">
+            ${this.escapeHtml(
+              this.t("places.empty.title", "Add your first place")
+            )}
+          </h3>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(
+              this.t(
+                "places.empty.text",
+                "Add the places you actually use so your records stay clear."
+              )
+            )}
+          </p>
+        </div>
+
+        <div class="module-placeholder">
+          <div class="module-placeholder__content">
+            <p class="module-placeholder__text">
+              ${this.escapeHtml(
+                this.t("places.empty.nextStep", "Add your first place.")
+              )}
+            </p>
+
+            <div class="button-row">
+              <button
+                type="button"
+                class="shortcut-btn button-secondary"
+                data-places-action="open-create"
+                ${this.isSaving ? "disabled" : ""}
+              >
+                ${this.escapeHtml(this.t("places.actions.add", "Add place"))}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  renderCategoriesEmptyState() {
+    if (!this.isBusinessPlan()) {
+      return "";
+    }
+
+    return `
+      <section class="section section--card" aria-label="${this.escapeHtml(
+        this.t("categories.empty.title", "There are no categories yet")
+      )}">
+        <div class="home-section-header home-section-header--compact">
+          <h3 class="home-section-header__title">
+            ${this.escapeHtml(
+              this.t("categories.empty.title", "There are no categories yet")
+            )}
+          </h3>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(
+              this.t(
+                "categories.empty.text",
+                "When you create categories here, BeSafe will use them later in records and calculations."
+              )
+            )}
+          </p>
+        </div>
+
+        <div class="module-placeholder">
+          <div class="module-placeholder__content">
+            <p class="module-placeholder__text">
+              ${this.escapeHtml(
+                this.t(
+                  "categories.empty.nextStep",
+                  "Next clear step: add your first category."
+                )
+              )}
+            </p>
+
+            <div class="button-row">
+              <button
+                type="button"
+                class="shortcut-btn button-secondary"
+                data-places-action="open-category-create"
+                ${this.isCategorySaving ? "disabled" : ""}
+              >
+                ${this.escapeHtml(
+                  this.t("categories.actions.add", "Add category")
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  renderPlacesList() {
+    if (!this.currentPlaces.length) {
+      return "";
+    }
+
+    return `
+      <section class="section section--card" aria-label="${this.escapeHtml(
+        this.t("places.list.aria", "Places list")
+      )}">
+        <div class="home-section-header home-section-header--compact">
+          <h3 class="home-section-header__title">
+            ${this.escapeHtml(this.t("places.list.title", "Saved places"))}
+          </h3>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(
+              this.t("places.list.subtitle", "Your saved places.")
+            )}
+          </p>
+        </div>
+
+        <div class="list-card">
+          <div class="list-card__items">
+            ${this.currentPlaces
+              .map((place) => {
+                const title = place.name || place.id;
+                const typeLabel = place.type
+                  ? this.getPlaceTypeLabel(place.type)
+                  : this.t("places.list.noType", "Type not set");
+
+                const count = this.normalizeNumber(place.linkedEntries);
+                const isUsed = count > 0;
+
+                const linkedEntriesText =
+                  count === 0
+                    ? this.t("places.list.noLinkedEntries", "No records")
+                    : `${this.t(
+                        "places.list.linkedEntriesLabel",
+                        "Records"
+                      )}: ${count}`;
+
+                const isRecentlyCreated =
+                  this.lastCreatedPlaceId &&
+                  place.id &&
+                  place.id === this.lastCreatedPlaceId;
+
+                const isDeleting =
+                  this.isDeletingPlaceId &&
+                  place.id &&
+                  place.id === this.isDeletingPlaceId;
+
+                return `
+                  <article class="activity-item${
+                    isRecentlyCreated ? " activity-item--new" : ""
+                  }">
+                    <div class="activity-item__content">
+                      <strong class="activity-item__title">
+                        ${this.escapeHtml(title)}
+                        ${
+                          isRecentlyCreated
+                            ? `
+                              <span class="activity-item__badge">
+                                ${this.escapeHtml(
+                                  this.t("places.list.newBadge", "New")
+                                )}
+                              </span>
+                            `
+                            : ""
+                        }
+                      </strong>
+
+                      <p class="activity-item__meta">
+                        ${this.escapeHtml(typeLabel)}
+                      </p>
+
+                      <p class="activity-item__meta">
+                        ${this.escapeHtml(linkedEntriesText)}
+                        ${
+                          isUsed
+                            ? ` <span class="activity-item__badge">${this.escapeHtml(
+                                this.t("places.list.used", "Used")
+                              )}</span>`
+                            : ""
+                        }
+                      </p>
+
+                      ${
+                        place.note
+                          ? `
+                            <p class="activity-item__meta">
+                              ${this.escapeHtml(place.note)}
+                            </p>
+                          `
+                          : ""
+                      }
+
+                      <div class="button-row">
+                        <button
+                          type="button"
+                          class="shortcut-btn button-secondary"
+                          data-places-action="delete-place"
+                          data-place-id="${this.escapeHtml(place.id)}"
+                          ${isDeleting ? "disabled" : ""}
+                        >
+                          ${this.escapeHtml(
+                            isDeleting
+                              ? this.t(
+                                  "places.status.deleting",
+                                  "Removing place…"
+                                )
+                              : this.t("places.actions.delete", "Delete")
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                `;
+              })
+              .join("")}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  renderCategoriesList() {
+    if (!this.isBusinessPlan() || !this.currentCategories.length) {
+      return "";
+    }
+
+    return `
+      <section class="section section--card" aria-label="${this.escapeHtml(
+        this.t("categories.list.aria", "Categories list")
+      )}">
+        <div class="home-section-header home-section-header--compact">
+          <h3 class="home-section-header__title">
+            ${this.escapeHtml(
+              this.t("categories.list.title", "Saved categories")
+            )}
+          </h3>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(
+              this.t(
+                "categories.list.subtitle",
+                "These are the categories BeSafe can use later in records and calculations."
+              )
+            )}
+          </p>
+        </div>
+
+        <div class="list-card">
+          <div class="list-card__items">
+            ${this.currentCategories
+              .map((category) => {
+                const title = category.name || category.id;
+                const typeLabel = this.getCategoryTypeLabel(category.type);
+
+                const linkedEntriesText = `${this.normalizeNumber(
+                  category.linkedEntries
+                )} ${this.t("categories.list.linkedEntries", "Linked entries")}`;
+
+                const isRecentlyCreated =
+                  this.lastCreatedCategoryId &&
+                  category.id &&
+                  category.id === this.lastCreatedCategoryId;
+
+                const isDeleting =
+                  this.isDeletingCategoryId &&
+                  category.id &&
+                  category.id === this.isDeletingCategoryId;
+
+                return `
+                  <article class="activity-item${
+                    isRecentlyCreated ? " activity-item--new" : ""
+                  }">
+                    <div class="activity-item__content">
+                      <strong class="activity-item__title">
+                        ${this.escapeHtml(title)}
+                        ${
+                          isRecentlyCreated
+                            ? `
+                              <span class="activity-item__badge">
+                                ${this.escapeHtml(
+                                  this.t("categories.list.newBadge", "New")
+                                )}
+                              </span>
+                            `
+                            : ""
+                        }
+                      </strong>
+
+                      <p class="activity-item__meta">
+                        ${this.escapeHtml(typeLabel)} · ${this.escapeHtml(
+                          linkedEntriesText
+                        )}
+                      </p>
+
+                      ${
+                        category.note
+                          ? `
+                            <p class="activity-item__meta">
+                              ${this.escapeHtml(category.note)}
+                            </p>
+                          `
+                          : ""
+                      }
+
+                      <div class="button-row">
+                        <button
+                          type="button"
+                          class="shortcut-btn button-secondary"
+                          data-places-action="delete-category"
+                          data-category-id="${this.escapeHtml(category.id)}"
+                          ${isDeleting ? "disabled" : ""}
+                        >
+                          ${this.escapeHtml(
+                            isDeleting
+                              ? this.t(
+                                  "categories.status.deleting",
+                                  "Removing category…"
+                                )
+                              : this.t("categories.actions.delete", "Delete")
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                `;
+              })
+              .join("")}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  renderHeader() {
+    const hasPlaces = this.currentPlaces.length > 0;
+    const hasCategories =
+      this.isBusinessPlan() && this.currentCategories.length > 0;
+    const hasStatusMessage = Boolean(this.status?.message);
+    const isSuccessStatus = this.status?.type === "success";
+
+    if (
+      !hasPlaces &&
+      !hasCategories &&
+      (this.isCreateOpen || this.isCategoryCreateOpen)
+    ) {
+      return "";
+    }
+
+    if (!hasPlaces && !hasCategories && hasStatusMessage && !isSuccessStatus) {
+      return `
+        <section class="section section--card" aria-labelledby="places-page-status-title">
+          <div class="home-section-header home-section-header--compact">
+            <h2 id="places-page-status-title" class="home-section-header__title">
+              ${this.escapeHtml(this.t("places.header.title", "Places"))}
+            </h2>
+          </div>
+
+          ${this.renderStatus()}
+        </section>
+      `;
+    }
+
+    if (!hasPlaces && !hasCategories && isSuccessStatus) {
+      return "";
+    }
+
+    const title = this.isBusinessPlan()
+      ? this.t("places.header.businessTitle", "Places")
+      : this.t("places.header.title", "Pridėkite vietas į BeSafe");
+
+    const subtitle = this.isBusinessPlan()
+      ? this.t(
+          "places.header.businessSubtitle",
+          "Manage places and categories here."
+        )
+      : this.t(
+          "places.header.subtitle",
+          "Naudokite jas įrašams ir aiškesniems palyginimams."
+        );
+
+    return `
+      <section class="section section--card" aria-labelledby="places-page-actions-title">
+        <div class="home-section-header home-section-header--compact">
+
+          <h2 id="places-page-actions-title" class="home-section-header__title">
+            ${this.escapeHtml(title)}
+          </h2>
+
+          <p class="home-section-header__subtitle">
+            ${this.escapeHtml(subtitle)}
+          </p>
+        </div>
+
+        <div class="button-row">
+          <button
+            type="button"
+            class="shortcut-btn button-secondary"
+            data-places-action="open-create"
+            ${this.isSaving ? "disabled" : ""}
+          >
+            ${this.escapeHtml(this.t("places.actions.add", "Add place"))}
+          </button>
+
+          ${
+            this.isBusinessPlan()
+              ? `
+                <button
+                  type="button"
+                  class="shortcut-btn button-secondary"
+                  data-places-action="open-category-create"
+                  ${this.isCategorySaving ? "disabled" : ""}
+                >
+                  ${this.escapeHtml(
+                    this.t("categories.actions.add", "Add category")
+                  )}
+                </button>
+              `
+              : ""
+          }
+        </div>
+
+        ${!this.isCreateOpen && !this.isCategoryCreateOpen ? this.renderStatus() : ""}
+      </section>
+    `;
+  }
+
+  renderContent() {
+    return `
+      ${!this.currentPlaces.length && !this.currentCategories.length ? this.renderPlanSummary() : ""}
+      ${this.isCreateOpen ? this.renderCreateForm() : ""}
+      ${
+        this.isBusinessPlan() && this.isCategoryCreateOpen
+          ? this.renderCategoryCreateForm()
+          : ""
+      }
+      ${
+        !this.isCreateOpen && !this.isCategoryCreateOpen
+          ? this.renderSuccessSummary()
+          : ""
+      }
+      ${this.currentPlaces.length ? this.renderPlacesList() : this.renderEmptyState()}
+      ${
+        this.isBusinessPlan()
+          ? this.currentCategories.length
+            ? this.renderCategoriesList()
+            : this.renderCategoriesEmptyState()
+          : ""
+      }
+    `;
+  }
+
+  async render() {
+    const [places, categories] = await Promise.all([
+      this.loadPlaces(),
+      this.loadCategories(),
+    ]);
+
+    this.currentPlaces = places;
+    this.currentCategories = categories;
+
+    return `
+      <section class="page-places">
+        ${this.renderHeader()}
+        ${this.renderContent()}
+      </section>
+    `;
+  }
+
+  async refresh() {
+    const pageRoot = this.getPageRoot();
+    if (!pageRoot) return;
+
+    pageRoot.innerHTML = await this.render();
+  }
+
+  async handleDeletePlace(placeId) {
+    const id = this.normalizeText(placeId);
+    if (!id) {
+      this.lastSuccessAction = "";
+      this.setStatus(
+        "error",
+        this.t(
+          "places.status.deleteFailed",
+          "Could not remove the place right now."
+        )
+      );
+      await this.refresh();
+      return;
+    }
+
+    const confirmed = window.confirm(
+      this.t(
+        "places.confirm.delete",
+        "Are you sure you want to remove this place?"
+      )
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.isDeletingPlaceId = id;
+    this.lastSuccessAction = "";
+    this.setStatus(
+      "info",
+      this.t("places.status.deleting", "Removing place…")
+    );
+    await this.refresh();
+
+    try {
+      await this.deletePlace(id);
+
+      if (this.lastCreatedPlaceId === id) {
+        this.lastCreatedPlaceId = "";
+      }
+
+      this.isDeletingPlaceId = "";
+      this.lastSuccessAction = "delete-place";
+      this.setStatus(
+        "success",
+        this.t("places.status.deleted", "Place removed.")
+      );
+      await this.refresh();
+    } catch (error) {
+      console.error("[PlacesPage] Failed to delete place:", error);
+      this.isDeletingPlaceId = "";
+      this.lastSuccessAction = "";
+      this.setStatus(
+        "error",
+        error?.message ||
+          this.t(
+            "places.status.deleteFailed",
+            "Could not remove the place right now."
+          )
+      );
+      await this.refresh();
+    }
+  }
+
+  async handleDeleteCategory(categoryId) {
+    if (!this.isBusinessPlan()) {
+      return;
+    }
+
+    const id = this.normalizeText(categoryId);
+    if (!id) {
+      this.lastSuccessAction = "";
+      this.setStatus(
+        "error",
+        this.t(
+          "categories.status.deleteFailed",
+          "Could not remove the category right now."
+        )
+      );
+      await this.refresh();
+      return;
+    }
+
+    const confirmed = window.confirm(
+      this.t(
+        "categories.confirm.delete",
+        "Are you sure you want to remove this category?"
+      )
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.isDeletingCategoryId = id;
+    this.lastSuccessAction = "";
+    this.setStatus(
+      "info",
+      this.t("categories.status.deleting", "Removing category…")
+    );
+    await this.refresh();
+
+    try {
+      await this.deleteCategory(id);
+
+      if (this.lastCreatedCategoryId === id) {
+        this.lastCreatedCategoryId = "";
+      }
+
+      this.isDeletingCategoryId = "";
+      this.lastSuccessAction = "delete-category";
+      this.setStatus(
+        "success",
+        this.t("categories.status.deleted", "Category removed.")
+      );
+      await this.refresh();
+    } catch (error) {
+      console.error("[PlacesPage] Failed to delete category:", error);
+      this.isDeletingCategoryId = "";
+      this.lastSuccessAction = "";
+      this.setStatus(
+        "error",
+        error?.message ||
+          this.t(
+            "categories.status.deleteFailed",
+            "Could not remove the category right now."
+          )
+      );
+      await this.refresh();
+    }
+  }
+
+  validatePlaceDraft(draft = this.formDraft) {
+    const name = this.normalizeText(draft?.name);
+    const type = this.normalizePlaceType(draft?.type);
+
+    if (!name) {
+      return this.t(
+        "places.validation.nameRequired",
+        "Please add a place name."
+      );
+    }
+
+    if (!type) {
+      return this.t(
+        "places.validation.typeRequired",
+        "Please choose a place type."
+      );
+    }
+
+    const comparableName = this.normalizeComparableText(name);
+
+    const duplicatePlace = this.currentPlaces.find((place) => {
+      const existingName = this.normalizeComparableText(place?.name || "");
+      const existingType = this.normalizePlaceType(place?.type);
+      return existingName === comparableName && existingType === type;
+    });
+
+    if (duplicatePlace) {
+      return this.t(
+        "places.validation.duplicate",
+        "This place already exists."
+      );
+    }
+
+    return "";
+  }
+
+  validateCategoryDraft(draft = this.categoryDraft) {
+    const name = this.normalizeText(draft?.name);
+    const type = this.normalizeCategoryType(draft?.type);
+
+    if (!name) {
+      return this.t(
+        "categories.validation.nameRequired",
+        "Please add a category name."
+      );
+    }
+
+    const comparableName = this.normalizeComparableText(name);
+
+    const duplicateCategory = this.currentCategories.find((category) => {
+      const existingName = this.normalizeComparableText(category?.name || "");
+      const existingType = this.normalizeCategoryType(category?.type);
+      return existingName === comparableName && existingType === type;
+    });
+
+    if (duplicateCategory) {
+      return this.t(
+        "categories.validation.duplicate",
+        "This category already exists."
+      );
+    }
+
+    return "";
+  }
+
+  getFormValues(form) {
+    const formData = new FormData(form);
+    return {
+      name: this.normalizeText(formData.get("name")),
+      type: this.normalizeText(formData.get("type")),
+      note: this.normalizeText(formData.get("note")),
+      purpose:
+        this.normalizeText(formData.get("purpose")).toLowerCase() ||
+        "expense",
+    };
+  }
+
+  getCategoryFormValues(form) {
+    const formData = new FormData(form);
+    return {
+      name: this.normalizeText(formData.get("name")),
+      type: this.normalizeText(formData.get("type")),
+    };
+  }
+
+  async handlePlaceSubmit(form) {
+    const formData = new FormData(form);
+
+    const values = {
+      name: this.normalizeText(formData.get("name")),
+      type: this.normalizeText(formData.get("type")),
+      note: this.normalizeText(formData.get("note")),
+      purpose:
+        this.normalizeText(formData.get("purpose")).toLowerCase() ||
+        "expense",
+    };
+
+    this.updateDraft(values);
+
+    const validationMessage = this.validatePlaceDraft(this.formDraft);
+    if (validationMessage) {
+      this.lastSuccessAction = "";
+      this.setStatus("error", validationMessage);
+      await this.refresh();
+      return;
+    }
+
+    const payload = {
+      name: this.formDraft.name,
+      type: this.formDraft.type,
+      note: this.formDraft.note,
+      purpose:
+        this.normalizeText(this.formDraft.purpose).toLowerCase() || "expense",
+    };
+
+    console.log("[PlacesPage][handlePlaceSubmit values]", values);
+    console.log("[PlacesPage][handlePlaceSubmit payload]", payload);
+
+    this.isSaving = true;
+    this.lastSuccessAction = "";
+    this.setStatus("info", this.t("places.status.saving", "Saving place…"));
+    await this.refresh();
+
+    try {
+      const createdPlace = await this.createPlace(payload);
+      const normalizedPlace = this.normalizePlace(createdPlace);
+
+      this.lastCreatedPlaceId = normalizedPlace.id || "";
+      this.isSaving = false;
+      this.isCreateOpen = false;
+      this.resetDraft();
+      this.lastSuccessAction = "create-place";
+      this.setStatus("success", this.t("places.status.saved", "Place saved."));
+      await this.refresh();
+    } catch (error) {
+      console.error("[PlacesPage] Failed to save place:", error);
+      this.isSaving = false;
+      this.lastSuccessAction = "";
+      this.setStatus(
+        "error",
+        error?.message ||
+          this.t(
+            "places.status.saveFailed",
+            "Could not save the place right now."
+          )
+      );
+      await this.refresh();
+    }
+  }
+
+  async handleCategorySubmit(form) {
+    if (!this.isBusinessPlan()) {
+      return;
+    }
+
+    const values = this.getCategoryFormValues(form);
+    this.updateCategoryDraft(values);
+
+    const validationMessage = this.validateCategoryDraft(this.categoryDraft);
+    if (validationMessage) {
+      this.lastSuccessAction = "";
+      this.setStatus("error", validationMessage);
+      await this.refresh();
+      return;
+    }
+
+    const payload = {
+      name: this.categoryDraft.name,
+      type: this.categoryDraft.type,
+    };
+
+    this.isCategorySaving = true;
+    this.lastSuccessAction = "";
+    this.setStatus(
+      "info",
+      this.t("categories.status.saving", "Saving category…")
+    );
+    await this.refresh();
+
+    try {
+      const createdCategory = await this.createCategory(payload);
+      const normalizedCategory = this.normalizeCategory(createdCategory);
+
+      this.lastCreatedCategoryId = normalizedCategory.id || "";
+      this.isCategorySaving = false;
+      this.isCategoryCreateOpen = false;
+      this.resetCategoryDraft();
+      this.lastSuccessAction = "create-category";
+      this.setStatus(
+        "success",
+        this.t("categories.status.saved", "Category saved.")
+      );
+      await this.refresh();
+    } catch (error) {
+      console.error("[PlacesPage] Failed to save category:", error);
+      this.isCategorySaving = false;
+      this.lastSuccessAction = "";
+      this.setStatus(
+        "error",
+        error?.message ||
+          this.t(
+            "categories.status.saveFailed",
+            "Could not save the category right now."
+          )
+      );
+      await this.refresh();
+    }
+  }
+
+  async handleClick(event) {
+    const actionButton = event.target.closest("[data-places-action]");
+    if (!actionButton) {
+      return;
+    }
+
+    const action = this.normalizeText(actionButton.dataset.placesAction);
+
+    if (action === "open-create") {
+      this.isCreateOpen = true;
+      this.isCategoryCreateOpen = false;
+      this.lastSuccessAction = "";
+      this.setStatus("idle", "");
+      await this.refresh();
+      return;
+    }
+
+    if (action === "cancel-create") {
+      this.isCreateOpen = false;
+      this.resetDraft();
+      this.lastSuccessAction = "";
+      this.setStatus("idle", "");
+      await this.refresh();
+      return;
+    }
+
+    if (action === "open-category-create") {
+      if (!this.isBusinessPlan()) {
+        return;
+      }
+
+      this.isCategoryCreateOpen = true;
+      this.isCreateOpen = false;
+      this.lastSuccessAction = "";
+      this.setStatus("idle", "");
+      await this.refresh();
+      return;
+    }
+
+    if (action === "cancel-category-create") {
+      this.isCategoryCreateOpen = false;
+      this.resetCategoryDraft();
+      this.lastSuccessAction = "";
+      this.setStatus("idle", "");
+      await this.refresh();
+      return;
+    }
+
+    if (action === "delete-place") {
+      const placeId = this.normalizeText(actionButton.dataset.placeId);
+      await this.handleDeletePlace(placeId);
+      return;
+    }
+
+    if (action === "delete-category") {
+      const categoryId = this.normalizeText(actionButton.dataset.categoryId);
+      await this.handleDeleteCategory(categoryId);
+    }
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement)) {
+      return;
+    }
+
+    if (form.id === "places-create-form") {
+      await this.handlePlaceSubmit(form);
+      return;
+    }
+
+    if (form.id === "categories-create-form") {
+      await this.handleCategorySubmit(form);
+    }
+  }
+
+  async init() {
+    const pageRoot = this.getPageRoot();
+    if (!pageRoot) {
+      return;
+    }
+
+    pageRoot.removeEventListener("click", this.handleClick);
+    pageRoot.removeEventListener("submit", this.handleSubmit);
+
+    pageRoot.addEventListener("click", this.handleClick);
+    pageRoot.addEventListener("submit", this.handleSubmit);
+
+    await this.refresh();
+  }
+
+  destroy() {
+    const pageRoot = this.getPageRoot();
+    if (!pageRoot) {
+      return;
+    }
+
+    pageRoot.removeEventListener("click", this.handleClick);
+    pageRoot.removeEventListener("submit", this.handleSubmit);
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(tasklist)",
+      "Bash(cmd.exe /c \"del /f /q \\\\\"c:\\\\\\\\Users\\\\\\\\lofot\\\\\\\\OneDrive\\\\\\\\Desktop\\\\\\\\BeSafe\\\\\\\\dist\\\\\\\\win-unpacked\\\\\\\\resources\\\\\\\\app.asar\\\\\"\")",
+      "Bash(cmd.exe /c \"rmdir /s /q \\\\\"c:\\\\\\\\Users\\\\\\\\lofot\\\\\\\\OneDrive\\\\\\\\Desktop\\\\\\\\BeSafe\\\\\\\\dist\\\\\"\")",
+      "Bash(powershell -Command 'Get-Process | Where-Object { $_.Path -like '\\\\''*BeSafe*'\\\\'' -or $_.Path -like '\\\\''*electron*'\\\\'' -or $_.Name -like '\\\\''*OneDrive*'\\\\'' } | Select-Object Name, Id, Path')",
+      "Bash(taskkill /F /IM OneDrive.exe)",
+      "Bash(cmd.exe /c \"taskkill /F /IM OneDrive.exe\")",
+      "Bash(powershell -Command 'Get-Process | Where-Object { $_.Path -like '\\\\''*BeSafe*'\\\\'' -or $_.Path -like '\\\\''*electron*'\\\\'' -or $_.Name -eq '\\\\''SearchIndexer'\\\\'' -or $_.Name -like '\\\\''*Defender*'\\\\'' -or $_.Name -like '\\\\''*antivirus*'\\\\'' -or $_.Name -like '\\\\''*MsMpEng*'\\\\'' } | Select-Object Name, Id')",
+      "Bash(powershell -Command \"Start-Process powershell -Verb RunAs -ArgumentList '-Command', 'Add-MpPreference -ExclusionPath \\\\\"C:\\\\\\\\Users\\\\\\\\lofot\\\\\\\\OneDrive\\\\\\\\Desktop\\\\\\\\BeSafe\\\\\\\\dist\\\\\"'\")",
+      "Bash(powershell -Command \"Add-MpPreference -ExclusionPath 'C:\\\\Users\\\\lofot\\\\OneDrive\\\\Desktop\\\\BeSafe\\\\dist'\")",
+      "Bash(cmd.exe /c \"mkdir C:\\\\\\\\Projects\\\\\\\\BeSafe\")",
+      "Bash(npx electron-builder:*)",
+      "Bash(cmd.exe /c \"rmdir /s /q C:\\\\\\\\Projects\\\\\\\\BeSafe\\\\\\\\dist\")",
+      "Bash(CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --win --dir --publish never --config.directories.output=\"C:/Projects/BeSafe/dist\")",
+      "Bash(CSC_IDENTITY_AUTO_DISCOVERY=false WIN_CSC_LINK=\"\" npx electron-builder --win --dir --publish never --config.directories.output=\"C:/Projects/BeSafe/dist\" --config.win.sign=null --config.forceCodeSigning=false --config.win.signingHashAlgorithms=\"[]\")",
+      "Bash(cmd.exe /c \"rmdir /s /q \\\\\"C:\\\\\\\\Users\\\\\\\\lofot\\\\\\\\AppData\\\\\\\\Local\\\\\\\\electron-builder\\\\\\\\Cache\\\\\\\\winCodeSign\\\\\"\")",
+      "Bash(cmd.exe /c \"start \\\\\"\\\\\" \\\\\"C:\\\\\\\\Projects\\\\\\\\BeSafe\\\\\\\\dist\\\\\\\\win-unpacked\\\\\\\\BeSafe.exe\\\\\"\")",
+      "Bash(node -c \"c:/Users/lofot/OneDrive/Desktop/BeSafe/js/core/i18n.js\")",
+      "Bash(node -e \"try { require\\('c:/Users/lofot/OneDrive/Desktop/BeSafe/js/core/i18n.js'\\) } catch\\(e\\) { console.error\\(e.message\\) }\")",
+      "Bash(node -e \"import\\('file:///c:/Users/lofot/OneDrive/Desktop/BeSafe/js/core/i18n.js'\\).then\\(\\(\\) => console.log\\('OK'\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")",
+      "Bash(node --input-type=module -e \"import\\('file:///c:/Users/lofot/OneDrive/Desktop/BeSafe/js/core/i18n.js'\\).then\\(\\(\\) => console.log\\('SYNTAX OK'\\)\\).catch\\(e => { console.error\\(e.message\\); console.error\\(e.stack?.split\\('\\\\n'\\).slice\\(0,5\\).join\\('\\\\n'\\)\\); }\\)\")",
+      "Bash(node --check \"c:/Users/lofot/OneDrive/Desktop/BeSafe/js/core/i18n.js\")",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(node --input-type=module -e ':*)",
+      "Bash(node --check \"c:/Users/lofot/OneDrive/Desktop/BeSafe/js/pages/reports.page.js\")",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(python3 -c ':*)",
+      "Bash(node -e ':*)",
+      "Bash(curl -s -X POST http://127.0.0.1:4000/api/register -H 'Content-Type: application/json' -d '{\"email\":\"testas999@test.com\",\"plan\":\"personal\",\"billing\":\"monthly\"}')",
+      "Bash(curl -s -X POST http://127.0.0.1:4000/api/register -H 'Content-Type: application/json' -d '{\"email\":\"finaltest@test.com\",\"plan\":\"personal\",\"billing\":\"monthly\"}')"
+    ]
+  }
+}
