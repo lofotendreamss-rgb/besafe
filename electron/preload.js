@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer, shell } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   // Transactions
@@ -41,5 +41,15 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // License activation from besafe:// protocol
   onLicenseActivate: (callback) => {
     ipcRenderer.on("license:activate", (_event, key) => callback(key));
+  },
+
+  // License verified — open main app
+  licenseActivated: (key) => {
+    ipcRenderer.send("license:verified", key);
+  },
+
+  // Open external URL
+  openExternal: (url) => {
+    ipcRenderer.send("open-external", url);
   },
 });

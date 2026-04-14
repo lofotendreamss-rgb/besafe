@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BeSafe — Activate</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#080d0b;color:#f2f8f4;font-family:-apple-system,'Segoe UI',sans-serif;
+  display:flex;align-items:center;justify-content:center;min-height:100vh;
+  -webkit-app-region:drag;
+}
+.card{
+  width:400px;padding:3rem 2.5rem;text-align:center;
+  -webkit-app-region:no-drag;
+}
+.logo{font-size:2.2rem;font-weight:700;color:#2ecc8a;margin-bottom:0.5rem;letter-spacing:0.02em}
+.logo span{color:#f2f8f4;opacity:0.4}
+.subtitle{font-size:0.85rem;color:#9dc4a8;margin-bottom:2.5rem;line-height:1.6}
+.field{margin-bottom:1rem;text-align:left}
+.field-label{display:block;font-size:0.7rem;color:#9dc4a8;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem}
+.field-input{
+  width:100%;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:10px;
+  padding:0.85rem 1rem;color:#f2f8f4;font-size:0.95rem;font-family:monospace;
+  letter-spacing:0.12em;text-align:center;outline:none;transition:border-color 0.2s;
+}
+.field-input:focus{border-color:#2ecc8a}
+.field-input::placeholder{color:#5a7d67;letter-spacing:0.08em;font-family:-apple-system,sans-serif;font-size:0.82rem}
+.field-input.error{border-color:#cc4444;animation:shake 0.3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.btn{
+  width:100%;background:#2ecc8a;color:#030d07;border:none;border-radius:2rem;
+  padding:0.85rem;font-size:0.9rem;font-weight:600;cursor:pointer;
+  letter-spacing:0.04em;transition:all 0.2s;margin-top:0.5rem;
+}
+.btn:hover{background:#1a9e66;transform:translateY(-1px)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.error-msg{
+  display:none;background:rgba(204,68,68,0.1);border:1px solid rgba(204,68,68,0.3);
+  border-radius:8px;padding:0.65rem 0.85rem;margin-bottom:1rem;
+  font-size:0.8rem;color:#e88;text-align:center;
+}
+.error-msg.show{display:block}
+.success-msg{
+  display:none;background:rgba(46,204,138,0.08);border:1px solid rgba(46,204,138,0.2);
+  border-radius:8px;padding:0.65rem 0.85rem;margin-bottom:1rem;
+  font-size:0.8rem;color:#2ecc8a;text-align:center;
+}
+.success-msg.show{display:block}
+.links{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.6rem}
+.link{
+  background:transparent;border:none;color:#9dc4a8;font-size:0.78rem;
+  cursor:pointer;text-decoration:underline;font-family:inherit;
+  transition:color 0.2s;padding:0;
+}
+.link:hover{color:#2ecc8a}
+.plan-badge{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  background:rgba(46,204,138,0.08);border:1px solid rgba(46,204,138,0.18);
+  color:#2ecc8a;font-size:0.7rem;letter-spacing:0.08em;
+  padding:0.25rem 0.8rem;border-radius:2rem;margin-top:0.75rem;text-transform:uppercase;
+}
+.version{position:fixed;bottom:12px;right:16px;font-size:0.65rem;color:#5a7d67}
+
+/* Forgot key form */
+.forgot-form{display:none;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(46,204,138,0.1)}
+.forgot-form.show{display:block}
+.forgot-title{font-size:0.82rem;color:#f2f8f4;margin-bottom:0.75rem;font-weight:500}
+.forgot-input{
+  width:100%;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:10px;
+  padding:0.75rem 1rem;color:#f2f8f4;font-size:0.88rem;outline:none;margin-bottom:0.75rem;
+  transition:border-color 0.2s;
+}
+.forgot-input:focus{border-color:#2ecc8a}
+.forgot-input::placeholder{color:#5a7d67}
+.btn-forgot{
+  width:100%;background:transparent;border:1px solid rgba(46,204,138,0.18);color:#f2f8f4;
+  border-radius:2rem;padding:0.7rem;font-size:0.82rem;cursor:pointer;transition:all 0.2s;
+}
+.btn-forgot:hover{border-color:#2ecc8a;color:#2ecc8a}
+.btn-forgot:disabled{opacity:0.5;cursor:not-allowed}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Be<span>Safe</span></div>
+  <p class="subtitle">Enter your license key to activate the app.<br>You received it by email after registration.</p>
+
+  <div class="error-msg" id="error-msg"></div>
+  <div class="success-msg" id="success-msg"></div>
+
+  <div class="field">
+    <label class="field-label">License Key</label>
+    <input class="field-input" type="text" id="license-input" placeholder="BSAFE-XXXX-XXXX-XXXX-XXXX" maxlength="24" autocomplete="off" spellcheck="false">
+  </div>
+
+  <button class="btn" id="activate-btn" onclick="activateLicense()">Activate BeSafe</button>
+
+  <div class="links">
+    <button class="link" onclick="toggleForgot()">Forgot your license key?</button>
+    <button class="link" onclick="openRegister()">Don't have an account? Register</button>
+  </div>
+
+  <div class="forgot-form" id="forgot-form">
+    <div class="forgot-title">Enter your email to receive your license key</div>
+    <input class="forgot-input" type="email" id="forgot-email" placeholder="your@email.com">
+    <button class="btn-forgot" id="forgot-btn" onclick="sendForgotKey()">Send license key to email</button>
+  </div>
+</div>
+
+<div class="version">BeSafe v1.0.0</div>
+
+<script>
+const API_URL = 'https://besafe-oga3.onrender.com';
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+  document.getElementById('success-msg').classList.remove('show');
+  setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('success-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+  document.getElementById('error-msg').classList.remove('show');
+}
+
+function getDeviceFingerprint() {
+  let fp = localStorage.getItem('besafe_device_fp');
+  if (!fp) {
+    fp = 'dev_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+    localStorage.setItem('besafe_device_fp', fp);
+  }
+  return fp;
+}
+
+async function activateLicense() {
+  const input = document.getElementById('license-input');
+  const btn = document.getElementById('activate-btn');
+  const key = input.value.trim().toUpperCase();
+
+  if (!key || !key.startsWith('BSAFE-')) {
+    input.classList.add('error');
+    showError('Please enter a valid license key (BSAFE-XXXX-XXXX-XXXX-XXXX)');
+    setTimeout(() => input.classList.remove('error'), 1000);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+
+  try {
+    const res = await fetch(API_URL + '/api/verify-license', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        license_key: key,
+        device_fingerprint: getDeviceFingerprint(),
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.status === 'active') {
+      // Save license
+      localStorage.setItem('besafe_license_key', key);
+      localStorage.setItem('besafe_license_status', 'active');
+      localStorage.setItem('besafe_license_plan', data.plan || 'personal');
+
+      showSuccess('License activated! Opening BeSafe...');
+      btn.textContent = 'Activated!';
+
+      // Tell main process to open the app
+      if (window.electronAPI && window.electronAPI.licenseActivated) {
+        window.electronAPI.licenseActivated(key);
+      }
+
+      // Fallback — redirect after 1.5s
+      setTimeout(() => {
+        if (window.electronAPI && window.electronAPI.licenseActivated) {
+          window.electronAPI.licenseActivated(key);
+        }
+      }, 1500);
+
+    } else if (data.status === 'read_only') {
+      localStorage.setItem('besafe_license_key', key);
+      localStorage.setItem('besafe_license_status', 'read_only');
+      showSuccess('Read-only mode. ' + (data.message || ''));
+      btn.textContent = 'Open in read-only';
+      setTimeout(() => {
+        if (window.electronAPI && window.electronAPI.licenseActivated) {
+          window.electronAPI.licenseActivated(key);
+        }
+      }, 2000);
+
+    } else if (data.status === 'device_limit') {
+      showError(data.error || 'Device limit reached (max 2 devices).');
+      btn.disabled = false;
+      btn.textContent = 'Activate BeSafe';
+
+    } else if (data.status === 'invalid') {
+      showError(data.error || 'Invalid license key.');
+      input.classList.add('error');
+      setTimeout(() => input.classList.remove('error'), 1000);
+      btn.disabled = false;
+      btn.textContent = 'Activate BeSafe';
+
+    } else {
+      showError(data.error || 'Verification failed.');
+      btn.disabled = false;
+      btn.textContent = 'Activate BeSafe';
+    }
+  } catch (err) {
+    showError('Could not connect to server. Check your internet connection.');
+    btn.disabled = false;
+    btn.textContent = 'Activate BeSafe';
+  }
+}
+
+function toggleForgot() {
+  document.getElementById('forgot-form').classList.toggle('show');
+}
+
+async function sendForgotKey() {
+  const emailInput = document.getElementById('forgot-email');
+  const btn = document.getElementById('forgot-btn');
+  const email = emailInput.value.trim();
+
+  if (!email || !email.includes('@')) {
+    showError('Please enter a valid email address.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const res = await fetch(API_URL + '/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      showSuccess('License key sent to ' + email + '! Check your inbox.');
+      // Auto-fill the key
+      if (data.license_key) {
+        document.getElementById('license-input').value = data.license_key;
+      }
+    } else {
+      showError(data.error || 'Email not found.');
+    }
+  } catch (err) {
+    showError('Could not connect to server.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Send license key to email';
+}
+
+function openRegister() {
+  if (window.electronAPI && window.electronAPI.openExternal) {
+    window.electronAPI.openExternal('https://www.besafe.fyi/#register');
+  } else {
+    window.open('https://www.besafe.fyi/#register', '_blank');
+  }
+}
+
+// Auto-fill from protocol or saved key
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('besafe_license_key');
+  if (saved) {
+    document.getElementById('license-input').value = saved;
+  }
+});
+
+// Enter key
+document.getElementById('license-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') activateLicense();
+});
+document.getElementById('forgot-email').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') sendForgotKey();
+});
+</script>
+</body>
+</html>

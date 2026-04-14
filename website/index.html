@@ -575,16 +575,34 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
     <div class="lic-success" id="lic-success">
       <div class="lic-icon-wrap">&#10024;</div>
       <h2 class="lic-title" data-i18n="lic.title">Congratulations!</h2>
-      <p class="lic-subtitle" data-i18n="lic.sub">Your BeSafe license has been created and sent to your email.<br>Use it immediately in the app.</p>
-      <div class="lic-key-box">
-        <div class="lic-key-label" data-i18n="lic.keyl">Your license key</div>
-        <div class="lic-key" id="lic-key-display">BSAFE-XXXX-XXXX-XXXX-XXXX</div>
+      <p class="lic-subtitle">Your BeSafe account is ready!<br>Choose how you want to start:</p>
+
+      <!-- TWO ACTION BUTTONS -->
+      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem">
+        <a href="/app" class="submit-btn" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;text-decoration:none;border-radius:2rem">
+          &#127760; Start in browser
+        </a>
+        <a id="download-btn" href="#" onclick="downloadApp()" class="lic-copy-btn" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;border-radius:2rem;padding:0.7rem">
+          &#128229; Download desktop app (Windows)
+        </a>
       </div>
-      <button class="lic-copy-btn" onclick="copyLicKey()" data-i18n="lic.copy">Copy key</button>
+
+      <!-- LICENSE KEY (collapsible) -->
+      <div style="border-top:1px solid var(--border);padding-top:1.25rem;margin-bottom:1rem">
+        <button onclick="document.getElementById('key-details').style.display=document.getElementById('key-details').style.display==='none'?'block':'none'" style="background:transparent;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;font-family:inherit">&#128273; Show license key &#9662;</button>
+        <div id="key-details" style="display:none;margin-top:0.75rem">
+          <div class="lic-key-box">
+            <div class="lic-key-label" data-i18n="lic.keyl">Your license key</div>
+            <div class="lic-key" id="lic-key-display">BSAFE-XXXX-XXXX-XXXX-XXXX</div>
+          </div>
+          <button class="lic-copy-btn" onclick="copyLicKey()" data-i18n="lic.copy" style="width:100%">Copy key</button>
+        </div>
+      </div>
+
       <div class="lic-info">
-        <span data-i18n="lic.i1">The app</span> <strong data-i18n="lic.i1b">once a month</strong> <span data-i18n="lic.i1c">silently verifies your key.</span><br>
-        <span data-i18n="lic.i2">Trial period ends after</span> <strong data-i18n="lic.i2b">14 days</strong> <span data-i18n="lic.i2c">&#8212; we'll notify you by email.</span><br>
-        <span data-i18n="lic.i3">If you cancel, your data is</span> <strong data-i18n="lic.i3b">never deleted</strong><span data-i18n="lic.i3c">.</span>
+        &#9989; License key sent to your email<br>
+        &#128337; 14-day free trial &#8212; no charge until trial ends<br>
+        &#128274; Your data stays on your device &#8212; never deleted
       </div>
     </div>
   </div>
@@ -809,10 +827,14 @@ function copyLicKey(){
   const key=document.getElementById('lic-key-display').textContent;
   if(navigator.clipboard)navigator.clipboard.writeText(key);
   const btn=document.querySelector('.lic-copy-btn');
-  btn.textContent='Nukopijuota \u2713';
+  btn.textContent='Copied! \u2713';
   btn.style.color='var(--accent)';
   btn.style.borderColor='var(--accent)';
-  setTimeout(()=>{btn.textContent='Kopijuoti rakta';btn.style.color='';btn.style.borderColor='';},2500);
+  setTimeout(()=>{btn.textContent='Copy key';btn.style.color='';btn.style.borderColor='';},2500);
+}
+
+function downloadApp(){
+  window.open(API_URL + '/download', '_blank');
 }
 </script>
 </body>

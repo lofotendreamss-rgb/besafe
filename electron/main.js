@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const path = require("path");
 const fs = require("fs/promises");
 
@@ -558,13 +558,50 @@ function registerIpcHandlers() {
 
   // Export
   ipcMain.handle("db:exportDocument", exportDocument);
+
+  // Open external URL
+  ipcMain.on("open-external", (_event, url) => {
+    if (url && typeof url === "string" && (url.startsWith("https://") || url.startsWith("http://"))) {
+      shell.openExternal(url);
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------
 // Window
 // ---------------------------------------------------------------------------
 
-function createWindow() {
+let mainWindow = null;
+
+function createLicenseWindow() {
+  const win = new BrowserWindow({
+    width: 480,
+    height: 580,
+    title: "BeSafe — Activate",
+    resizable: false,
+    frame: false,
+    transparent: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+
+  win.loadFile(path.join(__dirname, "license.html"));
+
+  // Send pending license key from protocol
+  win.webContents.on("did-finish-load", () => {
+    if (pendingLicenseKey) {
+      win.webContents.send("license:activate", pendingLicenseKey);
+      pendingLicenseKey = null;
+    }
+  });
+
+  return win;
+}
+
+function createMainWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -577,13 +614,20 @@ function createWindow() {
   });
 
   win.loadFile(path.join(__dirname, "..", "index.html"));
+  mainWindow = win;
+  return win;
+}
 
-  // Send pending license key after page loads
-  win.webContents.on("did-finish-load", () => {
-    if (pendingLicenseKey) {
-      win.webContents.send("license:activate", pendingLicenseKey);
-      pendingLicenseKey = null;
-    }
+function createWindow() {
+  // Check if license already saved
+  // This will be checked via IPC from the license window
+  const licWin = createLicenseWindow();
+
+  // Listen for successful activation
+  ipcMain.once("license:verified", (_event, key) => {
+    console.log("[License] Verified:", key);
+    licWin.close();
+    createMainWindow();
   });
 }
 

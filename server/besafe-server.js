@@ -70,6 +70,34 @@ app.get("/", (req, res) => {
   res.sendFile(indexFile);
 });
 
+// Serve BeSafe web app at /app
+const appPath = path.join(__dirname, "..");
+app.use("/app", express.static(appPath, {
+  index: "index.html",
+  extensions: ["html", "js", "css"],
+}));
+
+app.get("/app", (req, res) => {
+  res.sendFile(path.join(appPath, "index.html"));
+});
+
+app.get("/app/*", (req, res) => {
+  const filePath = path.join(appPath, req.params[0]);
+  res.sendFile(filePath, (err) => {
+    if (err) res.sendFile(path.join(appPath, "index.html"));
+  });
+});
+
+// Download desktop app
+app.get("/download", (req, res) => {
+  const exePath = path.join(__dirname, "..", "dist", "win-unpacked", "BeSafe.exe");
+  res.download(exePath, "BeSafe-Setup.exe", (err) => {
+    if (err) {
+      res.status(404).json({ error: "Desktop app not available for download yet." });
+    }
+  });
+});
+
 // ============================================================
 // HELPERS
 // ============================================================
