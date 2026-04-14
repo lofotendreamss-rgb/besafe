@@ -760,7 +760,7 @@ async function doRegister(){
 
 async function doLogin(){
   const email = document.getElementById('reg-email');
-  const pwd = document.getElementById('reg-pwd');
+  const btn = document.getElementById('submit-btn');
   const errorEl = document.getElementById('reg-error');
   errorEl.style.display = 'none';
 
@@ -771,8 +771,38 @@ async function doLogin(){
     return;
   }
 
-  // For now just show info — login will use license key in the app
-  showRegError('Prisijungimas veikia per licencijos rakta BeSafe programoje.');
+  btn.disabled = true;
+  btn.textContent = 'Checking...';
+  btn.style.opacity = '0.6';
+
+  try {
+    const res = await fetch(API_URL + '/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.value.trim() }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showRegError(data.error || 'Login failed.');
+      btn.disabled = false;
+      btn.textContent = 'Login \u2192';
+      btn.style.opacity = '1';
+      return;
+    }
+
+    // Show license key
+    document.getElementById('lic-key-display').textContent = data.license_key;
+    document.getElementById('reg-form').style.display = 'none';
+    document.getElementById('lic-success').classList.add('show');
+
+  } catch (err) {
+    showRegError('Server error. Try again.');
+    btn.disabled = false;
+    btn.textContent = 'Login \u2192';
+    btn.style.opacity = '1';
+  }
 }
 
 function copyLicKey(){

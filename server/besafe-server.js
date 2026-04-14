@@ -249,6 +249,86 @@ app.post("/api/register", async (req, res) => {
 });
 
 // ============================================================
+// POST /api/login
+// ============================================================
+
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ error: "Iveskite el. pasto adresa." });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Find user
+    const { data: user, error: userError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", normalizedEmail)
+      .single();
+
+    if (userError || !user) {
+      return res.status(404).json({ error: "Vartotojas su siuo el. pastu nerastas." });
+    }
+
+    // Find license
+    const { data: license } = await supabase
+      .from("licenses")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (!license) {
+      return res.status(404).json({ error: "Licencija nerasta. Susisiekite su palaikymu." });
+    }
+
+    // Send license key to email
+    try {
+      await mailer.sendMail({
+        from: `"BeSafe" <${process.env.EMAIL_FROM}>`,
+        to: normalizedEmail,
+        subject: "Your BeSafe License Key",
+        html: `
+          <div style="font-family:-apple-system,sans-serif;max-width:520px;margin:0 auto;padding:2rem;background:#0f1812;color:#f2f8f4;border-radius:16px">
+            <div style="text-align:center;margin-bottom:1.5rem">
+              <span style="font-size:1.5rem;color:#2ecc8a;font-weight:600">BeSafe</span>
+            </div>
+            <h2 style="color:#2ecc8a;font-size:1.2rem;margin-bottom:1rem;text-align:center">Your License Key</h2>
+            <div style="background:#080d0b;border:1px solid rgba(46,204,138,0.18);border-radius:12px;padding:1.5rem;text-align:center;margin-bottom:1.5rem">
+              <div style="font-family:'Courier New',monospace;font-size:1.15rem;color:#2ecc8a;letter-spacing:0.18em">${license.license_key}</div>
+            </div>
+            <table style="width:100%;font-size:0.85rem;color:#9dc4a8;border-collapse:collapse">
+              <tr><td style="padding:0.4rem 0">Plan</td><td style="text-align:right;color:#f2f8f4">${license.plan || "personal"}</td></tr>
+              <tr><td style="padding:0.4rem 0">Status</td><td style="text-align:right;color:#2ecc8a">${license.status || "active"}</td></tr>
+            </table>
+            <div style="text-align:center;margin-top:1.5rem">
+              <a href="besafe://activate?key=${license.license_key}" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.75rem 2rem;border-radius:2rem;font-weight:600;font-size:0.9rem;text-decoration:none">Open BeSafe \u2192</a>
+            </div>
+          </div>
+        `,
+      });
+    } catch (mailError) {
+      console.error("[Login] Email failed:", mailError.message);
+    }
+
+    console.log(`[Login] ${normalizedEmail} | ${license.license_key} | ${license.status}`);
+
+    res.json({
+      success: true,
+      message: "Licencijos raktas issiustas i jusu el. pasta.",
+      plan: license.plan,
+      status: license.status,
+      license_key: license.license_key,
+    });
+  } catch (error) {
+    console.error("[Login] Error:", error.message);
+    res.status(500).json({ error: "Serverio klaida. Bandykite dar karta." });
+  }
+});
+
+// ============================================================
 // POST /api/verify-license
 // ============================================================
 
