@@ -5,7 +5,7 @@ import { db } from "./db/db.service.js";
 
 const app = express();
 const PORT = Number(process.env.PORT || 3001);
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.HOST || "0.0.0.0";
 
 const allowedOrigins = new Set([
   "http://127.0.0.1:5500",
