@@ -67,92 +67,92 @@ import { db } from "./db/db.service.js";
 
 // Transactions
 app.get("/api/transactions", async (req, res) => {
-  try { res.json(await db.getAll("transactions")); }
+  try { res.json(await db.getTransactions()); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.get("/api/transactions/:id", async (req, res) => {
-  try { res.json(await db.getById("transactions", req.params.id)); }
+  try { res.json(await db.getTransactionById(req.params.id)); }
   catch (e) { res.status(404).json({ error: e.message }); }
 });
 app.post("/api/transactions", async (req, res) => {
-  try { res.status(201).json(await db.create("transactions", req.body)); }
+  try { res.status(201).json(await db.addTransaction(req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.put("/api/transactions/:id", async (req, res) => {
-  try { res.json(await db.update("transactions", req.params.id, req.body)); }
+  try { res.json(await db.updateTransaction(req.params.id, req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.patch("/api/transactions/:id", async (req, res) => {
-  try { res.json(await db.update("transactions", req.params.id, req.body)); }
+  try { res.json(await db.updateTransaction(req.params.id, req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.delete("/api/transactions/:id", async (req, res) => {
-  try { res.json(await db.remove("transactions", req.params.id)); }
+  try { res.json(await db.deleteTransaction(req.params.id)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // Categories
 app.get("/api/categories", async (req, res) => {
-  try { res.json(await db.getAll("categories")); }
+  try { res.json(await db.getCategories()); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.post("/api/categories", async (req, res) => {
-  try { res.status(201).json(await db.create("categories", req.body)); }
+  try { res.status(201).json(await db.addCategory(req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.put("/api/categories/:id", async (req, res) => {
-  try { res.json(await db.update("categories", req.params.id, req.body)); }
+  try { res.json(await db.updateCategory(req.params.id, req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.patch("/api/categories/:id", async (req, res) => {
-  try { res.json(await db.update("categories", req.params.id, req.body)); }
+  try { res.json(await db.updateCategory(req.params.id, req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.delete("/api/categories/:id", async (req, res) => {
-  try { res.json(await db.remove("categories", req.params.id)); }
+  try { res.json(await db.deleteCategory(req.params.id)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // Places
 app.get("/api/places", async (req, res) => {
-  try { res.json(await db.getAll("places")); }
+  try { res.json(await db.getPlaces()); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.post("/api/places", async (req, res) => {
-  try { res.status(201).json(await db.create("places", req.body)); }
+  try { res.status(201).json(await db.addPlace(req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.put("/api/places/:id", async (req, res) => {
-  try { res.json(await db.update("places", req.params.id, req.body)); }
+  try { res.json(await db.updatePlace(req.params.id, req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.patch("/api/places/:id", async (req, res) => {
-  try { res.json(await db.update("places", req.params.id, req.body)); }
+  try { res.json(await db.updatePlace(req.params.id, req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.delete("/api/places/:id", async (req, res) => {
-  try { res.json(await db.remove("places", req.params.id)); }
+  try { res.json(await db.deletePlace(req.params.id)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // Saved Calculations
 app.get("/api/saved-calculations", async (req, res) => {
-  try { res.json(await db.getAll("savedCalculations")); }
+  try { res.json(await db.getSavedCalculations()); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.post("/api/saved-calculations", async (req, res) => {
-  try { res.status(201).json(await db.create("savedCalculations", req.body)); }
+  try { res.status(201).json(await db.addSavedCalculation(req.body)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.delete("/api/saved-calculations/:id", async (req, res) => {
-  try { res.json(await db.remove("savedCalculations", req.params.id)); }
+  try { res.json(await db.deleteSavedCalculation(req.params.id)); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // Summary
 app.get("/api/summary", async (req, res) => {
   try {
-    const transactions = await db.getAll("transactions");
+    const transactions = await db.getTransactions();
     const income = transactions.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount || 0), 0);
     const expenses = transactions.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount || 0), 0);
     res.json({ income, expenses, balance: income - expenses, count: transactions.length, transactions });
