@@ -60,6 +60,105 @@ app.post(
 app.use(cors());
 app.use(express.json());
 
+// ============================================================
+// IMPORT DATA API from existing server
+// ============================================================
+import { db } from "./db/db.service.js";
+
+// Transactions
+app.get("/api/transactions", async (req, res) => {
+  try { res.json(await db.getAll("transactions")); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.get("/api/transactions/:id", async (req, res) => {
+  try { res.json(await db.getById("transactions", req.params.id)); }
+  catch (e) { res.status(404).json({ error: e.message }); }
+});
+app.post("/api/transactions", async (req, res) => {
+  try { res.status(201).json(await db.create("transactions", req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.put("/api/transactions/:id", async (req, res) => {
+  try { res.json(await db.update("transactions", req.params.id, req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.patch("/api/transactions/:id", async (req, res) => {
+  try { res.json(await db.update("transactions", req.params.id, req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.delete("/api/transactions/:id", async (req, res) => {
+  try { res.json(await db.remove("transactions", req.params.id)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Categories
+app.get("/api/categories", async (req, res) => {
+  try { res.json(await db.getAll("categories")); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post("/api/categories", async (req, res) => {
+  try { res.status(201).json(await db.create("categories", req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.put("/api/categories/:id", async (req, res) => {
+  try { res.json(await db.update("categories", req.params.id, req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.patch("/api/categories/:id", async (req, res) => {
+  try { res.json(await db.update("categories", req.params.id, req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.delete("/api/categories/:id", async (req, res) => {
+  try { res.json(await db.remove("categories", req.params.id)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Places
+app.get("/api/places", async (req, res) => {
+  try { res.json(await db.getAll("places")); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post("/api/places", async (req, res) => {
+  try { res.status(201).json(await db.create("places", req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.put("/api/places/:id", async (req, res) => {
+  try { res.json(await db.update("places", req.params.id, req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.patch("/api/places/:id", async (req, res) => {
+  try { res.json(await db.update("places", req.params.id, req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.delete("/api/places/:id", async (req, res) => {
+  try { res.json(await db.remove("places", req.params.id)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Saved Calculations
+app.get("/api/saved-calculations", async (req, res) => {
+  try { res.json(await db.getAll("savedCalculations")); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post("/api/saved-calculations", async (req, res) => {
+  try { res.status(201).json(await db.create("savedCalculations", req.body)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.delete("/api/saved-calculations/:id", async (req, res) => {
+  try { res.json(await db.remove("savedCalculations", req.params.id)); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Summary
+app.get("/api/summary", async (req, res) => {
+  try {
+    const transactions = await db.getAll("transactions");
+    const income = transactions.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount || 0), 0);
+    const expenses = transactions.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount || 0), 0);
+    res.json({ income, expenses, balance: income - expenses, count: transactions.length, transactions });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Serve website
 const websitePath = process.env.WEBSITE_PATH || path.join(__dirname, "..", "website");
 app.use(express.static(websitePath));
