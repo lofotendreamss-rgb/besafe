@@ -29,16 +29,15 @@
     ],
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        "nsis"
       ],
-      "icon": "build/icon.png",
-      "signingHashAlgorithms": []
+      "signAndEditExecutable": false
     },
     "forceCodeSigning": false,
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "oneClick": true,
+      "perMachine": false,
+      "artifactName": "BeSafe-Setup-${version}.${ext}"
     },
     "portable": {
       "artifactName": "BeSafe-${version}-portable.exe"
