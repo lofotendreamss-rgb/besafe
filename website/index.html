@@ -550,21 +550,21 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
     <div class="lic-success" id="lic-success">
       <div class="lic-icon-wrap">&#10024;</div>
       <h2 class="lic-title" data-i18n="lic.title">Congratulations!</h2>
-      <p class="lic-subtitle">Your BeSafe account is ready!<br>Choose how you want to start:</p>
+      <p class="lic-subtitle" data-i18n="lic.sub">Your BeSafe account is ready!<br>Choose how you want to start:</p>
 
       <!-- TWO ACTION BUTTONS -->
       <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem">
         <a href="https://besafe-oga3.onrender.com/app" class="submit-btn" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;text-decoration:none;border-radius:2rem">
-          &#127760; Start in browser
+          &#127760; <span data-i18n="lic.browser">Start in browser</span>
         </a>
         <a href="https://github.com/lofotendreamss-rgb/besafe/releases/download/v1.0.0/BeSafe-Setup-1.0.0.exe" class="lic-copy-btn" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;border-radius:2rem;padding:0.7rem;text-decoration:none">
-          &#128229; Download desktop app (Windows)
+          &#128229; <span data-i18n="lic.download">Download desktop app (Windows)</span>
         </a>
       </div>
 
       <!-- LICENSE KEY (collapsible) -->
       <div style="border-top:1px solid var(--border);padding-top:1.25rem;margin-bottom:1rem">
-        <button onclick="document.getElementById('key-details').style.display=document.getElementById('key-details').style.display==='none'?'block':'none'" style="background:transparent;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;font-family:inherit">&#128273; Show license key &#9662;</button>
+        <button onclick="document.getElementById('key-details').style.display=document.getElementById('key-details').style.display==='none'?'block':'none'" style="background:transparent;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;font-family:inherit">&#128273; <span data-i18n="lic.showkey">Show license key</span> &#9662;</button>
         <div id="key-details" style="display:none;margin-top:0.75rem">
           <div class="lic-key-box">
             <div class="lic-key-label" data-i18n="lic.keyl">Your license key</div>
@@ -575,9 +575,9 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
       </div>
 
       <div class="lic-info">
-        &#9989; License key sent to your email<br>
-        &#128337; 14-day free trial &#8212; no charge until trial ends<br>
-        &#128274; Your data stays on your device &#8212; never deleted
+        &#9989; <span data-i18n="lic.sent">License key sent to your email</span><br>
+        &#128337; <span data-i18n="lic.trial">14-day free trial &#8212; no charge until trial ends</span><br>
+        &#128274; <span data-i18n="lic.safe">Your data stays on your device &#8212; never deleted</span>
       </div>
     </div>
   </div>
