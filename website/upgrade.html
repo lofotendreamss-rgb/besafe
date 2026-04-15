@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BeSafe — Upgrade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+:root{
+  --bg:#080d0b;--bg2:#0d1510;--bg3:#121a14;--bg4:#0a1009;
+  --accent:#2ecc8a;--accent2:#1a9e66;--accent-dim:rgba(46,204,138,0.08);
+  --text:#f2f8f4;--muted:#9dc4a8;--faint:#5a7d67;
+  --border:rgba(46,204,138,0.1);--border2:rgba(46,204,138,0.18);
+  --card:#0f1812;--card2:#0c1510;
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.65;min-height:100vh}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--faint);border-radius:2px}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;border-bottom:1px solid var(--border);background:rgba(8,13,11,0.92);backdrop-filter:blur(12px)}
+.logo{font-family:var(--font-display);font-size:1.45rem;color:var(--accent);letter-spacing:0.02em;text-decoration:none}
+.logo span{color:var(--text);opacity:0.5;font-style:italic}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{color:var(--muted);font-size:0.82rem;text-decoration:none;letter-spacing:0.05em;transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+
+/* PAGE */
+.page{max-width:900px;margin:0 auto;padding:4rem 2rem 6rem}
+.page-header{text-align:center;margin-bottom:3.5rem}
+.page-eyebrow{font-size:0.68rem;letter-spacing:0.14em;color:var(--accent);text-transform:uppercase;margin-bottom:0.75rem}
+.page-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:400;line-height:1.15;margin-bottom:0.75rem}
+.page-title em{color:var(--accent);font-style:italic}
+.page-sub{font-size:0.95rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
+
+/* BILLING TOGGLE */
+.toggle-wrap{display:flex;align-items:center;justify-content:center;gap:1.25rem;margin-bottom:2.5rem}
+.toggle-label{font-size:0.85rem;color:var(--muted);transition:color .2s;cursor:pointer}
+.toggle-label.active{color:var(--text);font-weight:500}
+.toggle{width:52px;height:28px;background:var(--bg3);border:1px solid var(--border2);border-radius:2rem;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0}
+.toggle.annual{background:var(--accent2)}
+.toggle-thumb{width:20px;height:20px;background:var(--text);border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .3s,background .3s;pointer-events:none}
+.toggle.annual .toggle-thumb{transform:translateX(24px);background:#030d07}
+.save-pill{background:rgba(46,204,138,0.12);border:1px solid var(--border2);color:var(--accent);font-size:0.68rem;padding:0.25rem 0.85rem;border-radius:2rem;letter-spacing:0.08em;opacity:0;transform:translateY(4px);transition:all .3s;white-space:nowrap}
+.save-pill.show{opacity:1;transform:translateY(0)}
+
+/* PLAN CARDS */
+.plans-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:3rem}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2.25rem;position:relative;transition:all .25s;cursor:pointer}
+.plan-card:hover{border-color:var(--border2);transform:translateY(-3px)}
+.plan-card.selected{border-color:var(--accent);border-width:2px;background:rgba(46,204,138,0.02)}
+.plan-card.popular{position:relative}
+.pop-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--accent);color:#030d07;font-size:0.65rem;font-weight:500;letter-spacing:0.1em;padding:0.28rem 1.1rem;border-radius:2rem;white-space:nowrap;text-transform:uppercase}
+.plan-tier{font-size:0.68rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:1.25rem}
+.plan-price-wrap{margin-bottom:1.5rem;min-height:72px}
+.price-row{display:flex;align-items:flex-end;gap:0.15rem;line-height:1}
+.p-cur{font-size:1rem;color:var(--text);margin-bottom:7px}
+.p-num{font-family:var(--font-display);font-size:3.5rem;color:var(--text);transition:all .25s}
+.p-per{font-size:0.8rem;color:var(--muted);margin-bottom:9px;margin-left:2px}
+.p-annual-note{font-size:0.75rem;margin-top:0.4rem;min-height:20px;transition:all .3s}
+.p-annual-note .annual-price{color:var(--accent)}
+.p-annual-note .was{color:var(--muted);text-decoration:line-through;margin-left:0.4rem;opacity:0.5}
+.plan-divider{height:1px;background:var(--border);margin:1.25rem 0}
+.plan-desc{font-size:0.8rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:0.65rem;margin-bottom:0}
+.plan-features li{display:flex;align-items:flex-start;gap:0.65rem;font-size:0.8rem;color:var(--text)}
+.pf-check{color:var(--accent);flex-shrink:0;font-size:0.85rem}
+
+/* CHECKOUT SECTION */
+.checkout-section{max-width:480px;margin:0 auto}
+.checkout-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2.5rem;position:relative;overflow:hidden}
+.checkout-card::before{content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;background:radial-gradient(circle,rgba(46,204,138,0.05),transparent);pointer-events:none}
+.checkout-title{font-family:var(--font-display);font-size:1.4rem;font-weight:400;text-align:center;margin-bottom:0.5rem}
+.checkout-sub{font-size:0.82rem;color:var(--muted);text-align:center;margin-bottom:2rem}
+.field-group{margin-bottom:1.25rem}
+.field-label{display:block;font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:0.45rem;text-transform:uppercase}
+.field-input{width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;color:var(--text);font-size:0.88rem;font-family:var(--font-body);outline:none;transition:border-color .2s;font-weight:300}
+.field-input:focus{border-color:var(--accent)}
+.field-input::placeholder{color:var(--muted);opacity:0.4}
+.field-input.error{border-color:#cc4444}
+.summary-box{background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.85rem}
+.summary-row{display:flex;justify-content:space-between;padding:0.3rem 0;color:var(--muted)}
+.summary-row .val{color:var(--text);font-weight:500}
+.summary-row.total{border-top:1px solid var(--border);margin-top:0.5rem;padding-top:0.6rem;color:var(--accent);font-weight:500}
+.summary-row.total .val{color:var(--accent);font-size:1.05rem}
+.btn-checkout{width:100%;background:var(--accent);color:#030d07;border:none;border-radius:2rem;padding:0.9rem;font-size:0.9rem;font-weight:500;cursor:pointer;font-family:var(--font-body);letter-spacing:0.05em;transition:all .25s}
+.btn-checkout:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-checkout:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.secure-row{display:flex;align-items:center;justify-content:center;gap:0.5rem;font-size:0.7rem;color:var(--muted);margin-top:1rem;opacity:0.7}
+.error-msg{display:none;background:rgba(204,68,68,0.1);border:1px solid rgba(204,68,68,0.3);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#e88}
+.success-msg{display:none;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.3);border-radius:10px;padding:1.5rem;text-align:center;font-size:0.9rem;color:var(--accent)}
+
+/* MANAGE SUBSCRIPTION */
+.manage-section{max-width:480px;margin:2.5rem auto 0;text-align:center}
+.manage-divider{display:flex;align-items:center;gap:1rem;margin-bottom:2rem}
+.manage-divider::before,.manage-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.manage-divider span{font-size:0.72rem;color:var(--faint);letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap}
+.manage-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem}
+.manage-card p{font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+.btn-portal{background:transparent;color:var(--text);border:1px solid var(--border2);border-radius:2rem;padding:0.7rem 2rem;font-size:0.85rem;font-weight:400;cursor:pointer;font-family:var(--font-body);letter-spacing:0.04em;transition:all .22s}
+.btn-portal:hover{border-color:var(--accent);color:var(--accent)}
+.btn-portal:disabled{opacity:0.5;cursor:not-allowed}
+
+/* FOOTER */
+.footer-divider{height:1px;background:var(--border);margin-top:4rem}
+footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem}
+.footer-logo{font-family:var(--font-display);color:var(--accent);font-size:1.2rem}
+.footer-logo span{color:var(--muted);font-style:italic}
+.footer-right{font-size:0.72rem;color:var(--faint)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem}
+  .page{padding:3rem 1.5rem 4rem}
+  .plans-grid{grid-template-columns:1fr}
+  .checkout-card{padding:2rem 1.5rem}
+  footer{padding:2rem 1.5rem;flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="/">Be<span>Safe</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/#pricing">Plans</a>
+    <a href="https://besafe-oga3.onrender.com/app">Open app</a>
+  </div>
+</nav>
+
+<!-- SUCCESS MESSAGE (shown after Stripe redirect) -->
+<div id="success-msg" class="success-msg" style="max-width:600px;margin:2rem auto;display:none">
+  <div style="font-size:1.5rem;margin-bottom:0.5rem">&#10024;</div>
+  <strong style="font-size:1.1rem">Upgrade successful!</strong>
+  <p style="margin-top:0.5rem;color:var(--muted);font-size:0.85rem">Your subscription is now active. You can close this page and continue using BeSafe.</p>
+  <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;margin-top:1rem;background:var(--accent);color:#030d07;padding:0.65rem 2rem;border-radius:2rem;text-decoration:none;font-weight:500;font-size:0.88rem">Open BeSafe &rarr;</a>
+</div>
+
+<!-- PAGE -->
+<div class="page" id="upgrade-page">
+  <div class="page-header">
+    <div class="page-eyebrow">Upgrade</div>
+    <div class="page-title">Continue using <em>BeSafe</em></div>
+    <p class="page-sub">Choose a plan and keep full access to all your data and features. Your data is never deleted.</p>
+  </div>
+
+  <!-- BILLING TOGGLE -->
+  <div class="toggle-wrap">
+    <span class="toggle-label active" id="lbl-m" onclick="setBilling(false)">Monthly</span>
+    <div class="toggle" id="billing-toggle" onclick="setBilling(!isAnnual)">
+      <div class="toggle-thumb"></div>
+    </div>
+    <span class="toggle-label" id="lbl-a" onclick="setBilling(true)">Annual</span>
+    <span class="save-pill" id="save-pill">2 MONTHS FREE</span>
+  </div>
+
+  <!-- PLANS -->
+  <div class="plans-grid">
+    <!-- PERSONAL -->
+    <div class="plan-card selected" id="card-personal" onclick="selectPlan('personal')">
+      <div class="plan-tier">Personal</div>
+      <div class="plan-price-wrap">
+        <div class="price-row">
+          <span class="p-cur">&#8364;</span>
+          <span class="p-num" id="pp1">3,50</span>
+          <span class="p-per">/mo</span>
+        </div>
+        <div class="p-annual-note" id="pn1"></div>
+      </div>
+      <div class="plan-divider"></div>
+      <p class="plan-desc">Perfect for personal privacy and financial tracking.</p>
+      <ul class="plan-features">
+        <li><span class="pf-check">&#10003;</span> Up to 2 devices</li>
+        <li><span class="pf-check">&#10003;</span> All 10 languages</li>
+        <li><span class="pf-check">&#10003;</span> Full offline operation</li>
+        <li><span class="pf-check">&#10003;</span> Data only on your device</li>
+      </ul>
+    </div>
+    <!-- BUSINESS -->
+    <div class="plan-card popular" id="card-business" onclick="selectPlan('business')">
+      <div class="pop-badge">MOST POPULAR</div>
+      <div class="plan-tier">Business</div>
+      <div class="plan-price-wrap">
+        <div class="price-row">
+          <span class="p-cur">&#8364;</span>
+          <span class="p-num" id="pp2">7,99</span>
+          <span class="p-per">/mo</span>
+        </div>
+        <div class="p-annual-note" id="pn2"></div>
+      </div>
+      <div class="plan-divider"></div>
+      <p class="plan-desc">For professionals who demand maximum protection.</p>
+      <ul class="plan-features">
+        <li><span class="pf-check">&#10003;</span> Up to 2 devices</li>
+        <li><span class="pf-check">&#10003;</span> All 10 languages</li>
+        <li><span class="pf-check">&#10003;</span> Priority support</li>
+        <li><span class="pf-check">&#10003;</span> Business use license</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CHECKOUT -->
+  <div class="checkout-section">
+    <div class="checkout-card">
+      <div class="checkout-title">Complete your upgrade</div>
+      <div class="checkout-sub">You'll be redirected to Stripe for secure payment</div>
+
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input class="field-input" type="email" placeholder="your@email.com" id="checkout-email">
+      </div>
+
+      <div class="summary-box" id="summary-box">
+        <div class="summary-row"><span>Plan</span><span class="val" id="sum-plan">Personal</span></div>
+        <div class="summary-row"><span>Billing</span><span class="val" id="sum-billing">Monthly</span></div>
+        <div class="summary-row total"><span>Price</span><span class="val" id="sum-price">&euro;3.50/mo</span></div>
+      </div>
+
+      <div class="error-msg" id="checkout-error"></div>
+
+      <button class="btn-checkout" id="btn-checkout" onclick="doCheckout()">
+        Upgrade now &rarr;
+      </button>
+      <div class="secure-row">&#128274; Secure payment via Stripe &middot; Cancel anytime</div>
+    </div>
+  </div>
+
+  <!-- MANAGE SUBSCRIPTION -->
+  <div class="manage-section">
+    <div class="manage-divider"><span>Already subscribed?</span></div>
+    <div class="manage-card">
+      <p>Manage your subscription, update payment method, or cancel.</p>
+      <div class="field-group" style="margin-bottom:1rem">
+        <input class="field-input" type="email" placeholder="your@email.com" id="portal-email" style="text-align:center">
+      </div>
+      <button class="btn-portal" id="btn-portal" onclick="doPortal()">
+        Manage subscription &rarr;
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-divider"></div>
+<footer>
+  <div class="footer-logo">Be<span>Safe</span></div>
+  <div class="footer-right">&#169; 2025 BeSafe. All rights reserved.</div>
+</footer>
+
+<script>
+const API_URL = 'https://besafe-oga3.onrender.com';
+
+let isAnnual = false;
+let selectedPlan = 'personal';
+
+// Prices
+const PRICES = {
+  personal: { monthly: '3,50', annual: '2,50', annualTotal: '29,99', annualWas: '42,00' },
+  business: { monthly: '7,99', annual: '5,66', annualTotal: '67,99', annualWas: '95,88' },
+};
+
+// Pre-fill email from URL param
+(function init() {
+  const params = new URLSearchParams(window.location.search);
+
+  const email = params.get('email');
+  if (email) {
+    document.getElementById('checkout-email').value = decodeURIComponent(email);
+    document.getElementById('portal-email').value = decodeURIComponent(email);
+  }
+
+  // Show success message if redirected from Stripe
+  if (params.get('success') === 'true') {
+    document.getElementById('success-msg').style.display = 'block';
+  }
+
+  // Pre-select plan from URL
+  const plan = params.get('plan');
+  if (plan === 'business') selectPlan('business');
+
+  updateSummary();
+})();
+
+function setBilling(val) {
+  isAnnual = val;
+  const tog = document.getElementById('billing-toggle');
+  tog.classList.toggle('annual', isAnnual);
+  document.getElementById('lbl-m').classList.toggle('active', !isAnnual);
+  document.getElementById('lbl-a').classList.toggle('active', isAnnual);
+  document.getElementById('save-pill').classList.toggle('show', isAnnual);
+
+  // Update prices
+  document.getElementById('pp1').textContent = isAnnual ? PRICES.personal.annual : PRICES.personal.monthly;
+  document.getElementById('pp2').textContent = isAnnual ? PRICES.business.annual : PRICES.business.monthly;
+
+  if (isAnnual) {
+    document.getElementById('pn1').innerHTML = '<span class="annual-price">\u20AC' + PRICES.personal.annualTotal + '/year</span><span class="was"> \u20AC' + PRICES.personal.annualWas + '</span>';
+    document.getElementById('pn2').innerHTML = '<span class="annual-price">\u20AC' + PRICES.business.annualTotal + '/year</span><span class="was"> \u20AC' + PRICES.business.annualWas + '</span>';
+  } else {
+    document.getElementById('pn1').innerHTML = '';
+    document.getElementById('pn2').innerHTML = '';
+  }
+
+  updateSummary();
+}
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById('card-personal').classList.toggle('selected', plan === 'personal');
+  document.getElementById('card-business').classList.toggle('selected', plan === 'business');
+  updateSummary();
+}
+
+function updateSummary() {
+  const planLabel = selectedPlan === 'business' ? 'Business' : 'Personal';
+  const billingLabel = isAnnual ? 'Annual' : 'Monthly';
+  const p = PRICES[selectedPlan];
+  const priceLabel = isAnnual
+    ? '\u20AC' + p.annualTotal + '/year'
+    : '\u20AC' + p.monthly + '/mo';
+
+  document.getElementById('sum-plan').textContent = planLabel;
+  document.getElementById('sum-billing').textContent = billingLabel;
+  document.getElementById('sum-price').textContent = priceLabel;
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 6000);
+}
+
+async function doCheckout() {
+  const email = document.getElementById('checkout-email').value.trim();
+  const btn = document.getElementById('btn-checkout');
+  const errorEl = document.getElementById('checkout-error');
+  errorEl.style.display = 'none';
+
+  if (!email || !email.includes('@')) {
+    const input = document.getElementById('checkout-email');
+    input.classList.add('error');
+    input.focus();
+    setTimeout(() => input.classList.remove('error'), 2000);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Redirecting to Stripe...';
+
+  try {
+    const res = await fetch(API_URL + '/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        plan: selectedPlan,
+        billing: isAnnual ? 'annual' : 'monthly',
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError('checkout-error', data.error || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Upgrade now \u2192';
+      return;
+    }
+
+    // Redirect to Stripe Checkout
+    window.location.href = data.checkout_url;
+  } catch (err) {
+    showError('checkout-error', 'Connection error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Upgrade now \u2192';
+  }
+}
+
+async function doPortal() {
+  const email = document.getElementById('portal-email').value.trim();
+  const btn = document.getElementById('btn-portal');
+
+  if (!email || !email.includes('@')) {
+    const input = document.getElementById('portal-email');
+    input.classList.add('error');
+    input.focus();
+    setTimeout(() => input.classList.remove('error'), 2000);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Opening portal...';
+
+  try {
+    const res = await fetch(API_URL + '/api/create-portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || 'Could not open subscription portal.');
+      btn.disabled = false;
+      btn.textContent = 'Manage subscription \u2192';
+      return;
+    }
+
+    window.location.href = data.portal_url;
+  } catch (err) {
+    alert('Connection error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Manage subscription \u2192';
+  }
+}
+</script>
+</body>
+</html>

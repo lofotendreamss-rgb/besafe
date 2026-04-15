@@ -953,6 +953,129 @@ app.get("/api/check-trials", async (req, res) => {
 });
 
 // ============================================================
+// POST /api/create-checkout — Stripe Checkout for upgrading
+// ============================================================
+
+app.post("/api/create-checkout", async (req, res) => {
+  try {
+    const { email, plan, billing } = req.body;
+
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ error: "Please enter a valid email address." });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const selectedPlan = ["personal", "business"].includes(plan) ? plan : "personal";
+    const selectedBilling = ["monthly", "annual"].includes(billing) ? billing : "monthly";
+
+    // Get the correct Stripe price ID
+    const priceId = PLANS[selectedPlan]?.[selectedBilling];
+    if (!priceId) {
+      return res.status(400).json({ error: "Invalid plan or billing period." });
+    }
+
+    // Find user in Supabase
+    const { data: user } = await supabase
+      .from("users")
+      .select("id, stripe_customer_id")
+      .eq("email", normalizedEmail)
+      .single();
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found. Please register first." });
+    }
+
+    // Create or retrieve Stripe customer
+    let stripeCustomerId = user.stripe_customer_id;
+
+    if (!stripeCustomerId) {
+      const customer = await stripe.customers.create({
+        email: normalizedEmail,
+        metadata: { besafe_user_id: user.id },
+      });
+      stripeCustomerId = customer.id;
+
+      // Save Stripe customer ID to user record
+      await supabase
+        .from("users")
+        .update({ stripe_customer_id: stripeCustomerId })
+        .eq("id", user.id);
+
+      // Also save to license record
+      await supabase
+        .from("licenses")
+        .update({ stripe_customer_id: stripeCustomerId })
+        .eq("user_id", user.id);
+    }
+
+    // Create Stripe Checkout session
+    const session = await stripe.checkout.sessions.create({
+      customer: stripeCustomerId,
+      mode: "subscription",
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: "https://besafe-oga3.onrender.com/upgrade.html?success=true",
+      cancel_url: "https://besafe-oga3.onrender.com/upgrade.html?cancelled=true",
+      metadata: {
+        besafe_user_id: user.id,
+        plan: selectedPlan,
+        billing: selectedBilling,
+      },
+    });
+
+    console.log(`[Checkout] Session created for ${normalizedEmail} | ${selectedPlan}/${selectedBilling}`);
+
+    res.json({ checkout_url: session.url });
+  } catch (error) {
+    console.error("[Checkout] Error:", error.message);
+    res.status(500).json({ error: "Failed to create checkout session." });
+  }
+});
+
+// ============================================================
+// POST /api/create-portal — Stripe Customer Portal
+// ============================================================
+
+app.post("/api/create-portal", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ error: "Please enter a valid email address." });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Find user and their Stripe customer ID
+    const { data: user } = await supabase
+      .from("users")
+      .select("id, stripe_customer_id")
+      .eq("email", normalizedEmail)
+      .single();
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    if (!user.stripe_customer_id) {
+      return res.status(400).json({ error: "No active subscription found. Please upgrade first." });
+    }
+
+    // Create Stripe Customer Portal session
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: user.stripe_customer_id,
+      return_url: "https://besafe-oga3.onrender.com/upgrade.html",
+    });
+
+    console.log(`[Portal] Session created for ${normalizedEmail}`);
+
+    res.json({ portal_url: portalSession.url });
+  } catch (error) {
+    console.error("[Portal] Error:", error.message);
+    res.status(500).json({ error: "Failed to create portal session." });
+  }
+});
+
+// ============================================================
 // HEALTH & INFO
 // ============================================================
 
@@ -1000,9 +1123,12 @@ app.listen(PORT, () => {
   ║   http://127.0.0.1:${PORT}                  ║
   ╠══════════════════════════════════════════╣
   ║   POST  /api/register                   ║
+  ║   POST  /api/login                      ║
   ║   POST  /api/verify-license             ║
+  ║   POST  /api/create-checkout            ║
+  ║   POST  /api/create-portal              ║
   ║   POST  /api/webhook                    ║
-  ║   GET   /api/check-trials                ║
+  ║   GET   /api/check-trials               ║
   ║   GET   /api/health                     ║
   ╚══════════════════════════════════════════╝
   `);
