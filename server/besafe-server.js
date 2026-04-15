@@ -986,9 +986,20 @@ app.post("/api/create-checkout", async (req, res) => {
     }
 
     // Create or retrieve Stripe customer
+    // Always verify customer exists in current Stripe mode (test vs live)
     let stripeCustomerId = user.stripe_customer_id;
+    let needsNewCustomer = !stripeCustomerId;
 
-    if (!stripeCustomerId) {
+    if (stripeCustomerId) {
+      try {
+        await stripe.customers.retrieve(stripeCustomerId);
+      } catch {
+        // Customer doesn't exist in current mode — create new one
+        needsNewCustomer = true;
+      }
+    }
+
+    if (needsNewCustomer) {
       const customer = await stripe.customers.create({
         email: normalizedEmail,
         metadata: { besafe_user_id: user.id },
@@ -1056,13 +1067,21 @@ app.post("/api/create-portal", async (req, res) => {
       return res.status(404).json({ error: "User not found." });
     }
 
-    if (!user.stripe_customer_id) {
+    // Verify Stripe customer exists in current mode
+    let stripeCustomerId = user.stripe_customer_id;
+    if (!stripeCustomerId) {
       return res.status(400).json({ error: "No active subscription found. Please upgrade first." });
+    }
+
+    try {
+      await stripe.customers.retrieve(stripeCustomerId);
+    } catch {
+      return res.status(400).json({ error: "No active subscription in current mode. Please upgrade first." });
     }
 
     // Create Stripe Customer Portal session
     const portalSession = await stripe.billingPortal.sessions.create({
-      customer: user.stripe_customer_id,
+      customer: stripeCustomerId,
       return_url: "https://besafe-oga3.onrender.com/upgrade.html",
     });
 
