@@ -234,7 +234,7 @@ async function sendLicenseEmail(email, licenseKey, plan, billing) {
         </div>
 
         <div style="text-align:center;margin-bottom:1.5rem">
-          <a href="besafe://activate?key=${licenseKey}" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.75rem 2rem;border-radius:2rem;font-weight:600;font-size:0.9rem;text-decoration:none;letter-spacing:0.04em">Atidaryti BeSafe &#8594;</a>
+          <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.75rem 2rem;border-radius:2rem;font-weight:600;font-size:0.9rem;text-decoration:none;letter-spacing:0.04em">Open BeSafe &#8594;</a>
           <p style="font-size:0.7rem;color:#5a7d67;margin-top:0.6rem">Arba nukopijuokite rakta ir iveskite programoje rankiniu budu.</p>
         </div>
 
@@ -431,7 +431,7 @@ app.post("/api/login", async (req, res) => {
               <tr><td style="padding:0.4rem 0">Status</td><td style="text-align:right;color:#2ecc8a">${license.status || "active"}</td></tr>
             </table>
             <div style="text-align:center;margin-top:1.5rem">
-              <a href="besafe://activate?key=${license.license_key}" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.75rem 2rem;border-radius:2rem;font-weight:600;font-size:0.9rem;text-decoration:none">Open BeSafe \u2192</a>
+              <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.75rem 2rem;border-radius:2rem;font-weight:600;font-size:0.9rem;text-decoration:none">Open BeSafe \u2192</a>
             </div>
           </div>
         `,
