@@ -747,6 +747,212 @@ async function handleWebhook(req, res) {
 }
 
 // ============================================================
+// TRIAL REMINDER EMAILS
+// ============================================================
+
+function buildTrialEmailHtml(heading, subheading, bodyHtml) {
+  return `
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:520px;margin:0 auto;padding:2rem;background:#0f1812;color:#f2f8f4;border-radius:16px">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <span style="font-size:1.8rem;color:#2ecc8a;font-weight:700">BeSafe</span>
+      </div>
+      <h1 style="color:#f2f8f4;font-size:1.4rem;margin-bottom:0.5rem;text-align:center">${heading}</h1>
+      <p style="color:#2ecc8a;font-size:0.95rem;text-align:center;margin-bottom:1.5rem;font-weight:500">${subheading}</p>
+      ${bodyHtml}
+      <div style="text-align:center;margin:1.5rem 0">
+        <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;font-size:0.95rem;text-decoration:none;letter-spacing:0.04em">Open BeSafe &#8594;</a>
+      </div>
+      <div style="border-top:1px solid rgba(46,204,138,0.1);padding-top:1rem">
+        <p style="font-size:0.72rem;color:#5a7d67;line-height:1.7;margin:0;text-align:center">
+          No pressure &#8212; BeSafe is here whenever you need it.<br>
+          Your data is <strong>never deleted</strong> and always stays on your device.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+const TRIAL_EMAIL_TEMPLATES = {
+  day3: {
+    subject: "How's your BeSafe experience so far?",
+    html: buildTrialEmailHtml(
+      "How&#8217;s it going?",
+      "You&#8217;ve been with BeSafe for 3 days &#8212; here are some tips",
+      `<div style="background:rgba(46,204,138,0.06);border:1px solid rgba(46,204,138,0.12);border-radius:10px;padding:1.25rem;margin-bottom:1rem">
+        <p style="color:#9dc4a8;font-size:0.88rem;line-height:1.8;margin:0">
+          &#128161; <strong style="color:#f2f8f4">Tip 1:</strong> Add your recurring expenses to see monthly patterns at a glance.<br>
+          &#128161; <strong style="color:#f2f8f4">Tip 2:</strong> Create custom categories to organize transactions the way <em>you</em> think about money.<br>
+          &#128161; <strong style="color:#f2f8f4">Tip 3:</strong> Use the summary view to track income vs. expenses in real time.
+        </p>
+      </div>
+      <p style="color:#9dc4a8;font-size:0.85rem;line-height:1.7;text-align:center">
+        You still have <strong style="color:#2ecc8a">11 days</strong> left in your free trial. Take your time and explore!
+      </p>`
+    ),
+  },
+  day10: {
+    subject: "4 days left \u2014 here\u2019s what you\u2019ve achieved",
+    html: buildTrialEmailHtml(
+      "Your progress so far",
+      "4 days left in your free trial",
+      `<p style="color:#9dc4a8;font-size:0.88rem;line-height:1.8;text-align:center;margin-bottom:1rem">
+        You&#8217;ve been using BeSafe for 10 days now, and your financial picture is coming together.
+        Keep adding transactions to get the full benefit of your insights.
+      </p>
+      <div style="background:rgba(46,204,138,0.06);border:1px solid rgba(46,204,138,0.12);border-radius:10px;padding:1.25rem;margin-bottom:1rem">
+        <p style="color:#9dc4a8;font-size:0.85rem;line-height:1.8;margin:0">
+          If your trial ends without upgrading, you&#8217;ll switch to <strong style="color:#f2f8f4">read-only mode</strong>:<br>
+          &#8226; You can still <strong style="color:#f2f8f4">view all your data</strong><br>
+          &#8226; You just won&#8217;t be able to add new entries<br>
+          &#8226; Your data is <strong style="color:#2ecc8a">never deleted</strong>
+        </p>
+      </div>`
+    ),
+  },
+  day13: {
+    subject: "Your free trial ends tomorrow",
+    html: buildTrialEmailHtml(
+      "Last day tomorrow",
+      "Your BeSafe trial ends in 1 day",
+      `<p style="color:#9dc4a8;font-size:0.88rem;line-height:1.8;text-align:center;margin-bottom:1rem">
+        Tomorrow your free trial will end and BeSafe will switch to read-only mode.
+        If you&#8217;d like to keep tracking your finances, you can upgrade at any time.
+      </p>
+      <div style="background:rgba(46,204,138,0.06);border:1px solid rgba(46,204,138,0.12);border-radius:10px;padding:1.25rem;margin-bottom:1rem">
+        <p style="color:#9dc4a8;font-size:0.85rem;line-height:1.8;margin:0">
+          &#10003; <strong style="color:#f2f8f4">Your data stays safe</strong> &#8212; nothing is ever deleted<br>
+          &#10003; <strong style="color:#f2f8f4">Upgrade anytime</strong> &#8212; even after the trial ends<br>
+          &#10003; <strong style="color:#f2f8f4">No pressure</strong> &#8212; read-only mode is always free
+        </p>
+      </div>
+      <div style="text-align:center;margin-bottom:0.5rem">
+        <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:rgba(46,204,138,0.15);color:#2ecc8a;padding:0.65rem 1.8rem;border-radius:2rem;font-weight:600;font-size:0.85rem;text-decoration:none;border:1px solid rgba(46,204,138,0.3)">View upgrade options</a>
+      </div>`
+    ),
+  },
+  expired: {
+    subject: "Your BeSafe trial has ended",
+    html: buildTrialEmailHtml(
+      "Your trial has ended",
+      "BeSafe is now in read-only mode",
+      `<p style="color:#9dc4a8;font-size:0.88rem;line-height:1.8;text-align:center;margin-bottom:1rem">
+        Your 14-day free trial is over. BeSafe has switched to <strong style="color:#f2f8f4">read-only mode</strong> &#8212;
+        you can still view all your data, but new entries are paused.
+      </p>
+      <div style="background:rgba(46,204,138,0.06);border:1px solid rgba(46,204,138,0.12);border-radius:10px;padding:1.25rem;margin-bottom:1rem">
+        <p style="color:#9dc4a8;font-size:0.85rem;line-height:1.8;margin:0">
+          &#10003; <strong style="color:#f2f8f4">Your data is never deleted</strong> &#8212; it stays on your device forever<br>
+          &#10003; <strong style="color:#f2f8f4">Upgrade whenever you&#8217;re ready</strong> &#8212; no rush, no deadlines<br>
+          &#10003; <strong style="color:#f2f8f4">All your history is preserved</strong> &#8212; pick up right where you left off
+        </p>
+      </div>
+      <p style="color:#5a7d67;font-size:0.8rem;text-align:center">
+        We hope BeSafe has been useful. We&#8217;ll be here if you decide to come back.
+      </p>`
+    ),
+  },
+};
+
+app.get("/api/check-trials", async (req, res) => {
+  try {
+    // Fetch all trial users
+    const { data: trialUsers, error } = await supabase
+      .from("users")
+      .select("id, email, trial_ends_at, last_reminder_sent")
+      .eq("subscription_status", "trial");
+
+    if (error) {
+      console.error("[TrialCheck] Supabase query error:", error.message);
+      return res.status(500).json({ error: "Failed to query trial users." });
+    }
+
+    if (!trialUsers || trialUsers.length === 0) {
+      return res.json({ message: "No trial users found.", processed: 0 });
+    }
+
+    const now = Date.now();
+    let sent = 0;
+    let expired = 0;
+    let skipped = 0;
+
+    for (const user of trialUsers) {
+      try {
+        const trialEnd = new Date(user.trial_ends_at).getTime();
+        const daysUsed = Math.floor((now - (trialEnd - TRIAL_DAYS * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
+        const daysLeft = Math.ceil((trialEnd - now) / (24 * 60 * 60 * 1000));
+
+        let milestone = null;
+        let template = null;
+
+        if (daysLeft <= 0) {
+          milestone = "expired";
+          template = TRIAL_EMAIL_TEMPLATES.expired;
+        } else if (daysUsed >= 13 && daysLeft <= 1) {
+          milestone = "day13";
+          template = TRIAL_EMAIL_TEMPLATES.day13;
+        } else if (daysUsed >= 10 && daysLeft <= 4) {
+          milestone = "day10";
+          template = TRIAL_EMAIL_TEMPLATES.day10;
+        } else if (daysUsed >= 3 && daysLeft <= 11) {
+          milestone = "day3";
+          template = TRIAL_EMAIL_TEMPLATES.day3;
+        }
+
+        if (!milestone || !template) {
+          skipped++;
+          continue;
+        }
+
+        // Skip if already sent for this milestone
+        if (user.last_reminder_sent === milestone) {
+          skipped++;
+          continue;
+        }
+
+        // Send email
+        await mailer.sendMail({
+          from: `"BeSafe" <${process.env.EMAIL_FROM}>`,
+          to: user.email,
+          subject: template.subject,
+          html: template.html,
+        });
+
+        // Update last_reminder_sent (and expire if needed)
+        const updateData = { last_reminder_sent: milestone };
+        if (milestone === "expired") {
+          updateData.subscription_status = "expired";
+          expired++;
+        }
+
+        await supabase
+          .from("users")
+          .update(updateData)
+          .eq("id", user.id);
+
+        // Also update license status if expired
+        if (milestone === "expired") {
+          await supabase
+            .from("licenses")
+            .update({ status: "expired", updated_at: new Date().toISOString() })
+            .eq("user_id", user.id);
+        }
+
+        sent++;
+        console.log(`[TrialCheck] Sent "${milestone}" email to ${user.email}`);
+      } catch (userError) {
+        console.error(`[TrialCheck] Error processing ${user.email}:`, userError.message);
+      }
+    }
+
+    console.log(`[TrialCheck] Done: ${sent} sent, ${expired} expired, ${skipped} skipped out of ${trialUsers.length} trial users`);
+    res.json({ processed: trialUsers.length, sent, expired, skipped });
+  } catch (error) {
+    console.error("[TrialCheck] Error:", error.message);
+    res.status(500).json({ error: "Trial check failed." });
+  }
+});
+
+// ============================================================
 // HEALTH & INFO
 // ============================================================
 
@@ -796,7 +1002,18 @@ app.listen(PORT, () => {
   ║   POST  /api/register                   ║
   ║   POST  /api/verify-license             ║
   ║   POST  /api/webhook                    ║
+  ║   GET   /api/check-trials                ║
   ║   GET   /api/health                     ║
   ╚══════════════════════════════════════════╝
   `);
 });
+
+// Check trials every hour
+setInterval(async () => {
+  try {
+    const res = await fetch('http://127.0.0.1:' + PORT + '/api/check-trials');
+    console.log('[Cron] Trial check completed');
+  } catch (e) {
+    console.error('[Cron] Trial check failed:', e.message);
+  }
+}, 60 * 60 * 1000);

@@ -588,14 +588,24 @@ class App {
 const app = new App();
 window.__app = app;
 
+function loadOnboardingGuide() {
+  import('../ui/onboarding-guide.js').then(m => {
+    if (typeof m.showOnboardingGuide === 'function') {
+      setTimeout(() => m.showOnboardingGuide(), 2000);
+    }
+  }).catch(() => {});
+}
+
 if (document.readyState === "loading") {
   document.addEventListener(
     "DOMContentLoaded",
     () => {
       app.init();
+      loadOnboardingGuide();
     },
     { once: true }
   );
 } else {
   app.init();
+  loadOnboardingGuide();
 }
