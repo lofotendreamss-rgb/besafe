@@ -671,7 +671,7 @@ function switchTab(el,type){
   document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   const isReg = type === 'reg';
-  document.getElementById('pwd-wrap').style.display = isReg ? 'none' : 'block';
+  document.getElementById('pwd-wrap').style.display = 'block';
   document.getElementById('plan-wrap').style.display = isReg ? 'block' : 'none';
   document.getElementById('payment-wrap').style.display = isReg ? 'block' : 'none';
   document.getElementById('reg-error').style.display = 'none';
