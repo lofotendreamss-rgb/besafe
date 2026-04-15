@@ -9,8 +9,8 @@ en:{
 "hero.t1":"Your data.","hero.t2":"Your property.",
 "hero.sub":"BeSafe protects what matters to you \u2014 only on your device. No servers, no tracking, no surveillance.",
 "hero.btn1":"Start 14-day trial","hero.btn2":"How it works \u2192",
-"trust.1":"Offline 99% of the time","trust.2":"2 devices per plan","trust.3":"10 languages","trust.4":"Data never deleted",
-"stat.1":"99%","stat.1l":"Works offline","stat.2":"0","stat.2l":"Data on server","stat.3":"10","stat.3l":"Languages","stat.4":"2","stat.4l":"Devices / plan",
+"trust.1":"Offline 99% of the time","trust.2":"2 devices per plan","trust.3":"13 languages","trust.4":"Data never deleted",
+"stat.1":"99%","stat.1l":"Works offline","stat.2":"0","stat.2l":"Data on server","stat.3":"13","stat.3l":"Languages","stat.4":"2","stat.4l":"Devices / plan",
 "phi.eye":"BeSafe philosophy","phi.t1":"Three principles.","phi.t2":"No compromises.",
 "phi01.t":"User \u2014 the owner","phi01.p":"You make all decisions about your data. Always, absolutely, without exceptions. We only provide the tool.",
 "phi02.t":"Data \u2014 your property","phi02.p":"Everything is stored only on your device. Our servers never see your data \u2014 not even encrypted.",
@@ -29,7 +29,7 @@ en:{
 "pill.1":"Simple","pill.2":"Fast","pill.3":"Private","pill.4":"Offline","pill.5":"Your data",
 "how.eye":"How it works","how.t1":"Simple.","how.t2":"Transparent.",
 "s1.t":"Register","s1.p":"Create an account, choose a plan. Stripe securely processes the payment.",
-"s2.t":"Get your key","s2.p":"A unique BSAFE-XXXX-XXXX-XXXX key is sent to your email instantly.",
+"s2.t":"Get your key","s2.p":"A unique BSAFE-XXXX-XXXX-XXXX-XXXX key is sent to your email instantly.",
 "s3.t":"Activate the app","s3.p":"Enter the key in the BeSafe app. Works on up to 2 devices.",
 "s4.t":"Use with peace of mind","s4.p":"The app silently verifies your key once a month. Nothing more.",
 "kf.rep":"BeSafe \u00B7 Data report",
@@ -40,10 +40,10 @@ en:{
 "pr.eye":"Plans","pr.t1":"Simple","pr.t2":"pricing",
 "pr.mo":"Monthly","pr.yr":"Annual","pr.save":"2 MONTHS FREE",
 "p1.tier":"Personal","p1.per":"/mo","p1.desc":"Perfect for those who care about their privacy daily.",
-"p1.f1":"Up to 2 devices","p1.f2":"All 10 languages","p1.f3":"Full offline operation","p1.f4":"Data only on your device","p1.f5":"14-day free trial",
+"p1.f1":"Up to 2 devices","p1.f2":"All 13 languages","p1.f3":"Full offline operation","p1.f4":"Data only on your device","p1.f5":"14-day free trial",
 "p1.btn":"Choose plan","p1.note":"Cancel anytime",
 "p2.badge":"MOST POPULAR","p2.tier":"Business","p2.per":"/mo","p2.desc":"For teams and professionals who demand maximum protection.",
-"p2.f1":"Up to 2 devices","p2.f2":"All 10 languages","p2.f3":"Full offline operation","p2.f4":"Priority support","p2.f5":"Business use license","p2.f6":"14-day free trial",
+"p2.f1":"Up to 2 devices","p2.f2":"All 13 languages","p2.f3":"Full offline operation","p2.f4":"Priority support","p2.f5":"Business use license","p2.f6":"14-day free trial",
 "p2.btn":"Start trial","p2.note":"Cancel anytime",
 "pr.ft1":"Annual plan billed as","pr.ft1b":"one payment","pr.ft1c":"upfront.","pr.ft2":"Subscription ends \u2014 read-only mode.","pr.ft2b":"Data never deleted.",
 "reg.title":"Get started today","reg.sub":"14-day free trial. Card not charged immediately.",
@@ -60,7 +60,7 @@ en:{
 "lic.i1":"The app","lic.i1b":"once a month","lic.i1c":"silently verifies your key.",
 "lic.i2":"Trial period ends after","lic.i2b":"14 days","lic.i2c":"\u2014 we'll notify you by email.",
 "lic.i3":"If you cancel, your data is","lic.i3b":"never deleted","lic.i3c":".",
-"ft.priv":"Privacy policy","ft.terms":"Terms of use","ft.docs":"Documentation","ft.contact":"Contact","ft.copy":"\u00A9 2025 BeSafe. All rights reserved."
+"ft.priv":"Privacy policy","ft.terms":"Terms of use","ft.docs":"Documentation","ft.contact":"Contact","ft.copy":"\u00A9 2026 BeSafe. All rights reserved."
 },
 lt:{
 "nav.about":"Apie mus","nav.how":"Kaip veikia","nav.pricing":"Planai","nav.start":"Pradeti","nav.trial":"14 dienu nemokamai",
@@ -68,8 +68,8 @@ lt:{
 "hero.t1":"Jusu duomenys.","hero.t2":"Jusu nuosavybe.",
 "hero.sub":"BeSafe saugo tai, kas jums svarbu \u2014 tik jusu irenginyje. Nei serveriai, nei sekimas, nei stebejimas.",
 "hero.btn1":"Pradeti 14 dienu bandyma","hero.btn2":"Kaip tai veikia \u2192",
-"trust.1":"Neprisijunges 99% laiko","trust.2":"2 irenginiai viename plane","trust.3":"10 kalbu","trust.4":"Duomenys niekada neistrinami",
-"stat.1":"99%","stat.1l":"Veikia offline","stat.2":"0","stat.2l":"Duomenu serveryje","stat.3":"10","stat.3l":"Kalbu","stat.4":"2","stat.4l":"Irenginiai / planas",
+"trust.1":"Neprisijunges 99% laiko","trust.2":"2 irenginiai viename plane","trust.3":"13 kalbu","trust.4":"Duomenys niekada neistrinami",
+"stat.1":"99%","stat.1l":"Veikia offline","stat.2":"0","stat.2l":"Duomenu serveryje","stat.3":"13","stat.3l":"Kalbu","stat.4":"2","stat.4l":"Irenginiai / planas",
 "phi.eye":"BeSafe filosofija","phi.t1":"Trys principai.","phi.t2":"Jokiu kompromisu.",
 "phi01.t":"Vartotojas \u2014 seimininkas","phi01.p":"Jus priimate visus sprendimus del savo duomenu. Visada, absoliuciai, be isimciu. Mes tik suteikiame iranki.",
 "phi02.t":"Duomenys \u2014 jusu nuosavybe","phi02.p":"Viskas saugoma tik jusu irenginyje. Musu serveriai niekada nemato jusu duomenu \u2014 net sifruotu.",
@@ -99,10 +99,10 @@ lt:{
 "pr.eye":"Planai","pr.t1":"Paprasta","pr.t2":"kainodara",
 "pr.mo":"Menesinis","pr.yr":"Metinis","pr.save":"2 MENESIAI NEMOKAMAI",
 "p1.tier":"Asmeninis","p1.per":"/men","p1.desc":"Tobulas tiems, kurie rupinasi savo privatumu kasdien.",
-"p1.f1":"Iki 2 irenginiu","p1.f2":"Visi 10 kalbu","p1.f3":"Pilnas offline veikimas","p1.f4":"Duomenys tik jusu irenginyje","p1.f5":"14 dienu nemokamas bandymas",
+"p1.f1":"Iki 2 irenginiu","p1.f2":"Visi 13 kalbu","p1.f3":"Pilnas offline veikimas","p1.f4":"Duomenys tik jusu irenginyje","p1.f5":"14 dienu nemokamas bandymas",
 "p1.btn":"Pasirinkti plana","p1.note":"Atsisakyti bet kada",
 "p2.badge":"POPULIARIAUSIA","p2.tier":"Verslas","p2.per":"/men","p2.desc":"Komandoms ir profesionalams, kurie reikalauja maksimalios apsaugos.",
-"p2.f1":"Iki 2 irenginiu","p2.f2":"Visi 10 kalbu","p2.f3":"Pilnas offline veikimas","p2.f4":"Prioritetinis palaikymas","p2.f5":"Verslo naudojimo licencija","p2.f6":"14 dienu nemokamas bandymas",
+"p2.f1":"Iki 2 irenginiu","p2.f2":"Visi 13 kalbu","p2.f3":"Pilnas offline veikimas","p2.f4":"Prioritetinis palaikymas","p2.f5":"Verslo naudojimo licencija","p2.f6":"14 dienu nemokamas bandymas",
 "p2.btn":"Pradeti bandyma","p2.note":"Atsisakyti bet kada",
 "pr.ft1":"Metinis planas apmokestinamas","pr.ft1b":"vienu mokejimu","pr.ft1c":"is karto.","pr.ft2":"Prenumerata baigiasi \u2014 skaitymo rezimas.","pr.ft2b":"Duomenys niekada neistrinami.",
 "reg.title":"Pradekite siandien","reg.sub":"14 dienu nemokamas bandymas. Kortele neapmokestinama iskart.",
@@ -119,7 +119,7 @@ lt:{
 "lic.i1":"Programa","lic.i1b":"karta per menesi","lic.i1c":"tyliai patikrina jusu rakta.",
 "lic.i2":"Bandymo laikotarpis baigiasi po","lic.i2b":"14 dienu","lic.i2c":"\u2014 informuosime el. pastu.",
 "lic.i3":"Atsaukus prenumerata, jusu duomenys","lic.i3b":"niekada neistrinami","lic.i3c":".",
-"ft.priv":"Privatumo politika","ft.terms":"Naudojimo salygos","ft.docs":"Dokumentacija","ft.contact":"Kontaktai","ft.copy":"\u00A9 2025 BeSafe. Visi teises saugomos."
+"ft.priv":"Privatumo politika","ft.terms":"Naudojimo salygos","ft.docs":"Dokumentacija","ft.contact":"Kontaktai","ft.copy":"\u00A9 2026 BeSafe. Visi teises saugomos."
 },
 de:{
 "nav.about":"Uber uns","nav.how":"Wie es funktioniert","nav.pricing":"Preise","nav.start":"Loslegen","nav.trial":"14 Tage kostenlos",
@@ -127,8 +127,8 @@ de:{
 "hero.t1":"Ihre Daten.","hero.t2":"Ihr Eigentum.",
 "hero.sub":"BeSafe schutzt, was Ihnen wichtig ist \u2014 nur auf Ihrem Gerat. Keine Server, kein Tracking, keine Uberwachung.",
 "hero.btn1":"14-Tage-Test starten","hero.btn2":"Wie es funktioniert \u2192",
-"trust.1":"99% offline","trust.2":"2 Gerate pro Plan","trust.3":"10 Sprachen","trust.4":"Daten nie geloscht",
-"stat.1":"99%","stat.1l":"Offline","stat.2":"0","stat.2l":"Daten auf Server","stat.3":"10","stat.3l":"Sprachen","stat.4":"2","stat.4l":"Gerate / Plan",
+"trust.1":"99% offline","trust.2":"2 Gerate pro Plan","trust.3":"13 Sprachen","trust.4":"Daten nie geloscht",
+"stat.1":"99%","stat.1l":"Offline","stat.2":"0","stat.2l":"Daten auf Server","stat.3":"13","stat.3l":"Sprachen","stat.4":"2","stat.4l":"Gerate / Plan",
 "phi.eye":"BeSafe Philosophie","phi.t1":"Drei Prinzipien.","phi.t2":"Keine Kompromisse.",
 "phi01.t":"Nutzer \u2014 der Eigentumer","phi01.p":"Sie treffen alle Entscheidungen uber Ihre Daten. Immer, absolut, ohne Ausnahmen.",
 "phi02.t":"Daten \u2014 Ihr Eigentum","phi02.p":"Alles wird nur auf Ihrem Gerat gespeichert. Unsere Server sehen Ihre Daten nie.",
@@ -156,10 +156,10 @@ de:{
 "kf.c1":"Alle Datensatze mit AES-256 auf Ihrem Gerat verschlusselt","kf.c2":"Nur ein verschlusselter Schlussel wird zur Lizenzprufung gesendet","kf.c3":"Keine Analytik, kein Nutzungstracking","kf.c4":"Funktioniert ohne Internet \u2014 im Flugzeug, auf dem Land, uberall",
 "pr.eye":"Preise","pr.t1":"Einfache","pr.t2":"Preisgestaltung","pr.mo":"Monatlich","pr.yr":"Jahrlich","pr.save":"2 MONATE GRATIS",
 "p1.tier":"Personlich","p1.per":"/Mo","p1.desc":"Perfekt fur alle, die taglich auf Privatsphare achten.",
-"p1.f1":"Bis zu 2 Gerate","p1.f2":"Alle 10 Sprachen","p1.f3":"Voller Offline-Betrieb","p1.f4":"Daten nur auf Ihrem Gerat","p1.f5":"14 Tage kostenloser Test",
+"p1.f1":"Bis zu 2 Gerate","p1.f2":"Alle 13 Sprachen","p1.f3":"Voller Offline-Betrieb","p1.f4":"Daten nur auf Ihrem Gerat","p1.f5":"14 Tage kostenloser Test",
 "p1.btn":"Plan wahlen","p1.note":"Jederzeit kundbar",
 "p2.badge":"BELIEBTESTE","p2.tier":"Business","p2.per":"/Mo","p2.desc":"Fur Teams und Profis mit maximalen Schutzanforderungen.",
-"p2.f1":"Bis zu 2 Gerate","p2.f2":"Alle 10 Sprachen","p2.f3":"Voller Offline-Betrieb","p2.f4":"Prioritats-Support","p2.f5":"Geschaftslizenz","p2.f6":"14 Tage kostenloser Test",
+"p2.f1":"Bis zu 2 Gerate","p2.f2":"Alle 13 Sprachen","p2.f3":"Voller Offline-Betrieb","p2.f4":"Prioritats-Support","p2.f5":"Geschaftslizenz","p2.f6":"14 Tage kostenloser Test",
 "p2.btn":"Test starten","p2.note":"Jederzeit kundbar",
 "pr.ft1":"Jahresplan wird als","pr.ft1b":"Einmalzahlung","pr.ft1c":"berechnet.","pr.ft2":"Abo endet \u2014 Lesemodus.","pr.ft2b":"Daten nie geloscht.",
 "reg.title":"Heute starten","reg.sub":"14 Tage kostenloser Test. Karte wird nicht sofort belastet.",
@@ -175,7 +175,7 @@ de:{
 "lic.i1":"Die App","lic.i1b":"einmal im Monat","lic.i1c":"pruft Ihren Schlussel.",
 "lic.i2":"Testphase endet nach","lic.i2b":"14 Tagen","lic.i2c":"\u2014 wir benachrichtigen Sie.",
 "lic.i3":"Nach Kundigung werden Ihre Daten","lic.i3b":"nie geloscht","lic.i3c":".",
-"ft.priv":"Datenschutz","ft.terms":"Nutzungsbedingungen","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.copy":"\u00A9 2025 BeSafe. Alle Rechte vorbehalten."
+"ft.priv":"Datenschutz","ft.terms":"Nutzungsbedingungen","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alle Rechte vorbehalten."
 },
 fr:{
 "nav.about":"A propos","nav.how":"Comment ca marche","nav.pricing":"Tarifs","nav.start":"Commencer","nav.trial":"14 jours gratuits",
@@ -183,8 +183,8 @@ fr:{
 "hero.t1":"Vos donnees.","hero.t2":"Votre propriete.",
 "hero.sub":"BeSafe protege ce qui compte pour vous \u2014 uniquement sur votre appareil. Pas de serveurs, pas de suivi.",
 "hero.btn1":"Essai gratuit de 14 jours","hero.btn2":"Comment ca marche \u2192",
-"trust.1":"Hors ligne 99% du temps","trust.2":"2 appareils par forfait","trust.3":"10 langues","trust.4":"Donnees jamais supprimees",
-"stat.1":"99%","stat.1l":"Hors ligne","stat.2":"0","stat.2l":"Donnees sur serveur","stat.3":"10","stat.3l":"Langues","stat.4":"2","stat.4l":"Appareils / forfait",
+"trust.1":"Hors ligne 99% du temps","trust.2":"2 appareils par forfait","trust.3":"13 langues","trust.4":"Donnees jamais supprimees",
+"stat.1":"99%","stat.1l":"Hors ligne","stat.2":"0","stat.2l":"Donnees sur serveur","stat.3":"13","stat.3l":"Langues","stat.4":"2","stat.4l":"Appareils / forfait",
 "phi.eye":"Philosophie BeSafe","phi.t1":"Trois principes.","phi.t2":"Sans compromis.",
 "phi01.t":"Utilisateur \u2014 proprietaire","phi01.p":"Vous prenez toutes les decisions concernant vos donnees. Toujours, sans exception.",
 "phi02.t":"Donnees \u2014 votre propriete","phi02.p":"Tout est stocke uniquement sur votre appareil. Nos serveurs ne voient jamais vos donnees.",
@@ -212,10 +212,10 @@ fr:{
 "kf.c1":"Tous les enregistrements chiffres en AES-256","kf.c2":"Seule une cle chiffree est envoyee pour la verification","kf.c3":"Aucune analytique, aucun suivi d'utilisation","kf.c4":"Fonctionne sans internet \u2014 en avion, a la campagne, partout",
 "pr.eye":"Tarifs","pr.t1":"Tarification","pr.t2":"simple","pr.mo":"Mensuel","pr.yr":"Annuel","pr.save":"2 MOIS GRATUITS",
 "p1.tier":"Personnel","p1.per":"/mois","p1.desc":"Parfait pour ceux qui tiennent a leur vie privee.",
-"p1.f1":"Jusqu'a 2 appareils","p1.f2":"10 langues","p1.f3":"Mode hors ligne complet","p1.f4":"Donnees uniquement sur votre appareil","p1.f5":"14 jours d'essai gratuit",
+"p1.f1":"Jusqu'a 2 appareils","p1.f2":"13 langues","p1.f3":"Mode hors ligne complet","p1.f4":"Donnees uniquement sur votre appareil","p1.f5":"14 jours d'essai gratuit",
 "p1.btn":"Choisir ce forfait","p1.note":"Annuler a tout moment",
 "p2.badge":"LE PLUS POPULAIRE","p2.tier":"Business","p2.per":"/mois","p2.desc":"Pour les equipes et professionnels exigeants.",
-"p2.f1":"Jusqu'a 2 appareils","p2.f2":"10 langues","p2.f3":"Mode hors ligne complet","p2.f4":"Support prioritaire","p2.f5":"Licence commerciale","p2.f6":"14 jours d'essai gratuit",
+"p2.f1":"Jusqu'a 2 appareils","p2.f2":"13 langues","p2.f3":"Mode hors ligne complet","p2.f4":"Support prioritaire","p2.f5":"Licence commerciale","p2.f6":"14 jours d'essai gratuit",
 "p2.btn":"Commencer l'essai","p2.note":"Annuler a tout moment",
 "pr.ft1":"Le forfait annuel est facture en","pr.ft1b":"un seul paiement","pr.ft1c":".","pr.ft2":"Abonnement expire \u2014 mode lecture seule.","pr.ft2b":"Donnees jamais supprimees.",
 "reg.title":"Commencez aujourd'hui","reg.sub":"14 jours d'essai gratuit. Carte non debitee immediatement.",
@@ -231,7 +231,7 @@ fr:{
 "lic.i1":"L'app","lic.i1b":"une fois par mois","lic.i1c":"verifie votre cle.",
 "lic.i2":"La periode d'essai se termine apres","lic.i2b":"14 jours","lic.i2c":"\u2014 nous vous informerons.",
 "lic.i3":"Si vous annulez, vos donnees ne sont","lic.i3b":"jamais supprimees","lic.i3c":".",
-"ft.priv":"Confidentialite","ft.terms":"Conditions","ft.docs":"Documentation","ft.contact":"Contact","ft.copy":"\u00A9 2025 BeSafe. Tous droits reserves."
+"ft.priv":"Confidentialite","ft.terms":"Conditions","ft.docs":"Documentation","ft.contact":"Contact","ft.copy":"\u00A9 2026 BeSafe. Tous droits reserves."
 },
 es:{
 "nav.about":"Sobre nosotros","nav.how":"Como funciona","nav.pricing":"Precios","nav.start":"Empezar","nav.trial":"14 dias gratis",
@@ -239,8 +239,8 @@ es:{
 "hero.t1":"Tus datos.","hero.t2":"Tu propiedad.",
 "hero.sub":"BeSafe protege lo que te importa \u2014 solo en tu dispositivo. Sin servidores, sin rastreo, sin vigilancia.",
 "hero.btn1":"Prueba gratuita de 14 dias","hero.btn2":"Como funciona \u2192",
-"trust.1":"Sin conexion 99% del tiempo","trust.2":"2 dispositivos por plan","trust.3":"10 idiomas","trust.4":"Datos nunca eliminados",
-"stat.1":"99%","stat.1l":"Sin conexion","stat.2":"0","stat.2l":"Datos en servidor","stat.3":"10","stat.3l":"Idiomas","stat.4":"2","stat.4l":"Dispositivos / plan",
+"trust.1":"Sin conexion 99% del tiempo","trust.2":"2 dispositivos por plan","trust.3":"13 idiomas","trust.4":"Datos nunca eliminados",
+"stat.1":"99%","stat.1l":"Sin conexion","stat.2":"0","stat.2l":"Datos en servidor","stat.3":"13","stat.3l":"Idiomas","stat.4":"2","stat.4l":"Dispositivos / plan",
 "phi.eye":"Filosofia BeSafe","phi.t1":"Tres principios.","phi.t2":"Sin compromisos.",
 "phi01.t":"Usuario \u2014 el dueno","phi01.p":"Tu tomas todas las decisiones sobre tus datos. Siempre, sin excepciones.",
 "phi02.t":"Datos \u2014 tu propiedad","phi02.p":"Todo se almacena solo en tu dispositivo. Nuestros servidores nunca ven tus datos.",
@@ -268,10 +268,10 @@ es:{
 "kf.c1":"Todos los registros cifrados con AES-256","kf.c2":"Solo se envia una clave cifrada para verificacion","kf.c3":"Sin analiticas ni rastreo de uso","kf.c4":"Funciona sin internet \u2014 en avion, en el campo, en todas partes",
 "pr.eye":"Precios","pr.t1":"Precios","pr.t2":"simples","pr.mo":"Mensual","pr.yr":"Anual","pr.save":"2 MESES GRATIS",
 "p1.tier":"Personal","p1.per":"/mes","p1.desc":"Perfecto para quienes cuidan su privacidad a diario.",
-"p1.f1":"Hasta 2 dispositivos","p1.f2":"Los 10 idiomas","p1.f3":"Modo sin conexion completo","p1.f4":"Datos solo en tu dispositivo","p1.f5":"14 dias de prueba gratis",
+"p1.f1":"Hasta 2 dispositivos","p1.f2":"Los 13 idiomas","p1.f3":"Modo sin conexion completo","p1.f4":"Datos solo en tu dispositivo","p1.f5":"14 dias de prueba gratis",
 "p1.btn":"Elegir plan","p1.note":"Cancelar cuando quieras",
 "p2.badge":"MAS POPULAR","p2.tier":"Business","p2.per":"/mes","p2.desc":"Para equipos y profesionales que exigen maxima proteccion.",
-"p2.f1":"Hasta 2 dispositivos","p2.f2":"Los 10 idiomas","p2.f3":"Modo sin conexion completo","p2.f4":"Soporte prioritario","p2.f5":"Licencia comercial","p2.f6":"14 dias de prueba gratis",
+"p2.f1":"Hasta 2 dispositivos","p2.f2":"Los 13 idiomas","p2.f3":"Modo sin conexion completo","p2.f4":"Soporte prioritario","p2.f5":"Licencia comercial","p2.f6":"14 dias de prueba gratis",
 "p2.btn":"Iniciar prueba","p2.note":"Cancelar cuando quieras",
 "pr.ft1":"Plan anual cobrado como","pr.ft1b":"un solo pago","pr.ft1c":".","pr.ft2":"Suscripcion termina \u2014 modo lectura.","pr.ft2b":"Datos nunca eliminados.",
 "reg.title":"Empieza hoy","reg.sub":"14 dias gratis. Tarjeta no cobrada inmediatamente.",
@@ -287,15 +287,15 @@ es:{
 "lic.i1":"La app","lic.i1b":"una vez al mes","lic.i1c":"verifica tu clave.",
 "lic.i2":"El periodo de prueba termina en","lic.i2b":"14 dias","lic.i2c":"\u2014 te avisaremos.",
 "lic.i3":"Si cancelas, tus datos","lic.i3b":"nunca se eliminan","lic.i3c":".",
-"ft.priv":"Privacidad","ft.terms":"Terminos","ft.docs":"Documentacion","ft.contact":"Contacto","ft.copy":"\u00A9 2025 BeSafe. Todos los derechos reservados."
+"ft.priv":"Privacidad","ft.terms":"Terminos","ft.docs":"Documentacion","ft.contact":"Contacto","ft.copy":"\u00A9 2026 BeSafe. Todos los derechos reservados."
 },
 it:{
 "nav.about":"Chi siamo","nav.how":"Come funziona","nav.pricing":"Prezzi","nav.start":"Inizia","nav.trial":"14 giorni gratis",
 "badge":"Privacy senza compromessi","hero.t1":"I tuoi dati.","hero.t2":"La tua proprieta.",
 "hero.sub":"BeSafe protegge cio che conta per te \u2014 solo sul tuo dispositivo.",
 "hero.btn1":"Prova gratuita di 14 giorni","hero.btn2":"Come funziona \u2192",
-"trust.1":"Offline 99% del tempo","trust.2":"2 dispositivi per piano","trust.3":"10 lingue","trust.4":"Dati mai cancellati",
-"stat.1":"99%","stat.1l":"Offline","stat.2":"0","stat.2l":"Dati su server","stat.3":"10","stat.3l":"Lingue","stat.4":"2","stat.4l":"Dispositivi / piano",
+"trust.1":"Offline 99% del tempo","trust.2":"2 dispositivi per piano","trust.3":"13 lingue","trust.4":"Dati mai cancellati",
+"stat.1":"99%","stat.1l":"Offline","stat.2":"0","stat.2l":"Dati su server","stat.3":"13","stat.3l":"Lingue","stat.4":"2","stat.4l":"Dispositivi / piano",
 "phi.eye":"Filosofia BeSafe","phi.t1":"Tre principi.","phi.t2":"Nessun compromesso.",
 "phi01.t":"Utente \u2014 il proprietario","phi01.p":"Tu prendi tutte le decisioni sui tuoi dati. Sempre, senza eccezioni.",
 "phi02.t":"Dati \u2014 tua proprieta","phi02.p":"Tutto memorizzato solo sul tuo dispositivo.",
@@ -323,10 +323,10 @@ it:{
 "kf.c1":"Tutti i record crittografati con AES-256","kf.c2":"Solo una chiave crittografata inviata per la verifica","kf.c3":"Nessuna analitica ne tracciamento","kf.c4":"Funziona senza internet \u2014 ovunque",
 "pr.eye":"Prezzi","pr.t1":"Prezzi","pr.t2":"semplici","pr.mo":"Mensile","pr.yr":"Annuale","pr.save":"2 MESI GRATIS",
 "p1.tier":"Personale","p1.per":"/mese","p1.desc":"Perfetto per chi tiene alla propria privacy.",
-"p1.f1":"Fino a 2 dispositivi","p1.f2":"Tutte le 10 lingue","p1.f3":"Modalita offline completa","p1.f4":"Dati solo sul dispositivo","p1.f5":"14 giorni di prova gratuita",
+"p1.f1":"Fino a 2 dispositivi","p1.f2":"Tutte le 13 lingue","p1.f3":"Modalita offline completa","p1.f4":"Dati solo sul dispositivo","p1.f5":"14 giorni di prova gratuita",
 "p1.btn":"Scegli piano","p1.note":"Cancella quando vuoi",
 "p2.badge":"PIU POPOLARE","p2.tier":"Business","p2.per":"/mese","p2.desc":"Per team e professionisti che richiedono massima protezione.",
-"p2.f1":"Fino a 2 dispositivi","p2.f2":"Tutte le 10 lingue","p2.f3":"Modalita offline completa","p2.f4":"Supporto prioritario","p2.f5":"Licenza commerciale","p2.f6":"14 giorni di prova gratuita",
+"p2.f1":"Fino a 2 dispositivi","p2.f2":"Tutte le 13 lingue","p2.f3":"Modalita offline completa","p2.f4":"Supporto prioritario","p2.f5":"Licenza commerciale","p2.f6":"14 giorni di prova gratuita",
 "p2.btn":"Inizia la prova","p2.note":"Cancella quando vuoi",
 "pr.ft1":"Piano annuale fatturato come","pr.ft1b":"pagamento unico","pr.ft1c":".","pr.ft2":"Abbonamento scaduto \u2014 sola lettura.","pr.ft2b":"Dati mai cancellati.",
 "reg.title":"Inizia oggi","reg.sub":"14 giorni gratis. Carta non addebitata subito.",
@@ -340,15 +340,15 @@ it:{
 "lic.keyl":"La tua chiave di licenza","lic.copy":"Copia chiave",
 "lic.sent":"Chiave di licenza inviata alla tua email","lic.trial":"14 giorni di prova gratuita — senza costi","lic.safe":"I tuoi dati restano sul tuo dispositivo — mai cancellati",
 "lic.i1":"L'app","lic.i1b":"una volta al mese","lic.i1c":"verifica la chiave.","lic.i2":"Il periodo di prova termina dopo","lic.i2b":"14 giorni","lic.i2c":".","lic.i3":"Se cancelli, i tuoi dati","lic.i3b":"non vengono mai eliminati","lic.i3c":".",
-"ft.priv":"Privacy","ft.terms":"Termini","ft.docs":"Documentazione","ft.contact":"Contatti","ft.copy":"\u00A9 2025 BeSafe. Tutti i diritti riservati."
+"ft.priv":"Privacy","ft.terms":"Termini","ft.docs":"Documentazione","ft.contact":"Contatti","ft.copy":"\u00A9 2026 BeSafe. Tutti i diritti riservati."
 },
 pl:{
 "nav.about":"O nas","nav.how":"Jak to dziala","nav.pricing":"Cennik","nav.start":"Zacznij","nav.trial":"14 dni za darmo",
 "badge":"Prywatnosc bez kompromisow","hero.t1":"Twoje dane.","hero.t2":"Twoja wlasnosc.",
 "hero.sub":"BeSafe chroni to, co dla Ciebie wazne \u2014 tylko na Twoim urzadzeniu.",
 "hero.btn1":"14-dniowy okres probny","hero.btn2":"Jak to dziala \u2192",
-"trust.1":"Offline 99% czasu","trust.2":"2 urzadzenia na plan","trust.3":"10 jezykow","trust.4":"Dane nigdy nie usuwane",
-"stat.1":"99%","stat.1l":"Offline","stat.2":"0","stat.2l":"Danych na serwerze","stat.3":"10","stat.3l":"Jezykow","stat.4":"2","stat.4l":"Urzadzenia / plan",
+"trust.1":"Offline 99% czasu","trust.2":"2 urzadzenia na plan","trust.3":"13 jezykow","trust.4":"Dane nigdy nie usuwane",
+"stat.1":"99%","stat.1l":"Offline","stat.2":"0","stat.2l":"Danych na serwerze","stat.3":"13","stat.3l":"Jezykow","stat.4":"2","stat.4l":"Urzadzenia / plan",
 "phi.eye":"Filozofia BeSafe","phi.t1":"Trzy zasady.","phi.t2":"Bez kompromisow.",
 "phi01.t":"Uzytkownik \u2014 wlasciciel","phi01.p":"Ty podejmujesz wszystkie decyzje o swoich danych. Zawsze, bez wyjatkow.",
 "phi02.t":"Dane \u2014 Twoja wlasnosc","phi02.p":"Wszystko przechowywane tylko na Twoim urzadzeniu.",
@@ -376,10 +376,10 @@ pl:{
 "kf.c1":"Wszystkie rekordy szyfrowane AES-256","kf.c2":"Tylko zaszyfrowany klucz wysylany do weryfikacji","kf.c3":"Bez analityki i sledzenia","kf.c4":"Dziala bez internetu \u2014 wszedzie",
 "pr.eye":"Cennik","pr.t1":"Prosty","pr.t2":"cennik","pr.mo":"Miesieczny","pr.yr":"Roczny","pr.save":"2 MIESIACE ZA DARMO",
 "p1.tier":"Osobisty","p1.per":"/mies","p1.desc":"Dla tych, ktorzy dbaja o prywatnosc.",
-"p1.f1":"Do 2 urzadzen","p1.f2":"10 jezykow","p1.f3":"Pelny tryb offline","p1.f4":"Dane tylko na urzadzeniu","p1.f5":"14 dni za darmo",
+"p1.f1":"Do 2 urzadzen","p1.f2":"13 jezykow","p1.f3":"Pelny tryb offline","p1.f4":"Dane tylko na urzadzeniu","p1.f5":"14 dni za darmo",
 "p1.btn":"Wybierz plan","p1.note":"Anuluj kiedy chcesz",
 "p2.badge":"NAJPOPULARNIEJSZY","p2.tier":"Biznes","p2.per":"/mies","p2.desc":"Dla zespolow i profesjonalistow.",
-"p2.f1":"Do 2 urzadzen","p2.f2":"10 jezykow","p2.f3":"Pelny tryb offline","p2.f4":"Priorytetowe wsparcie","p2.f5":"Licencja biznesowa","p2.f6":"14 dni za darmo",
+"p2.f1":"Do 2 urzadzen","p2.f2":"13 jezykow","p2.f3":"Pelny tryb offline","p2.f4":"Priorytetowe wsparcie","p2.f5":"Licencja biznesowa","p2.f6":"14 dni za darmo",
 "p2.btn":"Rozpocznij probe","p2.note":"Anuluj kiedy chcesz",
 "pr.ft1":"Plan roczny rozliczany jako","pr.ft1b":"jedna platnosc","pr.ft1c":".","pr.ft2":"Subskrypcja wygasa \u2014 tryb odczytu.","pr.ft2b":"Dane nigdy nie usuwane.",
 "reg.title":"Zacznij dzisiaj","reg.sub":"14 dni za darmo. Karta nie obciazana od razu.",
@@ -393,7 +393,7 @@ pl:{
 "lic.keyl":"Twoj klucz licencyjny","lic.copy":"Kopiuj klucz",
 "lic.sent":"Klucz licencyjny wysłany na email","lic.trial":"14 dni za darmo — bez opłat","lic.safe":"Twoje dane pozostają na Twoim urządzeniu — nigdy nie usuwane",
 "lic.i1":"Aplikacja","lic.i1b":"raz w miesiacu","lic.i1c":"weryfikuje klucz.","lic.i2":"Okres probny konczy sie po","lic.i2b":"14 dniach","lic.i2c":".","lic.i3":"Po rezygnacji dane","lic.i3b":"nigdy nie sa usuwane","lic.i3c":".",
-"ft.priv":"Polityka prywatnosci","ft.terms":"Regulamin","ft.docs":"Dokumentacja","ft.contact":"Kontakt","ft.copy":"\u00A9 2025 BeSafe. Wszelkie prawa zastrzezone."
+"ft.priv":"Polityka prywatnosci","ft.terms":"Regulamin","ft.docs":"Dokumentacja","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Wszelkie prawa zastrzezone."
 },
 ru:{
 "nav.about":"O nas","nav.how":"Kak eto rabotaet","nav.pricing":"Tseny","nav.start":"Nachat","nav.trial":"14 dney besplatno",
@@ -402,7 +402,7 @@ ru:{
 "hero.sub":"BeSafe \u0437\u0430\u0449\u0438\u0449\u0430\u0435\u0442 \u0442\u043E, \u0447\u0442\u043E \u0432\u0430\u043C \u0432\u0430\u0436\u043D\u043E \u2014 \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430 \u0432\u0430\u0448\u0435\u043C \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0435.",
 "hero.btn1":"14 \u0434\u043D\u0435\u0439 \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E","hero.btn2":"\u041A\u0430\u043A \u044D\u0442\u043E \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u2192",
 "trust.1":"99% \u043E\u0444\u043B\u0430\u0439\u043D","trust.2":"2 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430","trust.3":"10 \u044F\u0437\u044B\u043A\u043E\u0432","trust.4":"\u0414\u0430\u043D\u043D\u044B\u0435 \u043D\u0435 \u0443\u0434\u0430\u043B\u044F\u044E\u0442\u0441\u044F",
-"stat.1":"99%","stat.1l":"\u041E\u0444\u043B\u0430\u0439\u043D","stat.2":"0","stat.2l":"\u0414\u0430\u043D\u043D\u044B\u0445 \u043D\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0435","stat.3":"10","stat.3l":"\u042F\u0437\u044B\u043A\u043E\u0432","stat.4":"2","stat.4l":"\u0423\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430",
+"stat.1":"99%","stat.1l":"\u041E\u0444\u043B\u0430\u0439\u043D","stat.2":"0","stat.2l":"\u0414\u0430\u043D\u043D\u044B\u0445 \u043D\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0435","stat.3":"13","stat.3l":"\u042F\u0437\u044B\u043A\u043E\u0432","stat.4":"2","stat.4l":"\u0423\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430",
 "phi.eye":"\u0424\u0438\u043B\u043E\u0441\u043E\u0444\u0438\u044F BeSafe","phi.t1":"\u0422\u0440\u0438 \u043F\u0440\u0438\u043D\u0446\u0438\u043F\u0430.","phi.t2":"\u0411\u0435\u0437 \u043A\u043E\u043C\u043F\u0440\u043E\u043C\u0438\u0441\u0441\u043E\u0432.",
 "phi01.t":"\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u2014 \u0432\u043B\u0430\u0434\u0435\u043B\u0435\u0446","phi01.p":"\u0412\u044B \u043F\u0440\u0438\u043D\u0438\u043C\u0430\u0435\u0442\u0435 \u0432\u0441\u0435 \u0440\u0435\u0448\u0435\u043D\u0438\u044F \u043E \u0441\u0432\u043E\u0438\u0445 \u0434\u0430\u043D\u043D\u044B\u0445. \u0412\u0441\u0435\u0433\u0434\u0430, \u0431\u0435\u0437 \u0438\u0441\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u0439.",
 "phi02.t":"\u0414\u0430\u043D\u043D\u044B\u0435 \u2014 \u0432\u0430\u0448\u0430 \u0441\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0441\u0442\u044C","phi02.p":"\u0412\u0441\u0451 \u0445\u0440\u0430\u043D\u0438\u0442\u0441\u044F \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430 \u0432\u0430\u0448\u0435\u043C \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0435.",
@@ -447,7 +447,7 @@ ru:{
 "lic.keyl":"\u0412\u0430\u0448 \u043A\u043B\u044E\u0447","lic.copy":"\u041A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C",
 "lic.sent":"Ключ лицензии отправлен на email","lic.trial":"14 дней бесплатно — без оплаты","lic.safe":"Ваши данные остаются на вашем устройстве — никогда не удаляются",
 "lic.i1":"\u041F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435","lic.i1b":"\u0440\u0430\u0437 \u0432 \u043C\u0435\u0441\u044F\u0446","lic.i1c":"\u043F\u0440\u043E\u0432\u0435\u0440\u044F\u0435\u0442 \u043A\u043B\u044E\u0447.","lic.i2":"\u041F\u0440\u043E\u0431\u043D\u044B\u0439 \u043F\u0435\u0440\u0438\u043E\u0434 \u0437\u0430\u043A\u0430\u043D\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0447\u0435\u0440\u0435\u0437","lic.i2b":"14 \u0434\u043D\u0435\u0439","lic.i2c":".","lic.i3":"\u0412\u0430\u0448\u0438 \u0434\u0430\u043D\u043D\u044B\u0435","lic.i3b":"\u043D\u0438\u043A\u043E\u0433\u0434\u0430 \u043D\u0435 \u0443\u0434\u0430\u043B\u044F\u044E\u0442\u0441\u044F","lic.i3c":".",
-"ft.priv":"\u041A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C","ft.terms":"\u0423\u0441\u043B\u043E\u0432\u0438\u044F","ft.docs":"\u0414\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u044F","ft.contact":"\u041A\u043E\u043D\u0442\u0430\u043A\u0442\u044B","ft.copy":"\u00A9 2025 BeSafe. \u0412\u0441\u0435 \u043F\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043D\u044B."
+"ft.priv":"\u041A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C","ft.terms":"\u0423\u0441\u043B\u043E\u0432\u0438\u044F","ft.docs":"\u0414\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u044F","ft.contact":"\u041A\u043E\u043D\u0442\u0430\u043A\u0442\u044B","ft.copy":"\u00A9 2026 BeSafe. \u0412\u0441\u0435 \u043F\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043D\u044B."
 },
 uk:{
 "nav.about":"Про нас","nav.how":"Як це працює","nav.pricing":"Ціни","nav.start":"Почати","nav.trial":"14 днів безкоштовно",
@@ -455,7 +455,7 @@ uk:{
 "hero.sub":"BeSafe захищає те, що вам важливо \u2014 тільки на вашому пристрої.",
 "hero.btn1":"14 днів безкоштовно","hero.btn2":"Як це працює \u2192",
 "trust.1":"99% офлайн","trust.2":"2 пристрої","trust.3":"10 мов","trust.4":"Дані ніколи не видаляються",
-"stat.1":"99%","stat.1l":"Офлайн","stat.2":"0","stat.2l":"Даних на сервері","stat.3":"10","stat.3l":"Мов","stat.4":"2","stat.4l":"Пристрої / план",
+"stat.1":"99%","stat.1l":"Офлайн","stat.2":"0","stat.2l":"Даних на сервері","stat.3":"13","stat.3l":"Мов","stat.4":"2","stat.4l":"Пристрої / план",
 "phi.eye":"Філософія BeSafe","phi.t1":"Три принципи.","phi.t2":"Без компромісів.",
 "phi01.t":"Користувач \u2014 власник","phi01.p":"Ви приймаєте всі рішення щодо своїх даних.",
 "phi02.t":"Дані \u2014 ваша власність","phi02.p":"Все зберігається тільки на вашому пристрої.",
@@ -500,7 +500,7 @@ uk:{
 "lic.keyl":"Ваш ключ","lic.copy":"Копіювати",
 "lic.sent":"Ключ ліцензії надіслано на email","lic.trial":"14 днів безкоштовно — без оплати","lic.safe":"Ваші дані залишаються на вашому пристрої — ніколи не видаляються",
 "lic.i1":"Додаток","lic.i1b":"раз на місяць","lic.i1c":"перевіряє ключ.","lic.i2":"Пробний період закінчується через","lic.i2b":"14 днів","lic.i2c":".","lic.i3":"Ваші дані","lic.i3b":"ніколи не видаляються","lic.i3c":".",
-"ft.priv":"Конфіденційність","ft.terms":"Умови","ft.docs":"Документація","ft.contact":"Контакти","ft.copy":"\u00A9 2025 BeSafe. Всі права захищені."
+"ft.priv":"Конфіденційність","ft.terms":"Умови","ft.docs":"Документація","ft.contact":"Контакти","ft.copy":"\u00A9 2026 BeSafe. Всі права захищені."
 },
 ja:{
 "nav.about":"私たちについて","nav.how":"仕組み","nav.pricing":"料金","nav.start":"始める","nav.trial":"14日間無料",
@@ -508,7 +508,7 @@ ja:{
 "hero.sub":"BeSafeはあなたの大切なものを守ります \u2014 デバイス上のみに。サーバーなし、追跡なし。",
 "hero.btn1":"14日間無料トライアル","hero.btn2":"仕組みを見る \u2192",
 "trust.1":"99%オフライン","trust.2":"プランごとに2台","trust.3":"10言語","trust.4":"データは削除されません",
-"stat.1":"99%","stat.1l":"オフライン","stat.2":"0","stat.2l":"サーバー上のデータ","stat.3":"10","stat.3l":"言語","stat.4":"2","stat.4l":"デバイス/プラン",
+"stat.1":"99%","stat.1l":"オフライン","stat.2":"0","stat.2l":"サーバー上のデータ","stat.3":"13","stat.3l":"言語","stat.4":"2","stat.4l":"デバイス/プラン",
 "phi.eye":"BeSafeの哲学","phi.t1":"3つの原則。","phi.t2":"妥協なし。",
 "phi01.t":"ユーザー \u2014 所有者","phi01.p":"データに関するすべての決定はあなたが行います。常に、例外なく。",
 "phi02.t":"データ \u2014 あなたの財産","phi02.p":"すべてデバイス上にのみ保存されます。",
@@ -553,7 +553,7 @@ ja:{
 "lic.keyl":"ライセンスキー","lic.copy":"キーをコピー",
 "lic.sent":"ライセンスキーをメールで送信しました","lic.trial":"14日間無料トライアル — 料金なし","lic.safe":"データはデバイスに保存 — 削除されません",
 "lic.i1":"アプリは","lic.i1b":"月に1回","lic.i1c":"キーを確認します。","lic.i2":"トライアル期間は","lic.i2b":"14日後","lic.i2c":"に終了します。","lic.i3":"解約してもデータは","lic.i3b":"削除されません","lic.i3c":"。",
-"ft.priv":"プライバシーポリシー","ft.terms":"利用規約","ft.docs":"ドキュメント","ft.contact":"お問い合わせ","ft.copy":"\u00A9 2025 BeSafe. All rights reserved."
+"ft.priv":"プライバシーポリシー","ft.terms":"利用規約","ft.docs":"ドキュメント","ft.contact":"お問い合わせ","ft.copy":"\u00A9 2026 BeSafe. All rights reserved."
 },
 no:{
 "nav.about":"Om oss","nav.how":"Slik fungerer det","nav.pricing":"Priser","nav.start":"Kom i gang","nav.trial":"14 dager gratis",
@@ -562,7 +562,7 @@ no:{
 "hero.sub":"BeSafe beskytter det som betyr noe for deg \u2014 kun p\u00E5 din enhet. Ingen servere, ingen sporing, ingen overv\u00E5kning.",
 "hero.btn1":"Start 14-dagers pr\u00F8veperiode","hero.btn2":"Slik fungerer det \u2192",
 "trust.1":"Frakoblet 99% av tiden","trust.2":"2 enheter per plan","trust.3":"10 spr\u00E5k","trust.4":"Data slettes aldri",
-"stat.1":"99%","stat.1l":"Fungerer offline","stat.2":"0","stat.2l":"Data p\u00E5 server","stat.3":"10","stat.3l":"Spr\u00E5k","stat.4":"2","stat.4l":"Enheter / plan",
+"stat.1":"99%","stat.1l":"Fungerer offline","stat.2":"0","stat.2l":"Data p\u00E5 server","stat.3":"13","stat.3l":"Spr\u00E5k","stat.4":"2","stat.4l":"Enheter / plan",
 "phi.eye":"BeSafe-filosofi","phi.t1":"Tre prinsipper.","phi.t2":"Ingen kompromisser.",
 "phi01.t":"Brukeren \u2014 eieren","phi01.p":"Du tar alle beslutninger om dine data. Alltid, absolutt, uten unntak. Vi leverer kun verkt\u00F8yet.",
 "phi02.t":"Data \u2014 din eiendom","phi02.p":"Alt lagres kun p\u00E5 din enhet. V\u00E5re servere ser aldri dine data \u2014 ikke engang kryptert.",
@@ -612,7 +612,7 @@ no:{
 "lic.i1":"Appen","lic.i1b":"\u00E9n gang i m\u00E5neden","lic.i1c":"verifiserer n\u00F8kkelen din stille.",
 "lic.i2":"Pr\u00F8veperioden utl\u00F8per etter","lic.i2b":"14 dager","lic.i2c":"\u2014 vi varsler deg p\u00E5 e-post.",
 "lic.i3":"Hvis du avbryter, blir dataene dine","lic.i3b":"aldri slettet","lic.i3c":".",
-"ft.priv":"Personvernerkl\u00E6ring","ft.terms":"Bruksvilk\u00E5r","ft.docs":"Dokumentasjon","ft.contact":"Kontakt","ft.copy":"\u00A9 2025 BeSafe. Alle rettigheter forbeholdt."
+"ft.priv":"Personvernerkl\u00E6ring","ft.terms":"Bruksvilk\u00E5r","ft.docs":"Dokumentasjon","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alle rettigheter forbeholdt."
 },
 sv:{
 "nav.about":"Om oss","nav.how":"S\u00E5 fungerar det","nav.pricing":"Priser","nav.start":"Kom ig\u00E5ng","nav.trial":"14 dagar gratis",
@@ -621,7 +621,7 @@ sv:{
 "hero.sub":"BeSafe skyddar det som \u00E4r viktigt f\u00F6r dig \u2014 bara p\u00E5 din enhet. Inga servrar, ingen sp\u00E5rning, ingen \u00F6vervakning.",
 "hero.btn1":"Starta 14 dagars provperiod","hero.btn2":"S\u00E5 fungerar det \u2192",
 "trust.1":"Offline 99% av tiden","trust.2":"2 enheter per plan","trust.3":"10 spr\u00E5k","trust.4":"Data raderas aldrig",
-"stat.1":"99%","stat.1l":"Fungerar offline","stat.2":"0","stat.2l":"Data p\u00E5 server","stat.3":"10","stat.3l":"Spr\u00E5k","stat.4":"2","stat.4l":"Enheter / plan",
+"stat.1":"99%","stat.1l":"Fungerar offline","stat.2":"0","stat.2l":"Data p\u00E5 server","stat.3":"13","stat.3l":"Spr\u00E5k","stat.4":"2","stat.4l":"Enheter / plan",
 "phi.eye":"BeSafe-filosofi","phi.t1":"Tre principer.","phi.t2":"Inga kompromisser.",
 "phi01.t":"Anv\u00E4ndaren \u2014 \u00E4garen","phi01.p":"Du fattar alla beslut om dina data. Alltid, absolut, utan undantag. Vi tillhandah\u00E5ller bara verktyget.",
 "phi02.t":"Data \u2014 din egendom","phi02.p":"Allt lagras bara p\u00E5 din enhet. V\u00E5ra servrar ser aldrig dina data \u2014 inte ens krypterade.",
@@ -671,7 +671,7 @@ sv:{
 "lic.i1":"Appen","lic.i1b":"en g\u00E5ng i m\u00E5naden","lic.i1c":"verifierar din nyckel tyst.",
 "lic.i2":"Provperioden upph\u00F6r efter","lic.i2b":"14 dagar","lic.i2c":"\u2014 vi meddelar dig via e-post.",
 "lic.i3":"Om du avslutar f\u00F6rblir dina data","lic.i3b":"aldrig raderade","lic.i3c":".",
-"ft.priv":"Integritetspolicy","ft.terms":"Anv\u00E4ndarvillkor","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.copy":"\u00A9 2025 BeSafe. Alla r\u00E4ttigheter f\u00F6rbeh\u00E5llna."
+"ft.priv":"Integritetspolicy","ft.terms":"Anv\u00E4ndarvillkor","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alla r\u00E4ttigheter f\u00F6rbeh\u00E5llna."
 },
 zh:{
 "nav.about":"\u5173\u4E8E\u6211\u4EEC","nav.how":"\u5982\u4F55\u8FD0\u4F5C","nav.pricing":"\u4EF7\u683C\u65B9\u6848","nav.start":"\u7ACB\u5373\u5F00\u59CB","nav.trial":"14\u5929\u514D\u8D39\u8BD5\u7528",
@@ -680,7 +680,7 @@ zh:{
 "hero.sub":"BeSafe \u4FDD\u62A4\u60A8\u91CD\u89C6\u7684\u4E00\u5207 \u2014 \u4EC5\u5728\u60A8\u7684\u8BBE\u5907\u4E0A\u3002\u65E0\u670D\u52A1\u5668\uFF0C\u65E0\u8DDF\u8E2A\uFF0C\u65E0\u76D1\u63A7\u3002",
 "hero.btn1":"\u5F00\u59CB14\u5929\u514D\u8D39\u8BD5\u7528","hero.btn2":"\u4E86\u89E3\u8FD0\u4F5C\u65B9\u5F0F \u2192",
 "trust.1":"99%\u65F6\u95F4\u79BB\u7EBF\u8FD0\u884C","trust.2":"\u6BCF\u4E2A\u65B9\u68882\u53F0\u8BBE\u5907","trust.3":"10\u79CD\u8BED\u8A00","trust.4":"\u6570\u636E\u6C38\u4E0D\u5220\u9664",
-"stat.1":"99%","stat.1l":"\u79BB\u7EBF\u8FD0\u884C","stat.2":"0","stat.2l":"\u670D\u52A1\u5668\u6570\u636E","stat.3":"10","stat.3l":"\u8BED\u8A00","stat.4":"2","stat.4l":"\u8BBE\u5907 / \u65B9\u6848",
+"stat.1":"99%","stat.1l":"\u79BB\u7EBF\u8FD0\u884C","stat.2":"0","stat.2l":"\u670D\u52A1\u5668\u6570\u636E","stat.3":"13","stat.3l":"\u8BED\u8A00","stat.4":"2","stat.4l":"\u8BBE\u5907 / \u65B9\u6848",
 "phi.eye":"BeSafe \u7406\u5FF5","phi.t1":"\u4E09\u5927\u539F\u5219\u3002","phi.t2":"\u7EDD\u4E0D\u59A5\u534F\u3002",
 "phi01.t":"\u7528\u6237 \u2014 \u6240\u6709\u8005","phi01.p":"\u60A8\u5BF9\u81EA\u5DF1\u7684\u6570\u636E\u62E5\u6709\u5168\u90E8\u51B3\u5B9A\u6743\u3002\u59CB\u7EC8\u5982\u6B64\uFF0C\u7EDD\u5BF9\u5982\u6B64\uFF0C\u6CA1\u6709\u4F8B\u5916\u3002\u6211\u4EEC\u53EA\u63D0\u4F9B\u5DE5\u5177\u3002",
 "phi02.t":"\u6570\u636E \u2014 \u60A8\u7684\u8D22\u4EA7","phi02.p":"\u6240\u6709\u5185\u5BB9\u4EC5\u5B58\u50A8\u5728\u60A8\u7684\u8BBE\u5907\u4E0A\u3002\u6211\u4EEC\u7684\u670D\u52A1\u5668\u6C38\u8FDC\u65E0\u6CD5\u770B\u5230\u60A8\u7684\u6570\u636E \u2014 \u5373\u4F7F\u662F\u52A0\u5BC6\u6570\u636E\u3002",
@@ -730,7 +730,7 @@ zh:{
 "lic.i1":"\u5E94\u7528\u7A0B\u5E8F","lic.i1b":"\u6BCF\u6708\u4E00\u6B21","lic.i1c":"\u9759\u9ED8\u9A8C\u8BC1\u60A8\u7684\u5BC6\u94A5\u3002",
 "lic.i2":"\u8BD5\u7528\u671F\u5728","lic.i2b":"14\u5929\u540E","lic.i2c":"\u7ED3\u675F \u2014 \u6211\u4EEC\u5C06\u901A\u8FC7\u90AE\u4EF6\u901A\u77E5\u60A8\u3002",
 "lic.i3":"\u5982\u679C\u60A8\u53D6\u6D88\uFF0C\u60A8\u7684\u6570\u636E\u5C06","lic.i3b":"\u6C38\u4E0D\u5220\u9664","lic.i3c":"\u3002",
-"ft.priv":"\u9690\u79C1\u653F\u7B56","ft.terms":"\u4F7F\u7528\u6761\u6B3E","ft.docs":"\u6587\u6863","ft.contact":"\u8054\u7CFB\u6211\u4EEC","ft.copy":"\u00A9 2025 BeSafe. \u7248\u6743\u6240\u6709\u3002"
+"ft.priv":"\u9690\u79C1\u653F\u7B56","ft.terms":"\u4F7F\u7528\u6761\u6B3E","ft.docs":"\u6587\u6863","ft.contact":"\u8054\u7CFB\u6211\u4EEC","ft.copy":"\u00A9 2026 BeSafe. \u7248\u6743\u6240\u6709\u3002"
 }
 };
 
