@@ -398,7 +398,7 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-title" data-i18n="s1.t">Register</div>
-        <div class="step-text" data-i18n="s1.p">Create an account, choose a plan. Stripe securely processes the payment.</div>
+        <div class="step-text" data-i18n="s1.p">Create an account with your email. Start your free trial instantly — no credit card needed.</div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
@@ -619,8 +619,8 @@ function setBilling(val){
   if(isAnnual){
     document.getElementById('pp1').textContent='2,50';
     document.getElementById('pp2').textContent='5,66';
-    document.getElementById('pn1').innerHTML='<span class="annual-price">\u20AC29,99/metus</span><span class="was"> \u20AC42,00</span>';
-    document.getElementById('pn2').innerHTML='<span class="annual-price">\u20AC67,99/metus</span><span class="was"> \u20AC95,88</span>';
+    document.getElementById('pn1').innerHTML='<span class="annual-price">\u20AC29,99/year</span><span class="was"> \u20AC42,00</span>';
+    document.getElementById('pn2').innerHTML='<span class="annual-price">\u20AC67,99/year</span><span class="was"> \u20AC95,88</span>';
   } else {
     document.getElementById('pp1').textContent='3,50';
     document.getElementById('pp2').textContent='7,99';
@@ -666,14 +666,14 @@ function toggleRegBilling(){
   document.getElementById('ro-p2-price').textContent=p2;
   const row=document.getElementById('billing-toggle-reg');
   if(regAnnual){
-    document.getElementById('billing-toggle-text').textContent='Metinis planas aktyvus';
-    document.getElementById('billing-toggle-sub').textContent='Mokesite viena karta per metus \u2014 sutaupote 2 menesius';
+    document.getElementById('billing-toggle-text').textContent='Annual plan active';
+    document.getElementById('billing-toggle-sub').textContent='Pay once per year \u2014 save 2 months';
     row.style.borderColor='var(--accent)';
     document.getElementById('billing-pill-label').textContent='AKTYVUS \u2713';
     document.getElementById('billing-pill-label').style.background='rgba(46,204,138,0.2)';
   } else {
-    document.getElementById('billing-toggle-text').textContent='Perjungti i metini plana';
-    document.getElementById('billing-toggle-sub').textContent='Sutaupykite 2 menesius \u2014 mokekite viena karta';
+    document.getElementById('billing-toggle-text').textContent='Switch to annual plan';
+    document.getElementById('billing-toggle-sub').textContent='Save 2 months \u2014 pay once';
     row.style.borderColor='';
     document.getElementById('billing-pill-label').textContent='METINIS';
     document.getElementById('billing-pill-label').style.background='';
