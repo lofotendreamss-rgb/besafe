@@ -281,7 +281,57 @@ app.post("/api/register", async (req, res) => {
       .single();
 
     if (existing) {
-      return res.status(409).json({ error: "This email is already registered. Use Login to get your key." });
+      // Instead of error — find their license and resend it
+      const { data: existingLicense } = await supabase
+        .from("licenses")
+        .select("*")
+        .eq("user_id", existing.id)
+        .single();
+
+      if (existingLicense) {
+        // Send friendly reminder email
+        try {
+          await mailer.sendMail({
+            from: `"BeSafe" <${process.env.EMAIL_FROM}>`,
+            to: normalizedEmail,
+            subject: "Your BeSafe license key — welcome back!",
+            html: `
+              <div style="font-family:-apple-system,sans-serif;max-width:520px;margin:0 auto;padding:2rem;background:#0f1812;color:#f2f8f4;border-radius:16px">
+                <div style="text-align:center;margin-bottom:1.5rem">
+                  <span style="font-size:1.8rem;color:#2ecc8a;font-weight:700">BeSafe</span>
+                </div>
+                <h1 style="color:#f2f8f4;font-size:1.3rem;margin-bottom:1rem;text-align:center">Welcome back!</h1>
+                <p style="color:#9dc4a8;line-height:1.7;margin-bottom:1.5rem;text-align:center;font-size:0.9rem">
+                  You already have a BeSafe account. Here is your license key:
+                </p>
+                <div style="background:#080d0b;border:1px solid rgba(46,204,138,0.18);border-radius:12px;padding:1.5rem;text-align:center;margin-bottom:1.5rem">
+                  <div style="font-size:0.65rem;color:#9dc4a8;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.6rem">YOUR LICENSE KEY</div>
+                  <div style="font-family:'Courier New',monospace;font-size:1.15rem;color:#2ecc8a;letter-spacing:0.18em">${existingLicense.license_key}</div>
+                </div>
+                <div style="text-align:center;margin-bottom:1.5rem">
+                  <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;font-size:0.95rem;text-decoration:none">Open BeSafe &#8594;</a>
+                </div>
+                <p style="font-size:0.72rem;color:#5a7d67;line-height:1.7;text-align:center">
+                  Status: <strong style="color:#2ecc8a">${existingLicense.status}</strong> &#183; Plan: <strong style="color:#f2f8f4">${existingLicense.plan || "personal"}</strong>
+                </p>
+              </div>
+            `,
+          });
+        } catch (e) {
+          console.error("[Register] Resend email failed:", e.message);
+        }
+
+        console.log(`[Register] Existing user — resent key to ${normalizedEmail}`);
+        return res.json({
+          success: true,
+          license_key: existingLicense.license_key,
+          trial_days: TRIAL_DAYS,
+          plan: existingLicense.plan || "personal",
+          message: "Welcome back! Your license key has been sent to your email.",
+        });
+      }
+
+      return res.status(409).json({ error: "Account exists but license not found. Please contact support." });
     }
 
     // Generate license key
