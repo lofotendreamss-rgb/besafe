@@ -8,6 +8,9 @@ import {
   getSupportedLanguages,
 } from "../core/i18n.js";
 
+// License checker — auto-runs on import, checks every 24h
+import "../core/license.checker.js";
+
 class App {
   constructor() {
     this.started = false;
