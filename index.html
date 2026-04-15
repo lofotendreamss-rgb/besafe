@@ -37,6 +37,9 @@
           <p class="splash__phrase" data-splash-lang="ru" data-text="Позволь BeSafe работать за тебя."></p>
           <p class="splash__phrase" data-splash-lang="no" data-text="La BeSafe jobbe for deg."></p>
           <p class="splash__phrase" data-splash-lang="sv" data-text="Låt BeSafe jobba för dig."></p>
+          <p class="splash__phrase" data-splash-lang="fr" data-text="Laissez BeSafe travailler pour vous."></p>
+          <p class="splash__phrase" data-splash-lang="it" data-text="Lascia che BeSafe lavori per te."></p>
+          <p class="splash__phrase" data-splash-lang="uk" data-text="Нехай BeSafe працює за вас."></p>
           <p class="splash__phrase" data-splash-lang="ja" data-text="BeSafeがあなたのために働きます。"></p>
           <p class="splash__phrase" data-splash-lang="zh" data-text="让BeSafe为您工作。"></p>
         </div>
@@ -49,8 +52,11 @@
             <span data-splash-lang="de">Sprache wählen</span>
             <span data-splash-lang="es">Elige tu idioma</span>
             <span data-splash-lang="ru">Выберите язык</span>
+            <span data-splash-lang="fr">Choisissez votre langue</span>
+            <span data-splash-lang="it">Scegli la tua lingua</span>
             <span data-splash-lang="no">Velg språk</span>
             <span data-splash-lang="sv">Välj språk</span>
+            <span data-splash-lang="uk">Оберіть мову</span>
             <span data-splash-lang="ja">言語を選択</span>
             <span data-splash-lang="zh">选择语言</span>
           </p>
@@ -63,6 +69,12 @@
             </button>
             <button data-lang="es" type="button" class="splash__lang-btn" aria-label="Idioma español">
               Español
+            </button>
+            <button data-lang="fr" type="button" class="splash__lang-btn" aria-label="Langue française">
+              Français
+            </button>
+            <button data-lang="it" type="button" class="splash__lang-btn" aria-label="Lingua italiana">
+              Italiano
             </button>
             <button data-lang="lt" type="button" class="splash__lang-btn" aria-label="Lietuvių kalba">
               Lietuvių
@@ -79,6 +91,9 @@
             <button data-lang="ru" type="button" class="splash__lang-btn" aria-label="Русский язык">
               Русский
             </button>
+            <button data-lang="uk" type="button" class="splash__lang-btn" aria-label="Українська мова">
+              Українська
+            </button>
             <button data-lang="zh" type="button" class="splash__lang-btn" aria-label="中文">
               中文
             </button>
@@ -94,8 +109,11 @@
             <span data-splash-lang="de">Starten</span>
             <span data-splash-lang="es">Comenzar</span>
             <span data-splash-lang="ru">Начать</span>
+            <span data-splash-lang="fr">Commencer</span>
+            <span data-splash-lang="it">Inizia</span>
             <span data-splash-lang="no">Start</span>
             <span data-splash-lang="sv">Starta</span>
+            <span data-splash-lang="uk">Почати</span>
             <span data-splash-lang="ja">始める</span>
             <span data-splash-lang="zh">开始</span>
           </button>
@@ -105,7 +123,7 @@
       <script>
         (function() {
           // Splash: rodyti numatytąją kalbą, typewriter, mygtukai
-          var supportedLangs = ["lt", "en", "pl", "de", "es", "ru", "no", "sv", "ja", "zh"];
+          var supportedLangs = ["de", "en", "es", "fr", "it", "lt", "no", "pl", "sv", "ru", "uk", "zh", "ja"];
           var defaultLang = "lt";
           try {
             var saved = localStorage.getItem("besafe_lang");
@@ -823,6 +841,16 @@
           <span class="lang-modal__label">Español</span>
           <span class="lang-modal__check">&#10003;</span>
         </button>
+        <button type="button" class="lang-modal__option" data-lang-select="fr">
+          <span class="lang-modal__flag">&#127467;&#127479;</span>
+          <span class="lang-modal__label">Français</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="it">
+          <span class="lang-modal__flag">&#127470;&#127481;</span>
+          <span class="lang-modal__label">Italiano</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
         <button type="button" class="lang-modal__option" data-lang-select="lt">
           <span class="lang-modal__flag">&#127473;&#127481;</span>
           <span class="lang-modal__label">Lietuvių</span>
@@ -846,6 +874,11 @@
         <button type="button" class="lang-modal__option" data-lang-select="ru">
           <span class="lang-modal__flag">&#127479;&#127482;</span>
           <span class="lang-modal__label">Русский</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="uk">
+          <span class="lang-modal__flag">&#127482;&#127462;</span>
+          <span class="lang-modal__label">Українська</span>
           <span class="lang-modal__check">&#10003;</span>
         </button>
         <button type="button" class="lang-modal__option" data-lang-select="zh">
