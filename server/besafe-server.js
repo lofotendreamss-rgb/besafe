@@ -208,46 +208,48 @@ function generateLicenseKey() {
   return `BSAFE-${segment()}-${segment()}-${segment()}-${segment()}`;
 }
 
-async function sendLicenseEmail(email, licenseKey, plan, billing) {
+async function sendLicenseEmail(email, licenseKey, plan) {
   const planLabel = plan === "business" ? "Business" : "Personal";
-  const billingLabel = billing === "annual" ? "Annual" : "Monthly";
 
   await mailer.sendMail({
     from: `"BeSafe" <${process.env.EMAIL_FROM}>`,
     to: email,
-    subject: "Your BeSafe License Key",
+    subject: "Welcome to BeSafe — Your free trial is ready!",
     html: `
       <div style="font-family:-apple-system,sans-serif;max-width:520px;margin:0 auto;padding:2rem;background:#0f1812;color:#f2f8f4;border-radius:16px">
         <div style="text-align:center;margin-bottom:1.5rem">
-          <span style="font-size:1.5rem;color:#2ecc8a;font-weight:600">BeSafe</span>
+          <span style="font-size:1.8rem;color:#2ecc8a;font-weight:700">BeSafe</span>
         </div>
 
-        <h1 style="color:#2ecc8a;font-size:1.4rem;margin-bottom:1rem;text-align:center">Welcome!</h1>
+        <h1 style="color:#f2f8f4;font-size:1.5rem;margin-bottom:0.5rem;text-align:center">Welcome!</h1>
+        <p style="color:#2ecc8a;font-size:1rem;text-align:center;margin-bottom:1.5rem;font-weight:500">Your ${TRIAL_DAYS}-day free trial has started</p>
 
-        <p style="color:#9dc4a8;line-height:1.7;margin-bottom:1.5rem;text-align:center">
-          Your BeSafe license has been created. Enter this key in the app to activate.
+        <p style="color:#9dc4a8;line-height:1.7;margin-bottom:1.5rem;text-align:center;font-size:0.9rem">
+          No credit card required. No obligations.<br>Just explore BeSafe freely for ${TRIAL_DAYS} days.
         </p>
 
         <div style="background:#080d0b;border:1px solid rgba(46,204,138,0.18);border-radius:12px;padding:1.5rem;text-align:center;margin-bottom:1.5rem">
-          <div style="font-size:0.65rem;color:#9dc4a8;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.6rem">LICENSE KEY</div>
+          <div style="font-size:0.65rem;color:#9dc4a8;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.6rem">YOUR LICENSE KEY</div>
           <div style="font-family:'Courier New',monospace;font-size:1.15rem;color:#2ecc8a;letter-spacing:0.18em;word-break:break-all">${licenseKey}</div>
         </div>
 
         <div style="text-align:center;margin-bottom:1.5rem">
-          <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.75rem 2rem;border-radius:2rem;font-weight:600;font-size:0.9rem;text-decoration:none;letter-spacing:0.04em">Open BeSafe &#8594;</a>
-          <p style="font-size:0.7rem;color:#5a7d67;margin-top:0.6rem">Arba nukopijuokite rakta ir iveskite programoje rankiniu budu.</p>
+          <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;font-size:0.95rem;text-decoration:none;letter-spacing:0.04em">Open BeSafe &#8594;</a>
         </div>
 
-        <table style="width:100%;font-size:0.85rem;color:#9dc4a8;margin-bottom:1.5rem;border-collapse:collapse">
-          <tr><td style="padding:0.4rem 0;border-bottom:1px solid rgba(46,204,138,0.08)">Plan</td><td style="text-align:right;color:#f2f8f4;padding:0.4rem 0;border-bottom:1px solid rgba(46,204,138,0.08)">${planLabel}</td></tr>
-          <tr><td style="padding:0.4rem 0;border-bottom:1px solid rgba(46,204,138,0.08)">Billing</td><td style="text-align:right;color:#f2f8f4;padding:0.4rem 0;border-bottom:1px solid rgba(46,204,138,0.08)">${billingLabel}</td></tr>
-          <tr><td style="padding:0.4rem 0;border-bottom:1px solid rgba(46,204,138,0.08)">Free trial</td><td style="text-align:right;color:#2ecc8a;padding:0.4rem 0;border-bottom:1px solid rgba(46,204,138,0.08)">${TRIAL_DAYS} days</td></tr>
-          <tr><td style="padding:0.4rem 0">Devices</td><td style="text-align:right;color:#f2f8f4;padding:0.4rem 0">Up to ${MAX_DEVICES}</td></tr>
-        </table>
+        <div style="background:rgba(46,204,138,0.06);border:1px solid rgba(46,204,138,0.12);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem">
+          <p style="color:#9dc4a8;font-size:0.82rem;line-height:1.8;margin:0">
+            &#10003; <strong style="color:#f2f8f4">No credit card needed</strong> &#8212; completely free for ${TRIAL_DAYS} days<br>
+            &#10003; <strong style="color:#f2f8f4">No obligations</strong> &#8212; cancel anytime, no questions asked<br>
+            &#10003; <strong style="color:#f2f8f4">Your data stays yours</strong> &#8212; stored only on your device, never deleted<br>
+            &#10003; <strong style="color:#f2f8f4">Plan: ${planLabel}</strong> &#8212; up to ${MAX_DEVICES} devices
+          </p>
+        </div>
 
-        <div style="border-top:1px solid rgba(46,204,138,0.1);padding-top:1.25rem">
-          <p style="font-size:0.75rem;color:#5a7d67;line-height:1.7;margin:0">
-            The app verifies your key once a month. If you cancel, your data is never deleted — the app switches to read-only mode.
+        <div style="border-top:1px solid rgba(46,204,138,0.1);padding-top:1rem">
+          <p style="font-size:0.72rem;color:#5a7d67;line-height:1.7;margin:0;text-align:center">
+            After ${TRIAL_DAYS} days you can choose to subscribe or continue in read-only mode.<br>
+            Your data is <strong>never deleted</strong> &#8212; it always stays on your device.
           </p>
         </div>
       </div>
@@ -261,25 +263,15 @@ async function sendLicenseEmail(email, licenseKey, plan, billing) {
 
 app.post("/api/register", async (req, res) => {
   try {
-    const { email, plan, billing } = req.body;
+    const { email, plan } = req.body;
 
     // Validate
     if (!email || !email.includes("@")) {
-      return res.status(400).json({ error: "Neteisingas el. pasto adresas." });
-    }
-    if (!["personal", "business"].includes(plan)) {
-      return res.status(400).json({ error: "Neteisingas planas." });
-    }
-    if (!["monthly", "annual"].includes(billing)) {
-      return res.status(400).json({ error: "Neteisingas mokejimo tipas." });
-    }
-
-    const priceId = PLANS[plan]?.[billing];
-    if (!priceId) {
-      return res.status(500).json({ error: "Stripe kaina nesukonfigiruota siam planui." });
+      return res.status(400).json({ error: "Please enter a valid email address." });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    const selectedPlan = ["personal", "business"].includes(plan) ? plan : "personal";
 
     // Check if email already registered
     const { data: existing } = await supabase
@@ -289,59 +281,33 @@ app.post("/api/register", async (req, res) => {
       .single();
 
     if (existing) {
-      return res.status(409).json({ error: "Sis el. pastas jau uzregistruotas." });
+      return res.status(409).json({ error: "This email is already registered. Use Login to get your key." });
     }
-
-    // Create Stripe customer
-    const customer = await stripe.customers.create({
-      email: normalizedEmail,
-      metadata: { plan, billing },
-    });
-
-    // Create Stripe checkout session with trial
-    const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
-      payment_method_types: ["card"],
-      mode: "subscription",
-      line_items: [{ price: priceId, quantity: 1 }],
-      subscription_data: {
-        trial_period_days: TRIAL_DAYS,
-        metadata: { plan, billing },
-      },
-      success_url: `${req.protocol}://${req.get("host")}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.protocol}://${req.get("host")}/#register`,
-    });
 
     // Generate license key
     const licenseKey = generateLicenseKey();
     const trialEndsAt = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
-    // Save user to Supabase (matching existing table structure)
+    // Save user to Supabase — NO Stripe, just free trial
     const { data: userData, error: userError } = await supabase.from("users").insert({
       email: normalizedEmail,
-      subscription_plan: plan,
-      subscription_billing: billing,
-      billing,
-      stripe_customer_id: customer.id,
-      stripe_session_id: session.id,
-      stripe_subscription_id: session.subscription || null,
+      subscription_plan: selectedPlan,
       subscription_status: "trial",
       trial_ends_at: trialEndsAt,
     }).select("id");
 
     if (userError) {
       console.error("[Register] User insert failed:", userError);
-      return res.status(500).json({ error: "Registracija nepavyko." });
+      return res.status(500).json({ error: "Registration failed. Please try again." });
     }
 
     const userId = userData?.[0]?.id || null;
 
-    // Save license to Supabase (matching existing table structure)
+    // Save license
     const { error: licError } = await supabase.from("licenses").insert({
       license_key: licenseKey,
       user_id: userId,
-      plan,
-      billing,
+      plan: selectedPlan,
       status: "trial",
       devices_used: 0,
       devices_max: MAX_DEVICES,
@@ -349,29 +315,28 @@ app.post("/api/register", async (req, res) => {
 
     if (licError) {
       console.error("[Register] License insert failed:", licError);
-      return res.status(500).json({ error: "Licencijos kurimas nepavyko." });
+      return res.status(500).json({ error: "License creation failed." });
     }
 
-    // Send license email
+    // Send welcome email with license key
     try {
-      await sendLicenseEmail(normalizedEmail, licenseKey, plan, billing);
+      await sendLicenseEmail(normalizedEmail, licenseKey, selectedPlan, "trial");
       console.log(`[Register] Email sent to ${normalizedEmail}`);
     } catch (mailError) {
       console.error("[Register] Email failed:", mailError.message);
-      // Don't fail registration if email fails
     }
 
-    console.log(`[Register] OK | ${normalizedEmail} | ${plan}/${billing} | ${licenseKey}`);
+    console.log(`[Register] OK | ${normalizedEmail} | ${selectedPlan} | trial | ${licenseKey}`);
 
     res.json({
       success: true,
       license_key: licenseKey,
-      checkout_url: session.url,
       trial_days: TRIAL_DAYS,
+      plan: selectedPlan,
     });
   } catch (error) {
-    console.error("[Register] Error:", error.message, error.stack);
-    res.status(500).json({ error: "Serverio klaida: " + error.message });
+    console.error("[Register] Error:", error.message);
+    res.status(500).json({ error: "Server error. Please try again." });
   }
 });
 

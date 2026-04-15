@@ -521,58 +521,30 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
 <section class="register-section" id="register">
   <div class="reg-card" id="reg-form-wrap">
     <div id="reg-form">
-      <h2 class="reg-title" data-i18n="reg.title">Get started today</h2>
-      <p class="reg-sub" data-i18n="reg.sub">14-day free trial. Card not charged immediately.</p>
+      <h2 class="reg-title" data-i18n="reg.title">Start your free trial</h2>
+      <p class="reg-sub">14 days free. No credit card. No obligations.</p>
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(this,'reg')" data-i18n="reg.tab1">Register</button>
-        <button class="tab-btn" onclick="switchTab(this,'login')" data-i18n="reg.tab2">Login</button>
+        <button class="tab-btn active" onclick="switchTab(this,'reg')">Register</button>
+        <button class="tab-btn" onclick="switchTab(this,'login')">Login</button>
       </div>
       <div class="field-group">
-        <label class="field-label" data-i18n="reg.email">Email</label>
-        <input class="field-input" type="email" placeholder="your@email.com" data-i18n-ph="reg.emailph" id="reg-email">
+        <label class="field-label">Email</label>
+        <input class="field-input" type="email" placeholder="your@email.com" id="reg-email">
       </div>
-      <div class="field-group" id="pwd-wrap">
-        <label class="field-label" data-i18n="reg.pwd">Password</label>
-        <input class="field-input" type="password" placeholder="Minimum 12 characters" data-i18n-ph="reg.pwdph" id="reg-pwd">
+      <div class="field-group" id="pwd-wrap" style="display:none">
+        <label class="field-label">Password</label>
+        <input class="field-input" type="password" placeholder="Minimum 12 characters" id="reg-pwd">
       </div>
-      <div id="plan-wrap">
-        <div class="field-group" style="margin-bottom:0.5rem">
-          <label class="field-label" data-i18n="reg.plan">Plan</label>
-        </div>
-        <div class="plan-toggle-reg">
-          <div class="plan-opt sel" id="ro-personal" onclick="regTogglePlan('personal')">
-            <div class="plan-opt-name" data-i18n="reg.p1">Personal</div>
-            <div class="plan-opt-price" id="ro-p1-price">&#8364;3,50</div>
-            <div class="plan-opt-sub">/mo</div>
-          </div>
-          <div class="plan-opt" id="ro-business" onclick="regTogglePlan('business')">
-            <div class="plan-opt-name" data-i18n="reg.p2">Business</div>
-            <div class="plan-opt-price" id="ro-p2-price">&#8364;7,99</div>
-            <div class="plan-opt-sub">/mo</div>
-          </div>
-        </div>
-        <div class="billing-row" onclick="toggleRegBilling()" id="billing-toggle-reg">
-          <div class="billing-info">
-            <strong id="billing-toggle-text" data-i18n="reg.bill">Switch to annual plan</strong><br>
-            <span id="billing-toggle-sub" data-i18n="reg.billsub">Save 2 months &#8212; pay once</span>
-          </div>
-          <span class="billing-pill" id="billing-pill-label" data-i18n="reg.billpill">ANNUAL</span>
-        </div>
-      </div>
-      <div class="stripe-section" id="payment-wrap">
-        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-          <span class="stripe-head-label" data-i18n="reg.stripe">Payment via Stripe</span>
-          <div class="card-chips">
-            <span class="chip">VISA</span>
-            <span class="chip">MC</span>
-            <span class="chip">APPLE PAY</span>
-          </div>
-        </div>
-        <div class="stripe-note" data-i18n="reg.stripenote">&#128274; After registration you'll be redirected to a secure Stripe payment form. BeSafe never sees your card data.</div>
+      <div style="background:rgba(46,204,138,0.06);border:1px solid rgba(46,204,138,0.12);border-radius:10px;padding:1rem;margin-bottom:1rem">
+        <p style="color:#9dc4a8;font-size:0.82rem;line-height:1.7;margin:0;text-align:center">
+          &#10003; No credit card required<br>
+          &#10003; Full access for 14 days<br>
+          &#10003; Your data stays on your device
+        </p>
       </div>
       <div id="reg-error" style="display:none;background:rgba(204,68,68,0.1);border:1px solid rgba(204,68,68,0.3);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#e88"></div>
-      <button class="submit-btn" id="submit-btn" onclick="doRegister()" data-i18n="reg.submit">Start 14-day trial &#8594;</button>
-      <div class="secure-row" data-i18n="reg.secure">&#128274; SSL encryption &#183; No hidden fees &#183; Cancel anytime</div>
+      <button class="submit-btn" id="submit-btn" onclick="doRegister()">Start free trial &#8594;</button>
+      <div class="secure-row">&#128274; No credit card &#183; No obligations &#183; Cancel anytime</div>
     </div>
     <!-- LICENSE SUCCESS -->
     <div class="lic-success" id="lic-success">
@@ -741,8 +713,7 @@ async function doRegister(){
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: email.value.trim(),
-        plan: selectedPlan,
-        billing: regAnnual ? 'annual' : 'monthly',
+        plan: 'personal',
       }),
     });
 
@@ -761,20 +732,10 @@ async function doRegister(){
     document.getElementById('reg-form').style.display = 'none';
     document.getElementById('lic-success').classList.add('show');
 
-    // Redirect to Stripe Checkout after 3 seconds
-    if (data.checkout_url) {
-      const infoEl = document.querySelector('.lic-info');
-      if (infoEl) {
-        infoEl.innerHTML += '<br><br><strong style="color:var(--accent)">Nukreipiame i mokejimo forma...</strong>';
-      }
-      setTimeout(() => {
-        window.location.href = data.checkout_url;
-      }, 3000);
-    }
   } catch (err) {
-    showRegError('Serverio klaida. Bandykite dar karta.');
+    showRegError('Something went wrong. Please try again.');
     btn.disabled = false;
-    btn.textContent = 'Pradeti 14 dienu bandyma \u2192';
+    btn.textContent = 'Start free trial \u2192';
     btn.style.opacity = '1';
   }
 }
