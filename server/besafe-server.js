@@ -370,8 +370,8 @@ app.post("/api/register", async (req, res) => {
       trial_days: TRIAL_DAYS,
     });
   } catch (error) {
-    console.error("[Register] Error:", error.message);
-    res.status(500).json({ error: "Serverio klaida. Bandykite dar karta." });
+    console.error("[Register] Error:", error.message, error.stack);
+    res.status(500).json({ error: "Serverio klaida: " + error.message });
   }
 });
 
