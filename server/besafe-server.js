@@ -1037,8 +1037,8 @@ app.post("/api/create-checkout", async (req, res) => {
 
     res.json({ checkout_url: session.url });
   } catch (error) {
-    console.error("[Checkout] Error:", error.message);
-    res.status(500).json({ error: "Failed to create checkout session." });
+    console.error("[Checkout] Error:", error.message, error.type, error.code);
+    res.status(500).json({ error: "Checkout failed: " + error.message });
   }
 });
 
@@ -1089,8 +1089,8 @@ app.post("/api/create-portal", async (req, res) => {
 
     res.json({ portal_url: portalSession.url });
   } catch (error) {
-    console.error("[Portal] Error:", error.message);
-    res.status(500).json({ error: "Failed to create portal session." });
+    console.error("[Portal] Error:", error.message, error.type, error.code);
+    res.status(500).json({ error: "Portal failed: " + error.message });
   }
 });
 
