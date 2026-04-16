@@ -93,6 +93,12 @@ Suggestion: ${suggestion}
 `.trim();
 }
 
-module.exports = {
-  getAdvice
-};
+// CommonJS export (for Node/tests)
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getAdvice };
+}
+
+// Browser global
+if (typeof window !== "undefined") {
+  window.getAdvice = getAdvice;
+}

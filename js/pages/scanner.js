@@ -1,3 +1,6 @@
+// DEPRECATED: This stub page is no longer used.
+// Functionality moved to: js/ui/receipt-scanner.js (openReceiptScanner)
+//
 // scanner.js
 // BeSafe Barcode Scanner Page
 

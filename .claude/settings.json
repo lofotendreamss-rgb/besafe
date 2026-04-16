@@ -37,7 +37,9 @@
       "Bash(curl -s -X POST https://besafe-oga3.onrender.com/api/create-checkout -H \"Content-Type: application/json\" -d '{\"email\":\"realtest@test.com\",\"plan\":\"personal\",\"billing\":\"monthly\"}')",
       "Bash(curl -s -X POST https://besafe-oga3.onrender.com/api/create-portal -H \"Content-Type: application/json\" -d '{\"email\":\"realtest@test.com\"}')",
       "Read(//tmp/**)",
-      "Bash(node --input-type=module -e ' *)"
+      "Bash(node --input-type=module -e ' *)",
+      "Bash(cmd.exe /c \"rmdir /s /q dist\")",
+      "Bash(cmd.exe /c \"start \\\\\"\\\\\" \\\\\"c:\\\\\\\\Users\\\\\\\\lofot\\\\\\\\OneDrive\\\\\\\\Desktop\\\\\\\\BeSafe\\\\\\\\dist\\\\\\\\win-unpacked\\\\\\\\BeSafe.exe\\\\\"\")"
     ],
     "additionalDirectories": [
       "C:\\Projects\\BeSafe",

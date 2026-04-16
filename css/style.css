@@ -9806,3 +9806,137 @@ p[data-splash-lang].is-visible{
   opacity:1;
 }
 
+/* =============================================
+   AI Insights Section
+   ============================================= */
+
+.home-insights-section {
+  margin-top: 1rem;
+}
+
+.insights-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.insight-loading {
+  color: var(--text-secondary, #94a3b8);
+  font-size: 0.875rem;
+  padding: 0.75rem 0;
+}
+
+.insight-card {
+  background: var(--card-bg, rgba(255,255,255,0.04));
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--border-color, #334155);
+}
+
+.insight-card--score {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-left-color: #9ae6c1;
+}
+
+.insight-card--stable {
+  border-left-color: #9ae6c1;
+}
+
+.insight-card--neutral {
+  border-left-color: #94a3b8;
+}
+
+.insight-card--attention {
+  border-left-color: #e7a99a;
+}
+
+.insight-card--alert {
+  border-left-color: #e8c547;
+}
+
+.insight-score {
+  flex-shrink: 0;
+}
+
+.insight-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.insight-observation {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary, #e2e8f0);
+  margin-bottom: 0.25rem;
+}
+
+.insight-explanation {
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #94a3b8);
+  margin-bottom: 0.25rem;
+}
+
+.insight-suggestion {
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #94a3b8);
+  font-style: italic;
+}
+
+.ai-insight-card {
+  background: var(--card-bg, rgba(255,255,255,0.04));
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.ai-insight-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9375rem;
+}
+
+.ai-message {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #94a3b8);
+  margin-bottom: 0.75rem;
+}
+
+.ai-advisor-btn {
+  font-size: 0.8125rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #334155);
+  background: transparent;
+  color: var(--text-primary, #e2e8f0);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ai-advisor-btn:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.finance-score-box {
+  background: var(--card-bg, rgba(255,255,255,0.04));
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.finance-score-box h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9375rem;
+}
+
+.finance-autopilot {
+  background: var(--card-bg, rgba(255,255,255,0.04));
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #94a3b8);
+}
+

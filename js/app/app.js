@@ -11,6 +11,9 @@ import {
 // License checker — auto-runs on import, checks every 24h
 import "../core/license.checker.js";
 
+// Services connector — wires disconnected AI + Finance services
+import { initConnectedServices, getFinancialInsights, getFinancialScore, getSpendingAlerts, triggerAIInsightRender } from "../core/services.connector.js";
+
 class App {
   constructor() {
     this.started = false;
@@ -62,6 +65,9 @@ class App {
     try {
       await bootSystem();
       window.__services = registry;
+
+      // Connect disconnected AI + Finance services
+      await initConnectedServices();
     } catch (error) {
       console.error("[App] bootSystem failed:", error);
       this.renderFatalError(
@@ -590,6 +596,14 @@ class App {
 
 const app = new App();
 window.__app = app;
+
+// Expose connector API globally for UI and old-style scripts
+window.__besafe = {
+  getFinancialInsights,
+  getFinancialScore,
+  getSpendingAlerts,
+  triggerAIInsightRender
+};
 
 function loadOnboardingGuide() {
   import('../ui/onboarding-guide.js').then(m => {

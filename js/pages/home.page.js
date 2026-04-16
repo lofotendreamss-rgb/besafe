@@ -393,6 +393,93 @@ export class HomePage {
     }
 
     this.addEventListeners();
+
+    // Load AI insights into the dashboard
+    this.loadInsights();
+  }
+
+  async loadInsights() {
+    const container = document.getElementById("besafe-insights");
+    if (!container) return;
+
+    try {
+      const api = window.__besafe;
+      if (!api) return;
+
+      const [insights, scoreResult, alerts] = await Promise.all([
+        api.getFinancialInsights(),
+        api.getFinancialScore(),
+        api.getSpendingAlerts()
+      ]);
+
+      let html = "";
+
+      // Financial health score
+      if (scoreResult && scoreResult.score !== null) {
+        const score = scoreResult.score;
+        const color = score >= 75 ? "#9ae6c1" : score >= 50 ? "#e8c547" : "#e7a99a";
+        html += `
+          <div class="insight-card insight-card--score">
+            <div class="insight-score" style="color:${color}; font-size:28px; font-weight:bold;">
+              ${score}/100
+            </div>
+            <div class="insight-label">${this.escapeHtml(
+              this.t("home.insights.score", "Financial Health")
+            )}</div>
+          </div>
+        `;
+      }
+
+      // Advisor insights
+      if (insights && insights.length > 0) {
+        insights.forEach(item => {
+          if (!item.observation) return;
+          const toneClass = item.tone === "attention" ? "insight-card--attention"
+            : item.tone === "stable" ? "insight-card--stable"
+            : "insight-card--neutral";
+
+          html += `
+            <div class="insight-card ${toneClass}">
+              <div class="insight-observation">${this.escapeHtml(item.observation)}</div>
+              ${item.explanation ? `<div class="insight-explanation">${this.escapeHtml(item.explanation)}</div>` : ""}
+              ${item.suggestion ? `<div class="insight-suggestion">${this.escapeHtml(item.suggestion)}</div>` : ""}
+            </div>
+          `;
+        });
+      }
+
+      // Spending alerts
+      if (alerts && alerts.length > 0) {
+        alerts.forEach(alert => {
+          if (!alert.observation) return;
+          html += `
+            <div class="insight-card insight-card--alert">
+              <div class="insight-observation">${this.escapeHtml(alert.observation)}</div>
+              ${alert.suggestion ? `<div class="insight-suggestion">${this.escapeHtml(alert.suggestion)}</div>` : ""}
+            </div>
+          `;
+        });
+      }
+
+      if (!html) {
+        html = `<div class="insight-card insight-card--neutral">
+          <div class="insight-observation">${this.escapeHtml(
+            this.t("home.insights.noData", "Add some transactions to see AI insights here.")
+          )}</div>
+        </div>`;
+      }
+
+      container.innerHTML = html;
+
+      // Also trigger the old-style AI insight renderer
+      if (window.__besafe) {
+        window.__besafe.triggerAIInsightRender();
+      }
+
+    } catch (error) {
+      console.warn("[HomePage] Failed to load insights:", error);
+      container.innerHTML = "";
+    }
   }
 
   async onLeave() {
@@ -596,6 +683,7 @@ export class HomePage {
       root.innerHTML = await this.render();
       this.bindQuickActions(root);
       this.syncHomeIntroState(root);
+      this.loadInsights();
     } finally {
       this.isUpdating = false;
     }

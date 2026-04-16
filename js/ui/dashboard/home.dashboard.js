@@ -254,6 +254,34 @@ function renderBusinessHintSection(t) {
   `;
 }
 
+function renderInsightsSection(t) {
+  return `
+    <section class="section home-insights-section" aria-label="${escapeHtml(
+      t("home.insights.aria", "AI Insights")
+    )}">
+      <div class="home-section-header home-section-header--compact">
+        <p class="home-section-header__eyebrow">${escapeHtml(
+          t("home.insights.eyebrow", "AI Advisor")
+        )}</p>
+        <h2 class="home-section-header__title">${escapeHtml(
+          t("home.insights.title", "Insights")
+        )}</h2>
+        <p class="home-section-header__subtitle">${escapeHtml(
+          t("home.insights.subtitle", "BeSafe is reviewing your financial data.")
+        )}</p>
+      </div>
+
+      <div id="besafe-insights" class="insights-container">
+        <div class="insight-loading">${escapeHtml(
+          t("home.insights.loading", "Analyzing...")
+        )}</div>
+      </div>
+
+      <div id="aiInsight"></div>
+    </section>
+  `;
+}
+
 export function renderHomeDashboard(summary) {
   const lang = getDashboardLanguage();
   const locale = getDashboardLocale(lang);
@@ -282,6 +310,8 @@ export function renderHomeDashboard(summary) {
         currency,
         safeSummary.isBusinessPlan
       )}
+
+      ${renderInsightsSection(t)}
 
       ${renderPlacesSignalSection(
         t,

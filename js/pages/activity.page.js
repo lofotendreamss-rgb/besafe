@@ -1,3 +1,6 @@
+// DEPRECATED: This stub page is no longer used.
+// Functionality moved to: js/pages/transactions.page.js (TransactionsPage)
+//
 // activity.page.js
 // BeSafe Activity Page
 
