@@ -247,13 +247,20 @@ function injectCSS() {
     .rs-saved__title { font-size: 18px; font-weight: 700; color: #2ecc8a; margin: 0 0 8px }
     .rs-saved__text  { font-size: 14px; color: #8aa898; margin: 0 0 24px }
     .rs-saved__link {
-      display: inline-block; padding: 10px 24px;
-      background: rgba(46,204,138,.12); border: 1px solid rgba(46,204,138,.25);
-      border-radius: 12px; color: #2ecc8a; font-size: 14px; font-weight: 600;
+      display: block; width: 100%; padding: 14px 24px;
+      background: #2ecc8a; border: none;
+      border-radius: 2rem; color: #080d0b; font-size: 15px; font-weight: 700;
       cursor: pointer; text-decoration: none;
-      transition: background .2s;
+      transition: all .2s; font-family: inherit; margin-top: 8px;
     }
-    .rs-saved__link:hover { background: rgba(46,204,138,.2) }
+    .rs-saved__link:hover { background: #1a9e66; transform: translateY(-1px); }
+    .rs-saved__close {
+      display: block; width: 100%; padding: 12px 24px;
+      background: transparent; border: 1px solid rgba(157,177,168,0.3);
+      border-radius: 2rem; color: #9dc4a8; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all .2s; font-family: inherit; margin-top: 8px;
+    }
+    .rs-saved__close:hover { border-color: #2ecc8a; color: #2ecc8a; }
 
     /* mobile */
     @media (max-width: 520px) {
@@ -450,7 +457,8 @@ function renderSavedStep() {
         <div><strong style="color:#f2f8f4">Date:</strong> ${formData.date || "today"}</div>
       </div>
       <p class="rs-saved__text">Your expense has been recorded in Transactions.</p>
-      <button class="rs-saved__link" data-rs-view>View in Transactions</button>
+      <button class="rs-saved__link" data-rs-view>View in Transactions \u2192</button>
+      <button class="rs-saved__close" data-rs-close-done>Close</button>
     </div>
   `;
 }
@@ -554,10 +562,15 @@ function bindEvents() {
   if (viewBtn) {
     viewBtn.addEventListener("click", () => {
       closeScanner();
-      // Navigate to transactions via existing nav system
       const navBtn = document.querySelector('[data-nav="transactions"]');
       if (navBtn) navBtn.click();
     });
+  }
+
+  // Step 4 — Close
+  const closeDoneBtn = overlay.querySelector("[data-rs-close-done]");
+  if (closeDoneBtn) {
+    closeDoneBtn.addEventListener("click", closeScanner);
   }
 
   // Escape key
