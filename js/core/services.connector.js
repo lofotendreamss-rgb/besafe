@@ -78,6 +78,29 @@ export async function getFinancialScore() {
       }
     }
 
+    // Fallback 3: Calculate from raw transaction data
+    try {
+      const transactionService = registry.getOptional("transactions");
+      if (transactionService && typeof transactionService.getTransactions === "function") {
+        const transactions = await transactionService.getTransactions();
+        if (Array.isArray(transactions) && transactions.length > 0) {
+          const income = transactions.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount || 0), 0);
+          const expenses = transactions.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount || 0), 0);
+          if (income === 0 && expenses === 0) return { score: 50, source: "default" };
+          const ratio = expenses / (income || 1);
+          let score = 100;
+          if (ratio > 1.0) score = 30;
+          else if (ratio > 0.9) score = 45;
+          else if (ratio > 0.8) score = 60;
+          else if (ratio > 0.7) score = 75;
+          else score = 90;
+          return { score, source: "transactions" };
+        }
+      }
+    } catch (e) {
+      console.warn("[Connector] Transaction fallback failed:", e);
+    }
+
     return { score: null, source: "unavailable" };
   } catch (error) {
     console.warn("[Connector] getFinancialScore failed:", error);

@@ -464,7 +464,7 @@ export class HomePage {
       if (!html) {
         html = `<div class="insight-card insight-card--neutral">
           <div class="insight-observation">${this.escapeHtml(
-            this.t("home.insights.noData", "Add some transactions to see AI insights here.")
+            this.t("home.insights.noData", "Add your first entries to see insights here.")
           )}</div>
         </div>`;
       }
