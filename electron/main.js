@@ -619,16 +619,9 @@ function createMainWindow() {
 }
 
 function createWindow() {
-  // Check if license already saved
-  // This will be checked via IPC from the license window
-  const licWin = createLicenseWindow();
-
-  // Listen for successful activation
-  ipcMain.once("license:verified", (_event, key) => {
-    console.log("[License] Verified:", key);
-    licWin.close();
-    createMainWindow();
-  });
+  // For now, skip license check and go straight to main app
+  // License is checked by license.checker.js inside the app
+  createMainWindow();
 }
 
 // ---------------------------------------------------------------------------
