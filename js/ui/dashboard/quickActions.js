@@ -1837,8 +1837,6 @@ export class QuickActions {
         >${escapeHtml(safeValues.note || "")}</textarea>
       </label>
 
-      ${this.renderPlaceField("receipt-scanner", safeValues)}
-
       <input type="hidden" name="receiptImageName" value="${escapeHtml(this.pendingScannerFile?.name || safeValues.receiptImageName || "")}">
     `;
   }
@@ -1894,40 +1892,33 @@ export class QuickActions {
           >
             ${this.renderFormFields(action, values, errors)}
 
-            <div class="quick-action-form__actions">
-              <button
-                type="button"
-                class="quick-action-form__secondary"
-                data-close-quick-action
-              >
-                ${escapeHtml(this.copy.common.cancel)}
-              </button>
-
-              ${action === "receipt-scanner" && this.scannerStep === "preview" ? `
+            <div style="display:flex;gap:8px;margin-top:10px;flex-direction:row;align-items:stretch">
+              ${action === "receipt-scanner" && this.scannerStep === "scan" ? `
+              ` : action === "receipt-scanner" && this.scannerStep === "scanning" ? `
+              ` : action === "receipt-scanner" && this.scannerStep === "preview" ? `
                 <button
                   type="button"
                   class="quick-action-form__secondary"
-                  data-scanner-edit
-                >
-                  ✏️ ${escapeHtml(this.t("quickActions.receiptScanner.editButton", "Pataisyti"))}
-                </button>
+                  data-close-quick-action
+                  style="flex:1"
+                >${escapeHtml(this.copy.common.cancel)}</button>
                 <button
                   type="submit"
                   class="quick-action-form__primary"
-                >
-                  ${escapeHtml(this.t("quickActions.receiptScanner.saveButton", "Išsaugoti"))}
-                </button>
-              ` : action === "receipt-scanner" && this.scannerStep === "scan" ? `
-                <!-- no submit button on scan step -->
-              ` : action === "receipt-scanner" && this.scannerStep === "scanning" ? `
-                <!-- no buttons while scanning -->
+                  style="flex:2"
+                >${escapeHtml(this.t("quickActions.receiptScanner.saveButton", "Išsaugoti"))}</button>
               ` : `
                 <button
+                  type="button"
+                  class="quick-action-form__secondary"
+                  data-close-quick-action
+                  style="flex:1"
+                >${escapeHtml(this.copy.common.cancel)}</button>
+                <button
                   type="submit"
                   class="quick-action-form__primary"
-                >
-                  ${escapeHtml(actionCopy.submit || this.copy.common.save)}
-                </button>
+                  style="flex:2"
+                >${escapeHtml(actionCopy.submit || this.copy.common.save)}</button>
               `}
             </div>
           </form>
