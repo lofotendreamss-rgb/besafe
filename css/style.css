@@ -1231,14 +1231,14 @@ button.is-busy,
 .quick-action-form{
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:8px;
   margin-top:2px;
 }
 
 .quick-action-form__field{
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:4px;
 }
 
 .quick-action-form__label{
@@ -1505,8 +1505,8 @@ select.quick-action-form__input{
   -webkit-overflow-scrolling:touch;
   display:flex;
   flex-direction:column;
-  gap:14px;
-  padding:14px 14px 18px;
+  gap:10px;
+  padding:12px 14px 14px;
   border-radius:24px 24px 20px 20px;
   border:1px solid rgba(127,209,173,0.20);
   background:

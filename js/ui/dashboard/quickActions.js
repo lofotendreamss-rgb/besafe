@@ -1491,32 +1491,12 @@ export class QuickActions {
     }
 
     const safeValues = this.normalizeDraftValues(values);
-    const hasPlaces = this.availablePlaces.length > 0;
     const isLoading = this.isLoadingPlaces;
     const selectedPlaceId = safeValues.placeId || "";
     const selectedPlace = this.getSelectedPlace(safeValues);
-    const helperText =
-      action === "receipt-scanner"
-        ? isLoading
-          ? this.copy.common.placeLoading
-          : hasPlaces
-            ? this.copy.common.scannerReviewPlaceHintReady
-            : this.copy.common.scannerReviewPlaceHintMissing
-        : isLoading
-          ? this.copy.common.placeLoading
-          : hasPlaces
-            ? (
-                this.isBusinessPlan()
-                  ? this.t(
-                      "quickActions.common.placeHelp.business",
-                      "Link this entry to a place so you can review activity and compare results later."
-                    )
-                  : this.copy.common.placeHelp
-              )
-            : this.copy.common.placeEmpty;
 
     return `
-      <div class="quick-action-form__field">
+      <div class="quick-action-form__field" style="margin-bottom:4px">
         <span class="quick-action-form__label">${escapeHtml(
           this.copy.common.place
         )}</span>
@@ -1534,20 +1514,9 @@ export class QuickActions {
           value="${escapeHtml(safeValues.placeName || "")}"
           data-place-name-input
         >
-        <p class="quick-action-form__helper">
-          ${escapeHtml(helperText)}
-        </p>
         ${
-          action === "receipt-scanner"
-            ? `
-          <p class="quick-action-form__helper" style="margin-top:0.35rem;">
-            ${escapeHtml(
-              selectedPlace
-                ? `${this.copy.common.scannerReviewPlaceLinkedPrefix}: ${selectedPlace.name}`
-                : this.copy.common.scannerReviewPlacePending
-            )}
-          </p>
-        `
+          action === "receipt-scanner" && selectedPlace
+            ? `<p class="quick-action-form__helper" style="margin:2px 0 0;font-size:11px">${escapeHtml(this.copy.common.scannerReviewPlaceLinkedPrefix)}: ${escapeHtml(selectedPlace.name)}</p>`
             : ""
         }
         ${!isLoading ? `
@@ -1555,7 +1524,7 @@ export class QuickActions {
             type="button"
             class="quick-action-form__secondary"
             data-create-place-inline
-            style="margin-top:0.5rem;"
+            style="margin-top:4px;padding:6px 12px;font-size:12px"
           >
             ${escapeHtml(this.t("quickActions.common.createPlaceLabel", "Sukurti vietą"))}
           </button>
@@ -1602,7 +1571,7 @@ export class QuickActions {
     const hasCategories = this.getCategoryList(action).length > 0;
 
     return `
-      <div class="quick-action-form__field">
+      <div class="quick-action-form__field" style="margin-bottom:6px">
         <span class="quick-action-form__label">${escapeHtml(
           this.copy.common.category
         )}</span>
@@ -1634,11 +1603,11 @@ export class QuickActions {
     return `
       ${isReceipt ? this.renderReceiptImageField(safeValues) : ""}
 
-      <p style="font-size:12px;color:#5a7d67;margin:0 0 10px">${escapeHtml(actionCopy.intro)}</p>
+      <p style="font-size:11px;color:#5a7d67;margin:0 0 6px">${escapeHtml(actionCopy.intro)}</p>
 
       ${this.renderCategoryField(action, safeValues, errors.category || "")}
 
-      <div style="display:flex;gap:8px;margin-bottom:10px">
+      <div style="display:flex;gap:8px;margin-bottom:6px">
         <label style="flex:1">
           <span class="quick-action-form__label">${escapeHtml(this.copy.common.amount)}</span>
           <input
@@ -1663,7 +1632,7 @@ export class QuickActions {
         </label>
       </div>
 
-      <label class="quick-action-form__field" style="margin-bottom:10px">
+      <label class="quick-action-form__field" style="margin-bottom:6px">
         <span class="quick-action-form__label">${escapeHtml(this.copy.common.note)}</span>
         <textarea
           class="quick-action-form__input"
@@ -1892,7 +1861,7 @@ export class QuickActions {
           >
             ${this.renderFormFields(action, values, errors)}
 
-            <div style="display:flex;gap:8px;margin-top:10px;flex-direction:row;align-items:stretch">
+            <div style="display:flex;gap:8px;margin-top:6px;flex-direction:row;align-items:stretch">
               ${action === "receipt-scanner" && this.scannerStep === "scan" ? `
               ` : action === "receipt-scanner" && this.scannerStep === "scanning" ? `
               ` : action === "receipt-scanner" && this.scannerStep === "preview" ? `
