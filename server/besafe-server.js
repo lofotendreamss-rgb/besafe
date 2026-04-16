@@ -358,6 +358,7 @@ app.post("/api/register", async (req, res) => {
       license_key: licenseKey,
       user_id: userId,
       plan: selectedPlan,
+      billing: "monthly",
       status: "trial",
       devices_used: 0,
       devices_max: MAX_DEVICES,
