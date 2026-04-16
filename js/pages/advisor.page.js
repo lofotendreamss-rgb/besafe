@@ -101,7 +101,7 @@ export function initAdvisorPage(dependencies = {}) {
 
     getCurrentLocale() {
       const language = String(getCurrentLanguage?.() || "en").toLowerCase();
-      const localeMap = { lt: "lt-LT", en: "en-GB", pl: "pl-PL", de: "de-DE", es: "es-ES", fr: "fr-FR", it: "it-IT", ru: "ru-RU", uk: "uk-UA", no: "nb-NO", sv: "sv-SE", ja: "ja-JP", zh: "zh-CN" };
+      const localeMap = { lt: "lt-LT", en: "en-GB", pl: "pl-PL", de: "de-DE", es: "es-ES", fr: "fr-FR", it: "it-IT", ru: "ru-RU", uk: "uk-UA", no: "nb-NO", sv: "sv-SE", ja: "ja-JP", zh: "zh-CN", pt: "pt-BR" };
       return localeMap[language] || "en-GB";
     },
 

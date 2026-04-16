@@ -40,6 +40,7 @@
           <p class="splash__phrase" data-splash-lang="fr" data-text="Laissez BeSafe travailler pour vous."></p>
           <p class="splash__phrase" data-splash-lang="it" data-text="Lascia che BeSafe lavori per te."></p>
           <p class="splash__phrase" data-splash-lang="uk" data-text="Нехай BeSafe працює за вас."></p>
+          <p class="splash__phrase" data-splash-lang="pt" data-text="Deixe o BeSafe trabalhar por você."></p>
           <p class="splash__phrase" data-splash-lang="ja" data-text="BeSafeがあなたのために働きます。"></p>
           <p class="splash__phrase" data-splash-lang="zh" data-text="让BeSafe为您工作。"></p>
         </div>
@@ -57,6 +58,7 @@
             <span data-splash-lang="no">Velg språk</span>
             <span data-splash-lang="sv">Välj språk</span>
             <span data-splash-lang="uk">Оберіть мову</span>
+            <span data-splash-lang="pt">Escolha seu idioma</span>
             <span data-splash-lang="ja">言語を選択</span>
             <span data-splash-lang="zh">选择语言</span>
           </p>
@@ -84,6 +86,9 @@
             </button>
             <button data-lang="pl" type="button" class="splash__lang-btn" aria-label="Polski język">
               Polski
+            </button>
+            <button data-lang="pt" type="button" class="splash__lang-btn" aria-label="Língua portuguesa">
+              Português
             </button>
             <button data-lang="sv" type="button" class="splash__lang-btn" aria-label="Svenska språket">
               Svenska
@@ -114,6 +119,7 @@
             <span data-splash-lang="no">Start</span>
             <span data-splash-lang="sv">Starta</span>
             <span data-splash-lang="uk">Почати</span>
+            <span data-splash-lang="pt">Iniciar</span>
             <span data-splash-lang="ja">始める</span>
             <span data-splash-lang="zh">开始</span>
           </button>
@@ -123,7 +129,7 @@
       <script>
         (function() {
           // Splash: rodyti numatytąją kalbą, typewriter, mygtukai
-          var supportedLangs = ["de", "en", "es", "fr", "it", "lt", "no", "pl", "sv", "ru", "uk", "zh", "ja"];
+          var supportedLangs = ["de", "en", "es", "fr", "it", "lt", "no", "pl", "pt", "sv", "ru", "uk", "zh", "ja"];
           var defaultLang = "lt";
           try {
             var saved = localStorage.getItem("besafe_lang");
@@ -880,6 +886,11 @@
         <button type="button" class="lang-modal__option" data-lang-select="pl">
           <span class="lang-modal__flag">&#127477;&#127473;</span>
           <span class="lang-modal__label">Polski</span>
+          <span class="lang-modal__check">&#10003;</span>
+        </button>
+        <button type="button" class="lang-modal__option" data-lang-select="pt">
+          <span class="lang-modal__flag">&#127463;&#127479;</span>
+          <span class="lang-modal__label">Português</span>
           <span class="lang-modal__check">&#10003;</span>
         </button>
         <button type="button" class="lang-modal__option" data-lang-select="sv">

@@ -8116,6 +8116,791 @@ const dictionaries = {
     "common.delete": "Видалити",
     "common.unknownDate": "Дата не вказана",
   },
+
+  pt: {
+    /* ========================= */
+    /* LANGUAGE */
+    /* ========================= */
+    "language.name": "Português",
+    "language.option.en": "English",
+    "language.option.lt": "Lithuanian",
+    "language.option.en.aria": "Escolher idioma inglês",
+    "language.option.lt.aria": "Escolher idioma lituano",
+    "language.screen.description":
+      "BeSafe ajuda você a entender sua situação financeira de forma clara e tranquila.",
+    "language.screen.promise":
+      "Informação precisa, tom calmo e um próximo passo claro — sem pressão e sem suposições.",
+
+    /* ========================= */
+    /* APP / NAVIGATION */
+    /* ========================= */
+    "app.brand": "BeSafe",
+    "app.home": "Visão geral financeira",
+    "app.advisor": "Cálculos financeiros",
+    "app.chat": "Chat",
+    "app.transactions": "Transações",
+    "app.places": "Locais",
+    "app.reports": "Relatórios",
+    "app.subtitle.home":
+      "Veja seus números principais com clareza e escolha seu próximo passo com calma.",
+
+    "plan.switch.toBusiness": "Mudar para Business",
+    "plan.switch.toPersonal": "Mudar para Personal",
+    "plan.current.personal": "Plano pessoal ativo",
+    "plan.current.business": "Plano empresarial ativo",
+    "plan.label.personal": "Pessoal",
+    "plan.label.business": "Business",
+
+    "app.subtitle.advisor":
+      "Um espaço de trabalho prático para cálculos baseados nos seus dados fornecidos.",
+    "app.subtitle.chat":
+      "Faça uma pergunta e continue com um próximo passo claro.",
+    "app.subtitle.transactions": "Um lugar claro para seus registros financeiros.",
+    "app.subtitle.reports":
+      "Um lugar claro para resumos, relatórios e exportações salvas.",
+
+    "app.error.title": "BeSafe não conseguiu iniciar agora",
+    "app.error.followUp":
+      "Podemos verificar calmamente a mensagem do console e escolher um próximo passo claro.",
+    "app.error.boot.message":
+      "O sistema não conseguiu iniciar agora. Podemos verificar calmamente a conexão, importações e um próximo passo claro.",
+    "app.error.language.message":
+      "Não foi possível continuar após a seleção de idioma agora. Podemos verificar calmamente onde este passo parou.",
+    "app.error.start.message":
+      "O aplicativo não pôde ser exibido agora. Podemos verificar calmamente qual camada está falhando e continuar a partir de um próximo passo claro.",
+
+    "navigation.open.home": "Abrir página Início",
+    "navigation.open.transactions": "Abrir página de Transações",
+    "navigation.open.advisor": "Abrir página de Cálculos Financeiros",
+    "navigation.open.reports": "Abrir página de Relatórios",
+
+    "navigation.error.title": 'Não foi possível abrir a página "{page}" agora',
+    "navigation.error.description": "Ocorreu um erro desconhecido.",
+    "navigation.error.followUp":
+      "Podemos tentar novamente com calma ou escolher um próximo passo claro.",
+
+    /* ========================= */
+    /* HOME */
+    /* ========================= */
+    "home.hero.aria": "Uma mensagem tranquila sobre sua situação atual",
+    "home.hero.eyebrow": "BeSafe",
+    "home.hero.title": "Sua clareza financeira começa aqui.",
+
+    "home.hero.statePositiveEyebrow": "Estado atual",
+    "home.hero.statePositiveTitle": "Sua situação está estável agora",
+    "home.hero.statePositiveText":
+      "As receitas estão atualmente à frente das despesas. Você pode revisar o panorama com calma e então escolher seu próximo passo.",
+
+    "home.hero.stateAttentionEyebrow": "Estado atual",
+    "home.hero.stateAttentionTitle":
+      "Este é um bom momento para revisar sua situação mais de perto",
+    "home.hero.stateAttentionText":
+      "As despesas estão atualmente à frente das receitas. BeSafe começa com uma visão clara para que a próxima decisão seja mais fácil.",
+
+    "home.hero.stateNeutralEyebrow": "Estado atual",
+    "home.hero.stateNeutralTitle": "Seu saldo está equilibrado agora",
+    "home.hero.stateNeutralText":
+      "Receitas e despesas estão atualmente iguais. Primeiro você vê a situação com clareza, depois escolhe o próximo passo.",
+
+    "home.summary.aria": "Resumo financeiro",
+    "home.summary.eyebrow": "Sua situação",
+    "home.summary.title": "Resumo financeiro",
+    "home.summary.subtitle":
+      "Comece com uma visão clara do seu saldo, receitas e despesas.",
+    "home.summary.subtitle.business":
+      "Revise seu fluxo financeiro e prepare-se para decisões mais claras.",
+    "home.summary.balance": "Saldo",
+    "home.summary.balanceHint": "Diferença entre receitas e despesas",
+    "home.summary.income": "Receitas",
+    "home.summary.incomeHint": "Todas as receitas registradas",
+    "home.summary.expenses": "Despesas",
+    "home.summary.expensesHint": "Todas as despesas registradas",
+
+    "home.places.aria": "Contexto de locais",
+    "home.places.eyebrow": "Para onde vai seu dinheiro",
+    "home.places.subtitle": "Suas despesas e receitas vêm de locais como lojas, bancos ou serviços. Você pode revisá-los depois.",
+    "home.places.subtitle.business": "Sua atividade está conectada a locais como lojas, bancos ou serviços. Você pode revisá-los em relatórios ou usá-los em cálculos.",
+    "home.places.topSignal": "Principal local de despesas neste período: {name}.",
+    "home.places.topSignal.business": "Principal local de despesas neste período: {name}. Você pode usar isso como um ponto de partida tranquilo para uma revisão mais detalhada.",
+
+    "home.business.context.aria": "Contexto empresarial",
+    "home.business.context.eyebrow": "Contexto empresarial",
+
+    "home.business.context.title.positive":
+      "Seu fluxo atual dá espaço para revisar o próximo passo de trabalho com calma.",
+    "home.business.context.title.attention":
+      "Seu fluxo atual merece uma revisão de trabalho mais detalhada.",
+
+    "home.business.context.text.positive":
+      "As receitas estão cobrindo as despesas atualmente. Você pode continuar com relatórios ou cálculos quando precisar de uma visão de trabalho mais clara.",
+    "home.business.context.text.attention":
+      "As despesas estão à frente das receitas atualmente. Este é um bom momento para abrir relatórios ou cálculos e revisar os números mais de perto.",
+
+    "home.business.context.income": "Fluxo de receitas",
+    "home.business.context.expenses": "Fluxo de despesas",
+    "home.business.context.balance": "Saldo de trabalho",
+
+    "home.actions.aria": "Ações úteis",
+    "home.actions.eyebrow": "Próximo passo",
+    "home.actions.title": "Escolha o que você quer fazer",
+    "home.actions.subtitle":
+      "BeSafe mostrará um próximo passo claro para a ação que você escolher.",
+    "home.actions.groupLabel": "Ações principais",
+    "home.actions.expense": "Adicionar despesa",
+    "home.actions.income": "Adicionar receita",
+    "home.actions.receipt": "Adicionar recibo",
+    "home.actions.receiptScanner": "Leitor de recibos",
+
+    "home.guidance.eyebrow": "Orientação BeSafe",
+    "home.guidance.title": "Escolha uma ação após revisar sua situação",
+    "home.guidance.text":
+      "Quando você escolhe uma ação, o próximo passo abre imediatamente sem tomar conta de toda a tela Início.",
+
+    "home.insights.aria": "Insights da situação",
+    "home.insights.eyebrow": "Contexto",
+    "home.insights.title": "O que mais importa agora",
+    "home.insights.subtitle":
+      "Abaixo você vê apenas o contexto que ajuda a entender melhor a situação.",
+    "home.insights.score": "Saúde Financeira",
+    "home.insights.noData": "Adicione seus primeiros registros para ver insights aqui.",
+    "home.insights.alerts": "Alertas",
+
+    "advisor.status.not_enough_data.obs": "Ainda não há informações registradas suficientes.",
+    "advisor.status.not_enough_data.exp": "Comece adicionando alguns registros de receita ou despesa para que a situação fique mais clara.",
+    "advisor.status.not_enough_data.sug": "Adicione um registro confirmado a partir do Início.",
+    "advisor.status.early_data.obs": "O panorama financeiro atual ainda é muito inicial.",
+    "advisor.status.early_data.exp": "Um pequeno número de registros pode mostrar uma direção, mas ainda é cedo para conclusões mais fortes.",
+    "advisor.status.early_data.sug": "Continue registrando entradas com precisão.",
+    "advisor.status.attention.obs": "As despesas estão atualmente maiores que as receitas.",
+    "advisor.status.attention.sug": "Revise primeiro os maiores registros de despesa.",
+    "advisor.status.attention.exp": "As despesas excedem as receitas. Revise suas maiores áreas de despesa.",
+    "advisor.status.stable.exp": "As receitas excedem as despesas. Sua situação financeira parece estável.",
+    "advisor.status.balanced.exp": "Receitas e despesas estão quase iguais. Monitore seus padrões de gasto.",
+    "advisor.status.stable.obs": "As receitas estão atualmente à frente das despesas.",
+    "advisor.status.stable.sug": "A situação parece estável agora.",
+    "advisor.status.balanced.obs": "Receitas e despesas estão muito próximas atualmente.",
+    "advisor.status.balanced.sug": "Revise as últimas despesas para manter o panorama claro.",
+    "advisor.status.category.obs": "Uma categoria principal de despesas ainda não é visível.",
+    "advisor.status.category.exp": "Continue registrando entradas com precisão. Um padrão de categorias mais claro deve aparecer com mais dados reais.",
+    "advisor.status.health.low": "Sua saúde financeira precisa de revisão urgente.",
+    "advisor.status.health.medium": "Sua saúde financeira precisa de atenção.",
+    "advisor.status.health.good": "Sua saúde financeira parece estável.",
+
+    "home.activity.eyebrow": "Atividade",
+    "home.activity.title": "Número de registros",
+    "home.activity.text":
+      "Cada registro preciso ajuda a tornar o panorama financeiro geral mais claro.",
+
+    "home.topCategory.eyebrow": "Direção de despesas",
+    "home.topCategory.emptyTitle":
+      "Uma direção mais clara aparecerá com mais registros",
+    "home.topCategory.emptyText":
+      "Quando houver mais dados precisos, você verá qual direção de despesas se destaca mais.",
+    "home.topCategory.title": "Maior direção de despesas agora",
+    "home.topCategory.textStart":
+      "A maior parte dos gastos agora está na categoria",
+
+    "home.recent.eyebrow": "Atividade recente",
+    "home.recent.title": "Últimos registros",
+    "home.recent.emptyTitle": "Ainda não há registros",
+    "home.recent.emptyText":
+      "Quando os primeiros registros de receita ou despesa aparecerem, você verá a atividade financeira mais recente aqui.",
+
+    "home.transactions.uncategorized": "Sem categoria",
+    "home.transactions.income": "Receita",
+    "home.transactions.expense": "Despesa",
+
+    "home.shortcuts.aria": "Atalhos de navegação",
+    "home.shortcuts.eyebrow": "Módulos",
+    "home.shortcuts.title": "Abrir módulos",
+    "home.shortcuts.subtitle": "Acesso rápido aos principais módulos do BeSafe.",
+    "home.shortcuts.transactions": "Transações",
+    "home.shortcuts.advisor": "Cálculos financeiros",
+    "home.shortcuts.chat": "Chat",
+    "home.shortcuts.reports": "Relatórios",
+
+    /* ========================= */
+    /* QUICK ACTIONS */
+    /* ========================= */
+    "quickActions.common.closeLabel": "Fechar",
+    "quickActions.common.cancelLabel": "Cancelar",
+    "quickActions.common.backLabel": "Voltar",
+    "quickActions.common.saveLabel": "Salvar",
+    "quickActions.common.amountLabel": "Valor",
+    "quickActions.common.amountPlaceholder": "Insira o valor",
+    "quickActions.common.dateLabel": "Data",
+    "quickActions.common.noteLabel": "Nota",
+    "quickActions.common.notePlaceholder": "Adicione uma nota curta (opcional)",
+    "quickActions.common.categoryLabel": "Categoria",
+    "quickActions.common.categoryPlaceholder": "Escolha a categoria",
+    "quickActions.common.placeLabel": "Local",
+    "quickActions.common.noPlaceOption": "Nenhum local selecionado",
+
+    "quickActions.expense.title": "Adicionar despesa",
+    "quickActions.expense.text": "Adicione uma despesa com clareza e continue com calma.",
+    "quickActions.expense.submitLabel": "Salvar despesa",
+
+    "quickActions.income.title": "Adicionar receita",
+    "quickActions.income.text": "Adicione um registro de receita com clareza.",
+    "quickActions.income.submitLabel": "Salvar receita",
+
+    "quickActions.receipt.title": "Adicionar recibo",
+    "quickActions.receipt.text": "Comece pelo recibo e continue com um passo claro de revisão.",
+    "quickActions.receipt.submitLabel": "Salvar recibo",
+    "quickActions.receipt.reviewLabel": "Revisar dados do recibo",
+    "quickActions.receipt.confirmLabel": "Confirmar e salvar recibo",
+
+    "quickActions.receiptScanner.title": "Leitor de recibos",
+    "quickActions.receiptScanner.text": "Escaneie primeiro, depois revise, corrija se necessário e salve com calma.",
+    "quickActions.receiptScanner.startLabel": "Iniciar leitor",
+    "quickActions.receiptScanner.captureLabel": "Escanear recibo",
+    "quickActions.receiptScanner.uploadLabel": "Enviar imagem do recibo",
+    "quickActions.receiptScanner.retryLabel": "Escanear novamente",
+
+    "quickActions.validation.missingAmount": "Por favor, insira um valor.",
+    "quickActions.validation.invalidAmount": "Por favor, insira um valor válido.",
+    "quickActions.validation.missingDate": "Por favor, escolha uma data.",
+    "quickActions.validation.missingCategory": "Por favor, escolha uma categoria.",
+
+    "quickActions.status.savingExpense": "Salvando despesa…",
+    "quickActions.status.savingIncome": "Salvando receita…",
+    "quickActions.status.savingReceipt": "Salvando recibo…",
+    "quickActions.status.savedExpense": "Despesa salva.",
+    "quickActions.status.savedIncome": "Receita salva.",
+    "quickActions.status.savedReceipt": "Recibo salvo.",
+    "quickActions.status.saveFailed": "Não foi possível salvar este registro agora.",
+    "quickActions.status.scannerStarting": "Abrindo leitor de recibos…",
+    "quickActions.status.scannerReady": "O leitor de recibos está pronto.",
+    "quickActions.status.scannerFailed": "Não foi possível abrir o leitor de recibos agora.",
+
+    "quickActions.step.selectType": "Escolher ação",
+    "quickActions.step.enterDetails": "Inserir detalhes",
+    "quickActions.step.reviewData": "Revisar dados",
+    "quickActions.step.confirmSave": "Confirmar e salvar",
+    "quickActions.step.nextStep": "Próximo passo claro",
+
+    "quickActions.step.default": "Um próximo passo claro",
+    "quickActions.expense.formStepText":
+      "Preencha os detalhes da despesa com clareza e continue com calma.",
+
+    "quickActions.common.categoryDetailLabel": "Detalhes da categoria",
+    "quickActions.common.categoryDetailPlaceholder":
+      "Adicione um detalhe curto da categoria se necessário",
+
+    "quickActions.receiptScanner.infoText":
+      "Escaneie primeiro, depois revise, corrija se necessário e salve com calma.",
+    "quickActions.receiptScanner.draftTitle": "Rascunho do recibo",
+    "quickActions.receiptScanner.draftPending":
+      "Os dados do recibo estão aguardando sua revisão antes de salvar.",
+    "quickActions.receiptScanner.reviewConfirmState":
+      "Revise e confirme antes de salvar",
+    "quickActions.receiptScanner.reviewTitle": "Revisão do recibo",
+
+    /* ========================= */
+    /* ADVISOR / FINANCIAL CALCULATIONS */
+    /* ========================= */
+    "advisor.topActions.backLabel": "Voltar",
+    "advisor.topActions.backAria": "Voltar",
+    "advisor.topActions.languageLabel": "Idioma",
+    "advisor.topActions.languageAria": "Abrir seleção de idioma",
+
+    "advisor.workspace.eyebrow": "Cálculos financeiros",
+    "advisor.workspace.title": "Trabalhe com clareza com seus dados financeiros",
+    "advisor.workspace.text":
+      "Esta página é um espaço de trabalho prático. Ela usa seus dados existentes do BeSafe e permite selecionar, calcular, revisar e gerenciar resultados sem dar conselhos de vida ou pressionar decisões.",
+
+    "advisor.workspace.flow.title": "Como funciona",
+    "advisor.workspace.flow.step1": "Selecionar",
+    "advisor.workspace.flow.step2": "Obter dados",
+    "advisor.workspace.flow.step3": "Calcular",
+    "advisor.workspace.flow.step4": "Revisar resultado",
+    "advisor.workspace.flow.step5": "Salvar, excluir ou baixar",
+
+    "advisor.workspace.filters.categoriesSummaryEmpty": "Nenhuma categoria selecionada",
+    "advisor.workspace.filters.placesAllLabel": "Todos os locais",
+    "advisor.workspace.filters.dateFromLabel": "De",
+    "advisor.workspace.filters.dateToLabel": "Até",
+    "advisor.workspace.filters.title": "Seleção de dados",
+    "advisor.workspace.filters.text":
+      "Escolha o que deve ser incluído no cálculo a partir dos seus registros existentes.",
+    "advisor.workspace.filters.dateRangeLabel": "Período",
+    "advisor.workspace.filters.dateRangeValue":
+      "O usuário selecionará o período a ser incluído.",
+    "advisor.workspace.filters.typeLabel": "Tipo",
+    "advisor.workspace.filters.typeValue": "Receitas, despesas ou ambos.",
+    "advisor.workspace.filters.categoriesLabel": "Categorias",
+    "advisor.workspace.filters.categoriesValue":
+      "Categorias base primeiro, com espaço para categorias criadas pelo usuário no futuro.",
+    "advisor.workspace.filters.placesLabel": "Locais",
+    "advisor.workspace.filters.placesValue":
+      "Filtragem opcional por locais como lojas, transporte ou banco.",
+
+    "advisor.workspace.calculator.title": "Ferramenta de cálculo",
+    "advisor.workspace.calculator.text":
+      "O usuário deve poder aplicar uma porcentagem ou IVA manualmente e ver um resultado claro baseado nos dados selecionados do BeSafe.",
+    "advisor.workspace.calculator.baseLabel": "Valor total",
+    "advisor.workspace.calculator.percentageLabel": "Porcentagem",
+    "advisor.workspace.calculator.vatLabel": "IVA",
+    "advisor.workspace.calculator.inputLabel": "Entrada manual",
+    "advisor.workspace.calculator.inputValue":
+      "Os campos de porcentagem e IVA serão preenchidos manualmente.",
+    "advisor.workspace.calculator.resultLabel": "Resultado",
+    "advisor.workspace.calculator.resultValue":
+      "A área de resultado deve mostrar claramente o que foi calculado a partir dos dados selecionados.",
+    "advisor.workspace.calculator.summaryBase": "Valor total",
+    "advisor.workspace.calculator.summaryPercentage": "Porcentagem",
+    "advisor.workspace.calculator.summaryVat": "IVA",
+    "advisor.workspace.calculator.summaryTotal": "Valor final",
+    "advisor.workspace.calculator.sourceTitle": "Dados selecionados",
+    "advisor.workspace.calculator.sourceDateRange": "Período",
+    "advisor.workspace.calculator.sourceType": "Tipo",
+    "advisor.workspace.calculator.sourceCount": "Registros incluídos",
+    "advisor.workspace.calculator.sourceIncome": "Receitas",
+    "advisor.workspace.calculator.sourceExpense": "Despesas",
+    "advisor.workspace.calculator.sourceBase": "Base dos dados selecionados",
+
+    "advisor.workspace.calculator.baseHint":
+      "Deixe vazio para usar a base automática dos dados selecionados do BeSafe.",
+
+    "advisor.workspace.calculator.summaryModeAuto":
+      "Usando base dos dados selecionados",
+    "advisor.workspace.calculator.summaryModeManual":
+      "Usando base inserida manualmente",
+
+    "advisor.workspace.filters.categoriesComingSoon": "Categorias (em breve)",
+    "advisor.workspace.filters.categoriesSummarySingle":
+      "Selecionada: {name}",
+
+    "advisor.workspace.filters.categoriesSummaryCount":
+      "{count} categorias selecionadas",
+
+    "advisor.workspace.filters.categoriesButton":
+      "Escolher categorias",
+
+    "advisor.workspace.filters.categoriesButtonSingle":
+      "Categoria: {name}",
+
+    "advisor.workspace.filters.categoriesButtonCount":
+      "Categorias: {count}",
+
+    "advisor.workspace.filters.categoriesOpenLabel":
+      "Mostrar opções de categorias",
+
+    "advisor.workspace.filters.categoriesCloseLabel":
+      "Ocultar opções de categorias",
+
+    "advisor.workspace.filters.categoriesPanelHint":
+      "Escolha uma ou mais categorias criadas pelo usuário.",
+
+    "advisor.workspace.filters.categoriesEmptyList":
+      "Nenhuma categoria do usuário encontrada ainda.",
+
+    "advisor.workspace.result.categoriesDetailAll":
+      "Todas as categorias estão incluídas.",
+
+    "advisor.workspace.result.categoriesDetailSelected":
+      "Categorias selecionadas: {categories}",
+
+    "advisor.workspace.result.filteredTransactionsCount":
+      "Registros incluídos: {count}",
+
+    "advisor.workspace.calculator.resultContextLabel":
+      "Contexto do cálculo",
+
+    "advisor.workspace.calculator.noDataLabel":
+      "Nenhum dado correspondente",
+
+    "advisor.workspace.calculator.noDataText":
+      "Nenhum registro foi encontrado para os filtros selecionados. Você pode ajustar datas, categorias, tipo ou local.",
+
+    "advisor.workspace.result.title": "Ações de resultado",
+    "advisor.workspace.result.text":
+      "Após o cálculo, o resultado deve ser fácil de manter, remover ou exportar.",
+    "advisor.workspace.result.item1": "Salvar resultado",
+    "advisor.workspace.result.item2": "Excluir resultado",
+    "advisor.workspace.result.item3": "Baixar resultado",
+    "advisor.workspace.result.noTransactions":
+      "Nenhum registro corresponde aos filtros selecionados.",
+
+    "advisor.workspace.result.contextAll": "Calculado a partir de {count} registros em todas as categorias",
+
+    "advisor.workspace.result.contextSelected":
+      "Calculado a partir de {count} registros nas categorias: {categories}",
+
+    "advisor.workspace.status.title": "Estado de transição atual",
+    "advisor.workspace.status.text":
+      "Esta página foi movida com segurança para longe da orientação. O próximo passo é conectar a lógica real do espaço de cálculo sem trazer de volta sugestões de consultor.",
+
+    "advisor.workspace.errorTitle":
+      "Cálculos financeiros não estão disponíveis no momento",
+    "advisor.workspace.errorMessage":
+      "Esta página não pôde ser exibida agora.",
+    "advisor.workspace.errorSupport":
+      "Você pode voltar calmamente ao Início e continuar com um próximo passo claro.",
+
+    /* ========================= */
+    /* TRANSACTIONS */
+    /* ========================= */
+    "transactions.header.subtitle":
+      "Em um lugar claro, você pode revisar receitas e despesas para entender melhor a situação atual e escolher o próximo passo.",
+
+    "transactions.summary.aria": "Resumo de transações",
+    "transactions.summary.balance": "Saldo",
+    "transactions.summary.balanceMeta": "Receitas menos despesas",
+    "transactions.summary.income": "Receitas",
+    "transactions.summary.expenses": "Despesas",
+    "transactions.summary.total": "Total de registros",
+    "transactions.summary.totalMeta": "Todos os registros",
+    "transactions.summary.entriesShort": "registros",
+    "transactions.summary.totalEntries": "Registros",
+    "transactions.summary.totalIncome": "Receitas",
+    "transactions.summary.totalExpenses": "Despesas",
+
+    "transactions.filter.all": "Todos",
+    "transactions.filter.income": "Receitas",
+    "transactions.filter.expense": "Despesas",
+    "transactions.filters.aria": "Filtros de transações",
+
+    "transactions.guidance.default":
+      "Escolha um filtro, revise a lista ou continue com o próximo passo a partir do Início.",
+    "transactions.guidance.incomeOnly": "Apenas registros de receita são exibidos.",
+    "transactions.guidance.expenseOnly": "Apenas registros de despesa são exibidos.",
+    "transactions.guidance.all": "Todos os registros são exibidos em um só lugar.",
+    "transactions.guidance.withData":
+      "Você tem uma visão de trabalho clara aqui, sem ruído extra.",
+    "transactions.guidance.noData":
+      "Assim que os primeiros registros aparecerem, você verá uma lista de transações clara aqui.",
+    "transactions.guidance.emptyHint":
+      "Comece pelo Início para adicionar o primeiro registro de receita ou despesa.",
+
+    "transactions.list.aria": "Lista de transações",
+
+    "transactions.action.export": "Baixar exportação",
+    "transactions.action.delete": "Excluir",
+    "transactions.actions.export": "Exportar",
+    "transactions.actions.delete": "Excluir",
+
+    "transactions.confirm.delete":
+      "Tem certeza de que deseja remover esta transação?",
+
+    "transactions.status.deleting": "Removendo transação…",
+    "transactions.status.deleted": "Transação removida.",
+    "transactions.status.deleteFailed":
+      "Não foi possível remover a transação agora.",
+    "transactions.status.deleteTargetMissing":
+      "Não foi possível determinar qual transação remover.",
+    "transactions.status.exporting": "Preparando exportação…",
+    "transactions.status.exportReady": "A exportação está pronta para download.",
+    "transactions.status.exportFailed":
+      "Não foi possível preparar a exportação agora.",
+
+    "transactions.error.serviceUnavailable":
+      "Não foi possível acessar o serviço de transações.",
+    "transactions.error.deleteUnavailable":
+      "O caminho de exclusão ainda não está conectado.",
+    "transactions.error.exportUnavailable":
+      "O caminho de exportação ainda não está conectado.",
+    "transactions.error.exportPayload": "Não foi possível obter os dados de exportação.",
+    "transactions.error.exportPrepare":
+      "Não foi possível preparar o arquivo de exportação.",
+    "transactions.error.renderTitle":
+      "As transações não puderam ser exibidas agora",
+    "transactions.error.renderHint":
+      "Podemos verificar calmamente a conexão e tentar novamente.",
+
+    "transactions.empty.title": "Ainda não há transações",
+    "transactions.empty.text":
+      "Quando você adicionar a primeira receita ou despesa, ela aparecerá nesta lista.",
+    "transactions.empty.nextStep":
+      "Próximo passo claro: adicione um registro a partir da tela Início.",
+    "transactions.empty.income": "Ainda não há registros de receita.",
+    "transactions.empty.expense": "Ainda não há registros de despesa.",
+    "transactions.empty.filteredHint":
+      "Altere o filtro ou adicione um novo registro a partir do Início.",
+
+    /* ========================= */
+    /* REPORTS */
+    /* ========================= */
+    "reports.header.eyebrow": "BeSafe Relatórios",
+    "reports.header.title": "Relatórios",
+    "reports.header.subtitle":
+      "Um lugar tranquilo para resumos, relatórios salvos e exportações baseadas nos seus dados registrados.",
+
+    "reports.summary.aria": "Resumo do relatório",
+    "reports.summary.period": "Período",
+    "reports.summary.balance": "Saldo",
+    "reports.summary.income": "Receitas",
+    "reports.summary.expenses": "Despesas",
+    "reports.summary.entries": "Registros",
+    "reports.summary.topCategory": "Principal categoria de despesas",
+    "reports.summary.noCategory": "Nenhuma categoria ainda",
+
+    "reports.period.currentMonth": "Mês atual",
+    "reports.period.lastMonth": "Mês passado",
+    "reports.period.currentYear": "Ano atual",
+    "reports.period.custom": "Período personalizado",
+
+    "reports.sections.current": "Resumo atual",
+    "reports.sections.saved": "Relatórios salvos",
+    "reports.sections.export": "Ações de exportação",
+    "reports.sections.places": "Locais",
+    "reports.sections.recent": "Atividade recente",
+    "reports.recent.subtitle": "Seus últimos registros neste período.",
+    "reports.recent.empty": "Nenhum registro recente ainda.",
+
+    "reports.saved.emptyTitle": "Ainda não há relatórios salvos",
+    "reports.saved.emptyText":
+      "Quando você gerar ou salvar relatórios, eles aparecerão aqui em um lugar claro.",
+    "reports.saved.deleteSuccess": "Relatório salvo removido.",
+    "reports.saved.deleteError": "Não foi possível remover o relatório salvo agora.",
+    "reports.saved.deleteUnavailable": "O caminho de exclusão do relatório salvo ainda não está conectado.",
+    "reports.saved.view": "Visualizar",
+    "reports.saved.amountLabel": "Valor",
+    "reports.saved.dateLabel": "Data",
+    "reports.saved.periodLabel": "Período",
+    "reports.saved.formulaLabel": "Fórmula",
+    "reports.saved.noteLabel": "Nota",
+
+    "reports.export.pdf": "Baixar relatório PDF",
+    "reports.export.csv": "Exportar CSV",
+    "reports.export.fullHistory": "Exportar histórico completo de transações",
+    "reports.export.generate": "Gerar relatório",
+
+    "reports.status.preparing": "Preparando relatório…",
+    "reports.status.ready": "O relatório está pronto para download.",
+    "reports.status.empty":
+      "Este relatório é baseado nos registros disponíveis atualmente.",
+    "reports.status.failed":
+      "O relatório não pôde ser preparado agora.",
+
+    "reports.info.dataBased":
+      "Este relatório é baseado apenas nos dados que você registrou.",
+    "reports.info.review":
+      "Se necessário, revise suas transações e atualize registros antes de baixar o relatório.",
+
+    "reports.places.subtitle":
+      "Veja onde suas despesas registradas aparecem com mais frequência neste período.",
+    "reports.places.topPlace": "Principal local de despesas",
+    "reports.places.noPlace": "Nenhum dado de local ainda",
+    "reports.places.unknownPlace": "Local desconhecido",
+    "reports.places.entriesCount": "Registros",
+    "reports.places.empty":
+      "A comparação por local aparecerá aqui depois que seus registros começarem a usar dados de local.",
+
+    "reports.places.mostFrequent": "Local mais frequente",
+    "reports.places.totalPlaces": "Locais utilizados",
+    "reports.places.entrySingle": "registro",
+    "reports.places.entriesPlural": "registros",
+    "reports.places.totalPlacesHelp":
+      "Locais únicos conectados a despesas registradas neste período.",
+
+    "reports.incomePlaces.section": "Locais de receita",
+    "reports.incomePlaces.subtitle":
+      "Veja onde suas receitas registradas aparecem com mais frequência neste período.",
+    "reports.incomePlaces.topPlace": "Principal local de receita",
+    "reports.incomePlaces.mostFrequent": "Local de receita mais frequente",
+    "reports.incomePlaces.totalPlaces": "Locais de receita utilizados",
+    "reports.incomePlaces.totalPlacesHelp":
+      "Locais únicos conectados a receitas registradas neste período.",
+    "reports.incomePlaces.noPlace": "Nenhum dado de local de receita ainda",
+    "reports.incomePlaces.unknownPlace": "Local de receita desconhecido",
+    "reports.incomePlaces.empty":
+      "A comparação de locais de receita aparecerá aqui depois que seus registros começarem a usar dados de local de receita.",
+
+    /* ========================= */
+    /* PLACES */
+    /* ========================= */
+    "places.header.eyebrow": "BeSafe Locais",
+    "places.header.title": "Adicione os locais que você mais usa",
+    "places.header.subtitle":
+      "Estes são os locais onde suas despesas e receitas aparecem.",
+
+    "places.header.subtitleWithList":
+      "Mantenha os locais e origens financeiras que você mais usa em um lugar tranquilo.",
+
+    "places.header.businessTitle": "Gerencie seus locais com uma visão de trabalho mais clara",
+    "places.header.businessSubtitle": "Locais salvos ajudam a conectar registros, recibos e comparações futuras sem confusão.",
+
+    "places.plan.personalEyebrow": "Locais pessoais",
+    "places.plan.personalTitle": "Seus locais",
+    "places.plan.personalText": "Seus locais mais usados para acompanhar gastos e receitas do dia a dia.",
+
+    "onboarding.step1.title": "Bem-vindo",
+    "onboarding.step1.text": "Este é o seu espaço para entender melhor suas finanças. Sem pressão, sem julgamento.",
+    "onboarding.step2.eyebrow": "Como funciona",
+    "onboarding.step2.title": "Acompanhe receitas e despesas",
+    "onboarding.step2.text": "Adicione transações, atribua categorias e locais. BeSafe mostra com calma o que está acontecendo com o seu dinheiro.",
+    "onboarding.step3.eyebrow": "Tudo pronto",
+    "onboarding.step3.title": "Um próximo passo claro",
+    "onboarding.step3.text": "Informação precisa, tom calmo e um próximo passo claro — sem pressão e sem suposições.",
+    "onboarding.continue": "Continuar",
+    "onboarding.skip": "Pular",
+    "onboarding.start": "Começar",
+
+    "places.plan.businessEyebrow": "Locais empresariais",
+    "places.plan.businessTitle": "Locais se tornam parte da sua estrutura de trabalho",
+    "places.plan.businessText": "No modo Business, locais ajudam a conectar registros financeiros a fontes reais e preparar comparações mais claras no futuro.",
+
+    "places.empty.title": "Ainda não há locais",
+    "places.empty.text":
+      "Quando você começar a adicionar seus locais habituais, BeSafe os usará para manter registros mais claros e comparações mais úteis.",
+    "places.empty.nextStep":
+      "Próximo passo claro: adicione seu primeiro local.",
+
+    "places.list.used": "Usado",
+    "places.list.noLinkedEntries": "Nenhum registro ainda para este local",
+    "places.list.linkedEntriesLabel": "Registros vinculados",
+    "places.list.linkedEntries": "registros",
+    "places.list.aria": "Lista de locais",
+    "places.list.title": "Locais salvos",
+    "places.list.subtitle":
+      "Estes são os locais reais que BeSafe pode usar para registros mais claros e comparações mais tranquilas no futuro.",
+    "places.list.typeLabel": "Tipo",
+    "places.list.merchantCountLabel": "Registros vinculados",
+    "places.list.noType": "Sem tipo ainda",
+    "places.list.newBadge": "Novo",
+
+    "places.form.subtitle":
+      "Adicione um local real que você usa com frequência para que seus registros fiquem mais claros no futuro.",
+    "places.form.nameLabel": "Nome do local",
+    "places.form.namePlaceholder": "Adicione o nome do local",
+    "places.form.typeLabel": "Tipo de local",
+    "places.form.purposeLabel": "Finalidade do local",
+    "places.form.purposeExpense": "Local de despesas",
+    "places.form.purposeIncome": "Local de receitas",
+    "places.form.typePlaceholder": "Escolha o tipo de local",
+    "places.form.noteLabel": "Nota",
+    "places.form.notePlaceholder":
+      "Adicione uma nota curta se ajudar a lembrar o contexto",
+
+    "places.actions.add": "Adicionar local",
+    "places.actions.edit": "Editar",
+    "places.actions.delete": "Excluir",
+    "places.actions.save": "Salvar local",
+    "places.actions.cancel": "Cancelar",
+
+    "places.types.store": "Loja",
+    "places.types.transport": "Transporte",
+    "places.types.housing": "Moradia",
+    "places.types.bank": "Banco",
+    "places.types.goods": "Produtos",
+    "places.types.utilities": "Serviços públicos",
+    "places.types.health": "Saúde",
+    "places.types.leisure": "Lazer",
+    "places.types.other": "Outros",
+
+    "places.status.saving": "Salvando local…",
+    "places.status.saved": "Local salvo.",
+    "places.status.saveFailed":
+      "Não foi possível salvar o local agora.",
+    "places.status.deleted": "Local removido.",
+    "places.status.deleteFailed":
+      "Não foi possível remover o local agora.",
+
+    "places.success.firstPlaceNextStep":
+      "Você agora tem seu primeiro local salvo. Próximo passo claro: adicione outro local ou continue usando BeSafe normalmente.",
+    "places.success.nextStep":
+      "O novo local agora faz parte da sua lista de locais salvos. Próximo passo claro: adicione outro local apenas se precisar de um.",
+
+    "places.validation.missingName":
+      "Por favor, insira o nome do local.",
+    "places.validation.missingType":
+      "Por favor, escolha o tipo de local.",
+
+    /* ========================= */
+    /* CATEGORIES */
+    /* ========================= */
+    "categories.food": "Alimentação",
+    "categories.transport": "Transporte",
+    "categories.housing": "Moradia",
+    "categories.health": "Saúde",
+    "categories.education": "Educação",
+    "categories.shopping": "Compras",
+    "categories.entertainment": "Lazer",
+    "categories.bills": "Contas",
+    "categories.travel": "Viagem",
+    "categories.family": "Família",
+    "categories.pets": "Animais de estimação",
+    "categories.gifts": "Presentes",
+    "categories.other": "Outros",
+    "app.categories": "Categorias",
+    "navigation.open.categories": "Abrir página de Categorias",
+
+    "categories.header.eyebrow": "BeSafe Categorias",
+    "categories.header.title": "Categorias",
+    "categories.header.subtitle":
+      "Um lugar tranquilo para gerenciar as categorias usadas nos seus registros e cálculos.",
+
+    "categories.actions.add": "Adicionar categoria",
+    "categories.actions.save": "Salvar categoria",
+    "categories.actions.cancel": "Cancelar",
+    "categories.actions.delete": "Excluir",
+
+    "categories.personal.eyebrow": "Categorias pessoais",
+    "categories.personal.title": "Uso de categorias",
+    "categories.personal.text": "O modo pessoal usa categorias de forma mais simples. O gerenciamento completo de categorias personalizadas pertence à camada Business.",
+    "categories.personal.lockedTitle": "O gerenciamento de categorias faz parte do Business",
+    "categories.personal.lockedText": "O modo pessoal mantém o uso de categorias mais simples. Se depois você precisar de categorias personalizadas para lógica de trabalho, isso pertence à camada Business.",
+
+    "categories.plan.businessTitle": "Gerenciamento de categorias empresariais",
+    "categories.plan.businessText": "Aqui você pode criar e gerenciar as categorias usadas posteriormente em registros e cálculos.",
+
+    "categories.plan.personalTitle": "Uso simples de categorias",
+    "categories.plan.personalText": "No modo pessoal, as categorias permanecem mais leves e tranquilas. Você não precisa de um fluxo de gerenciamento separado aqui.",
+
+    "categories.form.title": "Adicionar categoria",
+    "categories.form.subtitle":
+      "Crie uma categoria para que seus registros e cálculos permaneçam claros.",
+    "categories.form.nameLabel": "Nome da categoria",
+    "categories.form.namePlaceholder": "Insira o nome da categoria",
+    "categories.form.typeLabel": "Tipo de categoria",
+
+    "categories.empty.title": "Ainda não há categorias",
+    "categories.empty.text":
+      "Quando você criar categorias, elas aparecerão aqui e estarão disponíveis nos cálculos.",
+
+    "categories.list.title": "Categorias salvas",
+    "categories.list.subtitle": "Estas categorias são usadas nos seus registros e cálculos.",
+    "categories.list.linkedEntries": "Registros vinculados",
+
+    "categories.list.noLinkedEntries": "Nenhum registro vinculado ainda",
+
+    "categories.confirm.delete":
+      "Tem certeza de que deseja remover esta categoria?",
+
+    "categories.status.loadFailed":
+      "Não foi possível carregar categorias agora.",
+    "categories.status.saving": "Salvando categoria…",
+    "categories.status.saved": "Categoria salva.",
+    "categories.status.saveFailed":
+      "Não foi possível salvar a categoria agora.",
+    "categories.status.deleted": "Categoria removida.",
+    "categories.status.deleteFailed":
+      "Não foi possível remover a categoria agora.",
+
+    "categories.validation.missingName":
+      "Por favor, insira um nome de categoria.",
+    "categories.validation.missingType":
+      "Por favor, escolha um tipo de categoria.",
+
+    "categories.validation.duplicate": "Esta categoria já existe.",
+
+    "categories.error.serviceUnavailable": "O serviço de categorias não está disponível agora.",
+    "categories.error.title": "As categorias não estão disponíveis no momento",
+    "categories.error.message": "Esta página não pôde ser exibida agora.",
+
+    "categories.types.income": "Receita",
+    "categories.types.expense": "Despesa",
+
+    "incomeCategories.salary": "Salário",
+    "incomeCategories.bonus": "Bônus",
+    "incomeCategories.extra": "Renda adicional",
+    "incomeCategories.additionalIncome": "Renda adicional",
+    "incomeCategories.refund": "Reembolso",
+
+    "common.delete": "Excluir",
+    "common.unknownDate": "Data não especificada",
+  },
 };
 
 function safeDocumentLanguage(language) {

@@ -17,7 +17,7 @@ function getDashboardLanguage() {
   }
 }
 
-const LOCALE_MAP = { lt: "lt-LT", en: "en-GB", pl: "pl-PL", de: "de-DE", es: "es-ES", fr: "fr-FR", it: "it-IT", ru: "ru-RU", uk: "uk-UA", no: "nb-NO", sv: "sv-SE", ja: "ja-JP", zh: "zh-CN" };
+const LOCALE_MAP = { lt: "lt-LT", en: "en-GB", pl: "pl-PL", de: "de-DE", es: "es-ES", fr: "fr-FR", it: "it-IT", ru: "ru-RU", uk: "uk-UA", no: "nb-NO", sv: "sv-SE", ja: "ja-JP", zh: "zh-CN", pt: "pt-BR" };
 
 function getDashboardLocale(lang) {
   return LOCALE_MAP[lang] || "en-GB";
