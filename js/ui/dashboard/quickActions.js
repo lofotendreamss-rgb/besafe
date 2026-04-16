@@ -1634,40 +1634,41 @@ export class QuickActions {
     return `
       ${isReceipt ? this.renderReceiptImageField(safeValues) : ""}
 
-      <p style="font-size:13px;color:#8aa898;margin:0 0 12px">${escapeHtml(actionCopy.intro)}</p>
+      <p style="font-size:12px;color:#5a7d67;margin:0 0 10px">${escapeHtml(actionCopy.intro)}</p>
 
       ${this.renderCategoryField(action, safeValues, errors.category || "")}
 
-      <label class="quick-action-form__field" style="margin-bottom:12px">
-        <span class="quick-action-form__label">${escapeHtml(this.copy.common.amount)}</span>
-        <input
-          class="quick-action-form__input"
-          type="number"
-          step="0.01"
-          min="0"
-          name="amount"
-          value="${escapeHtml(safeValues.amount || "")}"
-        >
-        ${errors.amount ? `<p class="quick-action-form__error">${escapeHtml(errors.amount)}</p>` : ""}
-      </label>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <label style="flex:1">
+          <span class="quick-action-form__label">${escapeHtml(this.copy.common.amount)}</span>
+          <input
+            class="quick-action-form__input"
+            type="number"
+            step="0.01"
+            min="0"
+            name="amount"
+            value="${escapeHtml(safeValues.amount || "")}"
+          >
+          ${errors.amount ? `<p class="quick-action-form__error">${escapeHtml(errors.amount)}</p>` : ""}
+        </label>
+        <label style="flex:1">
+          <span class="quick-action-form__label">${escapeHtml(this.copy.common.date)}</span>
+          <input
+            class="quick-action-form__input"
+            type="date"
+            name="date"
+            value="${escapeHtml(safeValues.date || this.getTodayDateValue())}"
+          >
+          ${errors.date ? `<p class="quick-action-form__error">${escapeHtml(errors.date)}</p>` : ""}
+        </label>
+      </div>
 
-      <label class="quick-action-form__field" style="margin-bottom:12px">
-        <span class="quick-action-form__label">${escapeHtml(this.copy.common.date)}</span>
-        <input
-          class="quick-action-form__input"
-          type="date"
-          name="date"
-          value="${escapeHtml(safeValues.date || this.getTodayDateValue())}"
-        >
-        ${errors.date ? `<p class="quick-action-form__error">${escapeHtml(errors.date)}</p>` : ""}
-      </label>
-
-      <label class="quick-action-form__field" style="margin-bottom:12px">
+      <label class="quick-action-form__field" style="margin-bottom:10px">
         <span class="quick-action-form__label">${escapeHtml(this.copy.common.note)}</span>
         <textarea
           class="quick-action-form__input"
           name="note"
-          rows="2"
+          rows="1"
           placeholder="${escapeHtml(this.copy.common.notePlaceholder)}"
         >${escapeHtml(safeValues.note || "")}</textarea>
       </label>
