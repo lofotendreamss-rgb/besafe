@@ -1575,9 +1575,11 @@ export class QuickActions {
         <span class="quick-action-form__label">${escapeHtml(
           this.copy.common.category
         )}</span>
-        <div class="quick-actions-categories" data-category-options>
-          ${this.renderCategories(action, selected)}
-        </div>
+        ${hasCategories ? `
+          <div class="quick-actions-categories" data-category-options>
+            ${this.renderCategories(action, selected)}
+          </div>
+        ` : ""}
 
         <input
           type="hidden"
@@ -1585,7 +1587,7 @@ export class QuickActions {
           value="${escapeHtml(selected || "")}"
         >
         ${fieldError ? `<p class="quick-action-form__error">${escapeHtml(fieldError)}</p>` : ""}
-        ${!hasCategories || fieldError ? this.renderCreateCategoryButton() : ""}
+        ${!hasCategories ? this.renderCreateCategoryButton() : ""}
       </div>
     `;
   }
