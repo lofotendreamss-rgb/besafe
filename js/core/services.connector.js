@@ -54,15 +54,19 @@ export async function initConnectedServices() {
 export async function getFinancialScore() {
   try {
     // Try FinanceAutopilot first (has a proper async method)
+    // Note: skip if it returns 0 — that means window.db is missing (web mode)
     if (window.financeAutopilot && typeof window.financeAutopilot.getFinanceHealthScore === "function") {
       const score = await window.financeAutopilot.getFinanceHealthScore();
-      return { score, source: "financeAutopilot" };
+      if (score > 0) {
+        return { score, source: "financeAutopilot" };
+      }
     }
 
     // Fallback: calculate from advisor summary
     const advisor = registry.getOptional("advisor");
-    if (advisor) {
+    if (advisor && typeof advisor.getAdvisorSummary === "function") {
       const summary = await advisor.getAdvisorSummary();
+      console.log("[Connector] Advisor summary:", summary?.state);
       if (summary && summary.state) {
         const { income, expenses } = summary.state;
         if (income === 0 && expenses === 0) {
