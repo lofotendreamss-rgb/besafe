@@ -445,15 +445,29 @@ export class HomePage {
           // Translate advisor insights based on type/status
           const status = item.type || "";
           if (status === "score" && item.status) {
-            // Financial health score — rendered separately above, skip text
-            return;
-          } else if (status === "not_enough_data" || status === "early_data" || status === "attention" || status === "stable" || status === "balanced") {
-            obs = this.t("advisor.status." + status + ".obs", obs);
-            sug = this.t("advisor.status." + status + ".sug", sug);
-            exp = this.t("advisor.status." + status + ".exp", exp);
-          } else if (status === "unclear_category") {
+            return; // rendered separately above
+          }
+
+          // Map status to i18n keys
+          const statusMap = {
+            "not_enough_data": "not_enough_data",
+            "early_data": "early_data",
+            "attention": "attention",
+            "stable": "stable",
+            "balanced": "balanced",
+          };
+
+          if (statusMap[status]) {
+            const key = statusMap[status];
+            obs = this.t("advisor.status." + key + ".obs", obs);
+            sug = this.t("advisor.status." + key + ".sug", sug);
+            exp = this.t("advisor.status." + key + ".exp", exp);
+          } else if (status === "unclear_category" || status === "not_enough_data") {
             obs = this.t("advisor.status.category.obs", obs);
             exp = this.t("advisor.status.category.exp", exp);
+          } else if (status === "category_visible") {
+            // Category with dynamic name — keep observation as-is, translate explanation
+            exp = this.t("advisor.status.stable.exp", exp);
           }
 
           html += `
