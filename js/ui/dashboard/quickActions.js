@@ -1084,7 +1084,7 @@ export class QuickActions {
         ([value, label]) => `<option value="${escapeHtml(value)}" ${selected === value ? "selected" : ""}>${escapeHtml(label)}</option>`
       )
       .join("");
-    return `<select data-category-select style="width:100%;padding:12px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:10px;color:#d4e8dc;font-size:14px;font-family:inherit;-webkit-appearance:auto">${options}</select>`;
+    return `<select name="categoryId" data-category-select style="width:100%;padding:12px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:10px;color:#d4e8dc;font-size:14px;font-family:inherit;-webkit-appearance:auto">${options}</select>`;
   }
 
   openCreateCategoryModal() {
