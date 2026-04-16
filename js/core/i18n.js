@@ -819,12 +819,12 @@ const dictionaries = {
     "app.subtitle.home":
       "Aiškiai matykite svarbiausius skaičius ir ramiai pasirinkite kitą žingsnį.",
 
-     "plan.switch.toBusiness": "Perjungti į Business",
+     "plan.switch.toBusiness": "Perjungti \u012F Versl\u0105",
      "plan.switch.toPersonal": "Perjungti į Personal",
      "plan.current.personal": "Asmeninis planas aktyvus",
      "plan.current.business": "Verslo planas aktyvus",
      "plan.label.personal": "Asmeninis",
-     "plan.label.business": "Business",
+     "plan.label.business": "Verslas",
 
     "app.subtitle.advisor":
       "Praktinė darbo vieta skaičiavimams pagal tavo pateiktus duomenis.",
@@ -5864,12 +5864,12 @@ const dictionaries = {
     "app.subtitle.home":
       "Visualisez vos chiffres clés clairement et choisissez votre prochaine étape sereinement.",
 
-    "plan.switch.toBusiness": "Passer à Business",
+    "plan.switch.toBusiness": "Passer au Professionnel",
     "plan.switch.toPersonal": "Passer à Personal",
     "plan.current.personal": "Plan personnel actif",
-    "plan.current.business": "Plan business actif",
+    "plan.current.business": "Plan professionnel actif",
     "plan.label.personal": "Personnel",
-    "plan.label.business": "Business",
+    "plan.label.business": "Professionnel",
 
     "app.subtitle.advisor":
       "Un espace de travail pratique pour des calculs basés sur vos données fournies.",
@@ -6622,12 +6622,12 @@ const dictionaries = {
     "app.subtitle.home":
       "Visualizzi i Suoi numeri chiave con chiarezza e scelga il prossimo passo con serenità.",
 
-    "plan.switch.toBusiness": "Passa a Business",
+    "plan.switch.toBusiness": "Passa ad Aziendale",
     "plan.switch.toPersonal": "Passa a Personal",
     "plan.current.personal": "Piano personale attivo",
-    "plan.current.business": "Piano business attivo",
+    "plan.current.business": "Piano aziendale attivo",
     "plan.label.personal": "Personale",
-    "plan.label.business": "Business",
+    "plan.label.business": "Aziendale",
 
     "app.subtitle.advisor":
       "Uno spazio di lavoro pratico per calcoli basati sui Suoi dati forniti.",
@@ -7380,12 +7380,12 @@ const dictionaries = {
     "app.subtitle.home":
       "Переглядайте ключові показники чітко та обирайте наступний крок спокійно.",
 
-    "plan.switch.toBusiness": "Перейти на Business",
+    "plan.switch.toBusiness": "\u041F\u0435\u0440\u0435\u0439\u0442\u0438 \u043D\u0430 \u0411\u0456\u0437\u043D\u0435\u0441",
     "plan.switch.toPersonal": "Перейти на Personal",
     "plan.current.personal": "Особистий план активний",
     "plan.current.business": "Бізнес-план активний",
     "plan.label.personal": "Особистий",
-    "plan.label.business": "Business",
+    "plan.label.business": "Бізнес",
 
     "app.subtitle.advisor":
       "Практичний робочий простір для розрахунків на основі ваших наданих даних.",
@@ -8144,12 +8144,12 @@ const dictionaries = {
     "app.subtitle.home":
       "Veja seus números principais com clareza e escolha seu próximo passo com calma.",
 
-    "plan.switch.toBusiness": "Mudar para Business",
+    "plan.switch.toBusiness": "Mudar para Empresarial",
     "plan.switch.toPersonal": "Mudar para Personal",
     "plan.current.personal": "Plano pessoal ativo",
     "plan.current.business": "Plano empresarial ativo",
     "plan.label.personal": "Pessoal",
-    "plan.label.business": "Business",
+    "plan.label.business": "Empresarial",
 
     "app.subtitle.advisor":
       "Um espaço de trabalho prático para cálculos baseados nos seus dados fornecidos.",
