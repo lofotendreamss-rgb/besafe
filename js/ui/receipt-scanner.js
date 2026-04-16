@@ -410,9 +410,9 @@ function renderReviewStep() {
 
     ${productCount > 0 ? `<details ${s}="margin-bottom:6px"><summary ${s}="cursor:pointer;color:#5a7d67;font-size:12px;padding:4px 0">Products (${productCount})</summary><div ${s}="padding:4px 0">${productsSummary}</div></details>` : ""}
 
-    <div ${s}="display:flex;gap:10px;margin-top:12px">
-      <button data-rs-rescan ${s}="flex:1;padding:14px;border-radius:2rem;font-size:14px;font-weight:600;cursor:pointer;border:1px solid rgba(46,204,138,0.2);background:#1a2e1f;color:#9dc4a8;font-family:inherit">Scan Again</button>
-      <button data-rs-save ${s}="flex:1;padding:14px;border-radius:2rem;font-size:14px;font-weight:700;cursor:pointer;border:none;background:#2ecc8a;color:#080d0b;font-family:inherit">Save</button>
+    <div ${s}="display:flex;gap:8px;margin-top:10px">
+      <button data-rs-rescan ${s}="flex:1;padding:10px;border-radius:2rem;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(46,204,138,0.2);background:#1a2e1f;color:#9dc4a8;font-family:inherit">Scan Again</button>
+      <button data-rs-save ${s}="flex:2;padding:10px;border-radius:2rem;font-size:13px;font-weight:700;cursor:pointer;border:none;background:#2ecc8a;color:#080d0b;font-family:inherit">Save</button>
     </div>
   `;
 }
