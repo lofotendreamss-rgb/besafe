@@ -370,69 +370,53 @@ function renderReviewStep() {
       }>${esc(c.label)}</option>`
   ).join("");
 
-  const productsRows = formData.products
-    .map(
-      (p, i) => `
-    <tr>
-      <td><input type="text" value="${esc(p.name)}" data-rs-product-name="${i}"></td>
-      <td style="width:90px"><input type="number" step="0.01" value="${esc(
-        String(p.price)
-      )}" data-rs-product-price="${i}"></td>
-      <td style="width:36px"><button class="rs-products__remove" data-rs-product-remove="${i}">&times;</button></td>
-    </tr>`
-    )
-    .join("");
+  const productCount = formData.products.length;
+  const productsSummary = formData.products.map((p, i) =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(46,204,138,0.08);font-size:13px">
+      <span style="color:#d4e8dc">${esc(p.name)}</span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="color:#e7a99a">\u20AC${p.price.toFixed(2)}</span>
+        <button data-rs-product-remove="${i}" style="background:none;border:none;color:#e7a99a;cursor:pointer;font-size:16px;padding:0 4px">&times;</button>
+      </span>
+    </div>`
+  ).join("");
 
   return `
-    <div class="rs-field">
-      <label class="rs-field__label">Store name</label>
-      <input class="rs-field__input" type="text" value="${esc(
-        formData.storeName
-      )}" data-rs-store>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div class="rs-field" style="margin:0">
+        <label class="rs-field__label">Amount</label>
+        <input class="rs-field__input" type="number" step="0.01" min="0" value="${esc(formData.totalAmount)}" data-rs-total style="font-size:18px;font-weight:700;color:#2ecc8a">
+      </div>
+      <div class="rs-field" style="margin:0">
+        <label class="rs-field__label">Date</label>
+        <input class="rs-field__input" type="date" value="${esc(formData.date)}" data-rs-date>
+      </div>
     </div>
 
-    <div class="rs-field">
-      <label class="rs-field__label">Total amount</label>
-      <input class="rs-field__input" type="number" step="0.01" min="0" value="${esc(
-        formData.totalAmount
-      )}" data-rs-total>
+    <div class="rs-field" style="margin-bottom:8px">
+      <label class="rs-field__label">Store</label>
+      <input class="rs-field__input" type="text" value="${esc(formData.storeName)}" data-rs-store placeholder="Store name">
     </div>
 
-    <div class="rs-field">
-      <label class="rs-field__label">Date</label>
-      <input class="rs-field__input" type="date" value="${esc(
-        formData.date
-      )}" data-rs-date>
-    </div>
-
-    <div class="rs-field">
+    <div class="rs-field" style="margin-bottom:8px">
       <label class="rs-field__label">Category</label>
-      <select class="rs-field__select" data-rs-category>${categoryOptions}</select>
+      <select data-rs-category style="width:100%;padding:10px 12px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:8px;color:#d4e8dc;font-size:14px;font-family:inherit">${categoryOptions}</select>
     </div>
 
-    ${
-      formData.products.length
-        ? `
-    <div class="rs-field">
-      <label class="rs-field__label">Products</label>
-      <table class="rs-products">
-        <thead><tr><th>Item</th><th>Price</th><th></th></tr></thead>
-        <tbody>${productsRows}</tbody>
-      </table>
-    </div>`
-        : ""
-    }
+    ${productCount > 0 ? `
+    <details style="margin-bottom:8px">
+      <summary style="cursor:pointer;color:#9dc4a8;font-size:13px;padding:8px 0">Products (${productCount}) \u25BE</summary>
+      <div style="padding:4px 0">${productsSummary}</div>
+    </details>` : ""}
 
-    <div class="rs-field">
-      <label class="rs-field__label">Note</label>
-      <textarea class="rs-field__textarea" rows="2" data-rs-note>${esc(
-        formData.note
-      )}</textarea>
-    </div>
+    <details style="margin-bottom:12px">
+      <summary style="cursor:pointer;color:#9dc4a8;font-size:13px;padding:4px 0">Note \u25BE</summary>
+      <textarea data-rs-note rows="2" style="width:100%;margin-top:6px;padding:10px 12px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:8px;color:#d4e8dc;font-size:14px;font-family:inherit;resize:vertical">${esc(formData.note)}</textarea>
+    </details>
 
-    <div style="display:flex;gap:10px;margin-top:24px;position:sticky;bottom:0;background:#0f1812;padding:16px 0 8px;z-index:2">
+    <div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid rgba(46,204,138,0.1)">
       <button data-rs-rescan style="flex:1;padding:14px;border-radius:2rem;font-size:15px;font-weight:600;cursor:pointer;border:1px solid rgba(46,204,138,0.2);background:#1a2e1f;color:#9dc4a8;font-family:inherit">Scan Again</button>
-      <button data-rs-save style="flex:1;padding:14px;border-radius:2rem;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#2ecc8a;color:#080d0b;font-family:inherit">Save as Transaction</button>
+      <button data-rs-save style="flex:1;padding:14px;border-radius:2rem;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#2ecc8a;color:#080d0b;font-family:inherit">Save</button>
     </div>
   `;
 }
