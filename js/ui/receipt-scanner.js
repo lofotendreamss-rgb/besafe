@@ -65,11 +65,12 @@ function injectCSS() {
       border: 1px solid rgba(46,204,138,.15);
       border-radius: 20px;
       width: 100%; max-width: 480px;
-      max-height: 92vh;
+      max-height: 96vh;
       overflow-y: auto;
       color: #d4e8dc;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       animation: rsSlideUp .3s ease;
+      -webkit-overflow-scrolling: touch;
     }
     @keyframes rsSlideUp { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
     .rs-card::-webkit-scrollbar { width:6px }
@@ -104,7 +105,7 @@ function injectCSS() {
     .rs-progress__dot--done   { background: rgba(46,204,138,.45) }
 
     /* ---- body ---- */
-    .rs-body { padding: 20px 24px 24px }
+    .rs-body { padding: 16px 20px 20px }
 
     /* ---- step 1: upload ---- */
     .rs-upload {
@@ -141,10 +142,10 @@ function injectCSS() {
       width: 100%; height: 100%;
     }
 
-    .rs-preview { margin-top: 16px; text-align: center }
+    .rs-preview { margin-top: 10px; text-align: center }
     .rs-preview img {
-      max-width: 100%; max-height: 200px;
-      border-radius: 12px; object-fit: cover;
+      max-width: 100%; max-height: 120px;
+      border-radius: 10px; object-fit: cover;
     }
 
     .rs-scan-btn {
@@ -264,10 +265,19 @@ function injectCSS() {
 
     /* mobile */
     @media (max-width: 520px) {
-      .rs-card { border-radius: 16px; max-height: 96vh }
-      .rs-body { padding: 16px }
-      .rs-header { padding: 16px 16px 10px }
-      .rs-progress { padding: 10px 16px 0 }
+      .rs-overlay { padding: 8px; align-items: flex-start; padding-top: 16px }
+      .rs-card { border-radius: 16px; max-height: 98vh }
+      .rs-body { padding: 12px 14px 14px }
+      .rs-header { padding: 12px 14px 8px }
+      .rs-header__title { font-size: 16px }
+      .rs-progress { padding: 6px 14px 0 }
+      .rs-upload { padding: 20px 16px }
+      .rs-upload__icon { font-size: 30px; margin-bottom: 8px }
+      .rs-preview img { max-height: 100px }
+      .rs-scan-btn { padding: 12px; margin-top: 12px }
+      .rs-saved { padding: 24px 0 }
+      .rs-saved__check { width: 48px; height: 48px; margin-bottom: 12px }
+      .rs-saved__check svg { width: 24px; height: 24px }
     }
   `;
   document.head.appendChild(style);
