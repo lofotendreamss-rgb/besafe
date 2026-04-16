@@ -780,6 +780,14 @@
 
   <script type="module" src="js/app/app.js"></script>
 
+  <script type="module">
+    // Make receipt scanner globally available
+    window.openReceiptScanner = null;
+    import('./js/ui/receipt-scanner.js').then(m => {
+      if (m.openReceiptScanner) window.openReceiptScanner = m.openReceiptScanner;
+    }).catch(() => {});
+  </script>
+
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
