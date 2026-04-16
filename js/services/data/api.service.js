@@ -858,24 +858,40 @@ export class ApiService {
     return typeof window !== "undefined" && window.electronAPI != null;
   }
 
+  get isWeb() {
+    return !this.isElectron;
+  }
+
+  // Lazy-load local DB for web mode
+  _localDb = null;
+  async _getLocalDb() {
+    if (!this._localDb) {
+      this._localDb = await import("./local.db.js");
+    }
+    return this._localDb;
+  }
+
   // ---------------------------------------------------------------------------
   // Transactions
   // ---------------------------------------------------------------------------
 
   async getTransactions() {
     if (this.isElectron) return window.electronAPI.getTransactions();
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.getTransactions(); }
     return this.request("/api/transactions");
   }
 
   async getTransactionById(transactionId) {
     const safeId = this.normalizeId(transactionId);
     if (this.isElectron) return window.electronAPI.getTransactionById(safeId);
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.getTransactionById(safeId); }
     return this.request(`/api/transactions/${encodeURIComponent(safeId)}`);
   }
 
   async createTransaction(payload) {
     const safePayload = this.normalizeTransactionPayload(payload);
     if (this.isElectron) return window.electronAPI.createTransaction(safePayload);
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.createTransaction(safePayload); }
 
     return this.request("/api/transactions", {
       method: "POST",
@@ -887,31 +903,23 @@ export class ApiService {
     const safeId = this.normalizeId(transactionId);
     const safePayload = this.normalizeTransactionPayload(payload);
     if (this.isElectron) return window.electronAPI.updateTransaction(safeId, safePayload);
-
-    return this.request(`/api/transactions/${encodeURIComponent(safeId)}`, {
-      method: "PUT",
-      body: JSON.stringify(safePayload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.updateTransaction(safeId, safePayload); }
+    return this.request(`/api/transactions/${encodeURIComponent(safeId)}`, { method: "PUT", body: JSON.stringify(safePayload) });
   }
 
   async patchTransaction(transactionId, payload) {
     const safeId = this.normalizeId(transactionId);
     const safePayload = this.normalizePartialTransactionPayload(payload);
     if (this.isElectron) return window.electronAPI.patchTransaction(safeId, safePayload);
-
-    return this.request(`/api/transactions/${encodeURIComponent(safeId)}`, {
-      method: "PATCH",
-      body: JSON.stringify(safePayload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.updateTransaction(safeId, safePayload); }
+    return this.request(`/api/transactions/${encodeURIComponent(safeId)}`, { method: "PATCH", body: JSON.stringify(safePayload) });
   }
 
   async deleteTransaction(transactionId) {
     const safeId = this.normalizeId(transactionId);
     if (this.isElectron) return window.electronAPI.deleteTransaction(safeId);
-
-    return this.request(`/api/transactions/${encodeURIComponent(safeId)}`, {
-      method: "DELETE",
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.deleteTransaction(safeId); }
+    return this.request(`/api/transactions/${encodeURIComponent(safeId)}`, { method: "DELETE" });
   }
 
   // ---------------------------------------------------------------------------
@@ -920,45 +928,38 @@ export class ApiService {
 
   async getCategories() {
     if (this.isElectron) return window.electronAPI.getCategories();
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.getCategories(); }
     return this.request("/api/categories");
   }
 
   async getCategoryById(categoryId) {
     const safeId = this.normalizeId(categoryId);
     if (this.isElectron) return window.electronAPI.getCategoryById(safeId);
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.getCategoryById(safeId); }
     return this.request(`/api/categories/${encodeURIComponent(safeId)}`);
   }
 
   async createCategory(payload) {
     const safePayload = this.normalizeCategoryPayload(payload);
     if (this.isElectron) return window.electronAPI.createCategory(safePayload);
-
-    return this.request("/api/categories", {
-      method: "POST",
-      body: JSON.stringify(safePayload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.createCategory(safePayload); }
+    return this.request("/api/categories", { method: "POST", body: JSON.stringify(safePayload) });
   }
 
   async updateCategory(categoryId, payload) {
     const safeId = this.normalizeId(categoryId);
     const safePayload = this.normalizeCategoryPayload(payload);
     if (this.isElectron) return window.electronAPI.updateCategory(safeId, safePayload);
-
-    return this.request(`/api/categories/${encodeURIComponent(safeId)}`, {
-      method: "PUT",
-      body: JSON.stringify(safePayload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.updateCategory(safeId, safePayload); }
+    return this.request(`/api/categories/${encodeURIComponent(safeId)}`, { method: "PUT", body: JSON.stringify(safePayload) });
   }
 
   async patchCategory(categoryId, payload) {
     const safeId = this.normalizeId(categoryId);
     const safePayload = this.normalizePartialCategoryPayload(payload);
     if (this.isElectron) return window.electronAPI.patchCategory(safeId, safePayload);
-
-    return this.request(`/api/categories/${encodeURIComponent(safeId)}`, {
-      method: "PATCH",
-      body: JSON.stringify(safePayload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.updateCategory(safeId, safePayload); }
+    return this.request(`/api/categories/${encodeURIComponent(safeId)}`, { method: "PATCH", body: JSON.stringify(safePayload) });
   }
 
   async deleteCategory(categoryId) {
@@ -976,54 +977,45 @@ export class ApiService {
 
   async getPlaces() {
     if (this.isElectron) return window.electronAPI.getPlaces();
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.getPlaces(); }
     return this.request("/api/places");
   }
 
   async getPlaceById(placeId) {
     const safeId = this.normalizeId(placeId);
     if (this.isElectron) return window.electronAPI.getPlaceById(safeId);
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.getPlaceById(safeId); }
     return this.request(`/api/places/${encodeURIComponent(safeId)}`);
   }
 
   async createPlace(payload) {
     const safePayload = this.normalizePlacePayload(payload);
     if (this.isElectron) return window.electronAPI.createPlace(safePayload);
-
-    return this.request("/api/places", {
-      method: "POST",
-      body: JSON.stringify(safePayload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.createPlace(safePayload); }
+    return this.request("/api/places", { method: "POST", body: JSON.stringify(safePayload) });
   }
 
   async updatePlace(placeId, payload) {
     const safeId = this.normalizeId(placeId);
     const safePayload = this.normalizePlacePayload(payload);
     if (this.isElectron) return window.electronAPI.updatePlace(safeId, safePayload);
-
-    return this.request(`/api/places/${encodeURIComponent(safeId)}`, {
-      method: "PUT",
-      body: JSON.stringify(safePayload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.updatePlace(safeId, safePayload); }
+    return this.request(`/api/places/${encodeURIComponent(safeId)}`, { method: "PUT", body: JSON.stringify(safePayload) });
   }
 
   async patchPlace(placeId, payload) {
     const safeId = this.normalizeId(placeId);
     const safePayload = this.normalizePartialPlacePayload(payload);
     if (this.isElectron) return window.electronAPI.patchPlace(safeId, safePayload);
-
-    return this.request(`/api/places/${encodeURIComponent(safeId)}`, {
-      method: "PATCH",
-      body: JSON.stringify(safePayload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.updatePlace(safeId, safePayload); }
+    return this.request(`/api/places/${encodeURIComponent(safeId)}`, { method: "PATCH", body: JSON.stringify(safePayload) });
   }
 
   async deletePlace(placeId) {
     const safeId = this.normalizeId(placeId);
     if (this.isElectron) return window.electronAPI.deletePlace(safeId);
-
-    return this.request(`/api/places/${encodeURIComponent(safeId)}`, {
-      method: "DELETE",
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.deletePlace(safeId); }
+    return this.request(`/api/places/${encodeURIComponent(safeId)}`, { method: "DELETE" });
   }
 
   // ---------------------------------------------------------------------------
@@ -1032,25 +1024,21 @@ export class ApiService {
 
   async getSavedCalculations() {
     if (this.isElectron) return window.electronAPI.getSavedCalculations();
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.getSavedCalculations(); }
     return this.request("/api/saved-calculations");
   }
 
   async createSavedCalculation(payload) {
     if (this.isElectron) return window.electronAPI.createSavedCalculation(payload);
-
-    return this.request("/api/saved-calculations", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.createSavedCalculation(payload); }
+    return this.request("/api/saved-calculations", { method: "POST", body: JSON.stringify(payload) });
   }
 
   async deleteSavedCalculation(calculationId) {
     const safeId = this.normalizeId(calculationId);
     if (this.isElectron) return window.electronAPI.deleteSavedCalculation(safeId);
-
-    return this.request(`/api/saved-calculations/${encodeURIComponent(safeId)}`, {
-      method: "DELETE",
-    });
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.deleteSavedCalculation(safeId); }
+    return this.request(`/api/saved-calculations/${encodeURIComponent(safeId)}`, { method: "DELETE" });
   }
 
   // ---------------------------------------------------------------------------
@@ -1059,17 +1047,20 @@ export class ApiService {
 
   async getSummary() {
     if (this.isElectron) return window.electronAPI.getSummary();
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.getSummary(); }
     return this.request("/api/summary");
   }
 
   async exportTransactions(options = {}) {
     if (this.isElectron) return window.electronAPI.exportTransactions();
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.exportTransactions(); }
     const query = this.buildExportQuery(options);
     return this.request(`/api/transactions/export${query}`);
   }
 
   async health() {
     if (this.isElectron) return window.electronAPI.health();
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.health(); }
     return this.request("/health");
   }
 }
