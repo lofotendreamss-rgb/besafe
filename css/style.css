@@ -138,9 +138,32 @@ button,
 .quick-action-btn,
 .quick-actions-categories__button,
 .quick-action-form__submit,
+.quick-action-form__primary,
 .quick-action-form__secondary{
   -webkit-tap-highlight-color:transparent;
   touch-action:manipulation;
+}
+
+.quick-action-form__primary{
+  display:block;
+  width:100%;
+  padding:14px 24px;
+  background:#2ecc8a;
+  color:#080d0b;
+  border:none;
+  border-radius:var(--radius, 12px);
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:inherit;
+  transition:background 0.2s;
+}
+.quick-action-form__primary:hover{
+  background:#1a9e66;
+}
+.quick-action-form__primary:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
 }
 
 .button-secondary,

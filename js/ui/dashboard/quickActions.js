@@ -1079,23 +1079,12 @@ export class QuickActions {
   }
 
   renderCategories(action, selected = "") {
-    return this.getCategoryList(action)
+    const options = this.getCategoryList(action)
       .map(
-        ([value, label]) => `
-          <button
-            type="button"
-            class="quick-actions-categories__button${
-              selected === value ? " is-selected" : ""
-            }"
-            data-category-option="${escapeHtml(value)}"
-            data-category-value="${escapeHtml(value)}"
-            aria-pressed="${selected === value ? "true" : "false"}"
-          >
-            ${escapeHtml(label)}
-          </button>
-        `
+        ([value, label]) => `<option value="${escapeHtml(value)}" ${selected === value ? "selected" : ""}>${escapeHtml(label)}</option>`
       )
       .join("");
+    return `<select data-category-select style="width:100%;padding:12px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:10px;color:#d4e8dc;font-size:14px;font-family:inherit;-webkit-appearance:auto">${options}</select>`;
   }
 
   openCreateCategoryModal() {
@@ -2302,24 +2291,38 @@ export class QuickActions {
       return;
     }
 
-    const categoryButton = event.target.closest("[data-category-option]");
-    if (categoryButton && this.activeAction) {
-      event.preventDefault();
-      const categoryId = this.normalizeOptionalId(
-        categoryButton.dataset.categoryValue
-      );
-
+    // Category select dropdown (new)
+    const categorySelect = event.target.closest("[data-category-select]");
+    if (categorySelect && this.activeAction) {
+      const categoryId = this.normalizeOptionalId(categorySelect.value);
       const selectedCategory = this.availableCategories.find((category) => {
         return this.normalizeOptionalId(category?.id) === categoryId;
       });
-
       const currentDraft = this.getDraftValues(this.activeAction);
       this.setDraftValues(this.activeAction, {
         ...currentDraft,
         categoryId,
         category: this.normalizeText(selectedCategory?.name),
       });
+      return;
+    }
 
+    // Category button click (legacy fallback)
+    const categoryButton = event.target.closest("[data-category-option]");
+    if (categoryButton && this.activeAction) {
+      event.preventDefault();
+      const categoryId = this.normalizeOptionalId(
+        categoryButton.dataset.categoryValue
+      );
+      const selectedCategory = this.availableCategories.find((category) => {
+        return this.normalizeOptionalId(category?.id) === categoryId;
+      });
+      const currentDraft = this.getDraftValues(this.activeAction);
+      this.setDraftValues(this.activeAction, {
+        ...currentDraft,
+        categoryId,
+        category: this.normalizeText(selectedCategory?.name),
+      });
       this.rerenderActiveAction();
       return;
     }

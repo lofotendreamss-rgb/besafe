@@ -39,7 +39,8 @@
       "Read(//tmp/**)",
       "Bash(node --input-type=module -e ' *)",
       "Bash(cmd.exe /c \"rmdir /s /q dist\")",
-      "Bash(cmd.exe /c \"start \\\\\"\\\\\" \\\\\"c:\\\\\\\\Users\\\\\\\\lofot\\\\\\\\OneDrive\\\\\\\\Desktop\\\\\\\\BeSafe\\\\\\\\dist\\\\\\\\win-unpacked\\\\\\\\BeSafe.exe\\\\\"\")"
+      "Bash(cmd.exe /c \"start \\\\\"\\\\\" \\\\\"c:\\\\\\\\Users\\\\\\\\lofot\\\\\\\\OneDrive\\\\\\\\Desktop\\\\\\\\BeSafe\\\\\\\\dist\\\\\\\\win-unpacked\\\\\\\\BeSafe.exe\\\\\"\")",
+      "Bash(curl -s -X POST https://besafe-oga3.onrender.com/api/transactions -H 'Content-Type: application/json' -d '{\"type\":\"expense\",\"amount\":15.50,\"category\":\"food\",\"note\":\"Test receipt\",\"date\":\"2026-04-16\",\"meta\":{\"source\":\"receipt-scan\"}}')"
     ],
     "additionalDirectories": [
       "C:\\Projects\\BeSafe",
