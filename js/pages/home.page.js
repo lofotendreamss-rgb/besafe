@@ -445,15 +445,12 @@ export class HomePage {
           // Translate advisor insights based on type/status
           const status = item.type || "";
           if (status === "score" && item.status) {
-            // Financial health score insight
-            exp = this.t("advisor.status.health." + item.status, exp);
+            // Financial health score — rendered separately above, skip text
+            return;
           } else if (status === "not_enough_data" || status === "early_data" || status === "attention" || status === "stable" || status === "balanced") {
             obs = this.t("advisor.status." + status + ".obs", obs);
             sug = this.t("advisor.status." + status + ".sug", sug);
-            // Keep explanation as-is when it contains dynamic amounts (€)
-            if (exp && !exp.includes("€")) {
-              exp = this.t("advisor.status." + status + ".exp", exp);
-            }
+            exp = this.t("advisor.status." + status + ".exp", exp);
           } else if (status === "unclear_category") {
             obs = this.t("advisor.status.category.obs", obs);
             exp = this.t("advisor.status.category.exp", exp);

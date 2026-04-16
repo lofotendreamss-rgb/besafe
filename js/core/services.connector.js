@@ -159,12 +159,9 @@ export async function getFinancialInsights() {
         source: "financeScore",
         type: "score",
         status: healthStatus,
-        observation: `Financial health: ${scoreResult.score}/100`,
-        explanation: scoreResult.score >= 75
-          ? "Your financial health looks stable."
-          : scoreResult.score >= 50
-            ? "Your financial health needs some attention."
-            : "Your financial health needs urgent review.",
+        score: scoreResult.score,
+        observation: "",
+        explanation: "",
         suggestion: "",
         tone: scoreResult.score >= 75 ? "stable" : scoreResult.score >= 50 ? "neutral" : "attention"
       });
