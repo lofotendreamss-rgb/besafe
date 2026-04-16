@@ -1770,7 +1770,7 @@ export class QuickActions {
         ${this.pendingScannerPreviewUrl ? `
           <img
             src="${escapeHtml(this.pendingScannerPreviewUrl)}"
-            style="display:block; width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-bottom:1rem;"
+            style="display:block; width:100%; max-height:100px; object-fit:cover; border-radius:8px; margin-bottom:10px;"
           >
         ` : ""}
 
@@ -1793,10 +1793,10 @@ export class QuickActions {
         ${this.pendingScannerPreviewUrl ? `
           <img
             src="${escapeHtml(this.pendingScannerPreviewUrl)}"
-            style="display:block; width:100%; max-height:200px; object-fit:cover; border-radius:12px; margin-bottom:1rem;"
+            style="display:block; width:100%; max-height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;"
           >
         ` : ""}
-        <p class="quick-action-guidance__text" style="margin-bottom:1rem;">
+        <p style="font-size:13px;color:#8aa898;margin:0 0 10px">
           ${escapeHtml(this.t("quickActions.receiptScanner.editHint", "Pataisykite informaciją ir išsaugokite."))}
         </p>
       </div>
