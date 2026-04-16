@@ -1500,8 +1500,9 @@ select.quick-action-form__input{
   position:relative;
   z-index:1;
   width:min(100%, 680px);
-  max-height:min(82vh, 760px);
-  overflow:auto;
+  max-height:min(92vh, 760px);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
   display:flex;
   flex-direction:column;
   gap:14px;

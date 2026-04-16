@@ -1618,7 +1618,7 @@ export class QuickActions {
               alt="${escapeHtml(
                 imageName || this.copy.common.receiptImageLabel
               )}"
-              style="display:block; width:100%; max-height:220px; object-fit:cover; border-radius:16px;"
+              style="display:block; width:100%; max-height:120px; object-fit:cover; border-radius:8px;"
             >
           </div>
         `
