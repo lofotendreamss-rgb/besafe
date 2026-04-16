@@ -430,9 +430,9 @@ function renderReviewStep() {
       )}</textarea>
     </div>
 
-    <div class="rs-actions">
-      <button class="rs-actions__btn rs-actions__btn--secondary" data-rs-rescan>Scan Again</button>
-      <button class="rs-actions__btn rs-actions__btn--primary" data-rs-save>Save as Transaction</button>
+    <div style="display:flex;gap:10px;margin-top:24px;position:sticky;bottom:0;background:#0f1812;padding:16px 0 8px;z-index:2">
+      <button data-rs-rescan style="flex:1;padding:14px;border-radius:2rem;font-size:15px;font-weight:600;cursor:pointer;border:1px solid rgba(46,204,138,0.2);background:#1a2e1f;color:#9dc4a8;font-family:inherit">Scan Again</button>
+      <button data-rs-save style="flex:1;padding:14px;border-radius:2rem;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#2ecc8a;color:#080d0b;font-family:inherit">Save as Transaction</button>
     </div>
   `;
 }
@@ -457,8 +457,8 @@ function renderSavedStep() {
         <div><strong style="color:#f2f8f4">Date:</strong> ${formData.date || "today"}</div>
       </div>
       <p class="rs-saved__text">Your expense has been recorded in Transactions.</p>
-      <button class="rs-saved__link" data-rs-view>View in Transactions \u2192</button>
-      <button class="rs-saved__close" data-rs-close-done>Close</button>
+      <button data-rs-view style="display:block;width:100%;padding:14px 24px;background:#2ecc8a;border:none;border-radius:2rem;color:#080d0b;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:12px">View in Transactions \u2192</button>
+      <button data-rs-close-done style="display:block;width:100%;padding:12px 24px;background:#1a2e1f;border:1px solid rgba(157,177,168,0.3);border-radius:2rem;color:#9dc4a8;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:8px">Close</button>
     </div>
   `;
 }
