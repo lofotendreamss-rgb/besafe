@@ -1694,14 +1694,15 @@ export class QuickActions {
     const safeValues = this.normalizeDraftValues(values);
     const actionCopy = this.getActionCopy(action);
 
+    const isReceipt = action === "receipt";
     return `
-      <div class="quick-action-form__section">
-        <p class="quick-action-guidance__text">${escapeHtml(actionCopy.intro)}</p>
-      </div>
+      ${isReceipt ? this.renderReceiptImageField(safeValues) : ""}
+
+      <p style="font-size:13px;color:#8aa898;margin:0 0 12px">${escapeHtml(actionCopy.intro)}</p>
 
       ${this.renderCategoryField(action, safeValues, errors.category || "")}
 
-      <label class="quick-action-form__field">
+      <label class="quick-action-form__field" style="margin-bottom:12px">
         <span class="quick-action-form__label">${escapeHtml(this.copy.common.amount)}</span>
         <input
           class="quick-action-form__input"
@@ -1714,7 +1715,7 @@ export class QuickActions {
         ${errors.amount ? `<p class="quick-action-form__error">${escapeHtml(errors.amount)}</p>` : ""}
       </label>
 
-      <label class="quick-action-form__field">
+      <label class="quick-action-form__field" style="margin-bottom:12px">
         <span class="quick-action-form__label">${escapeHtml(this.copy.common.date)}</span>
         <input
           class="quick-action-form__input"
@@ -1725,17 +1726,17 @@ export class QuickActions {
         ${errors.date ? `<p class="quick-action-form__error">${escapeHtml(errors.date)}</p>` : ""}
       </label>
 
-      <label class="quick-action-form__field">
+      <label class="quick-action-form__field" style="margin-bottom:12px">
         <span class="quick-action-form__label">${escapeHtml(this.copy.common.note)}</span>
         <textarea
           class="quick-action-form__input"
           name="note"
-          rows="3"
+          rows="2"
           placeholder="${escapeHtml(this.copy.common.notePlaceholder)}"
         >${escapeHtml(safeValues.note || "")}</textarea>
       </label>
 
-      ${this.renderPlaceField(action, safeValues)}
+      ${!isReceipt ? this.renderPlaceField(action, safeValues) : ""}
     `;
   }
 
