@@ -1564,86 +1564,22 @@ export class QuickActions {
     `;
   }
 
-  renderReceiptImageField(action, values = {}) {
-    if (action !== "receipt-scanner") {
-      return "";
-    }
-
-    const safeValues = this.normalizeDraftValues(values);
-    const imageName =
-      safeValues.receiptImageName || this.pendingScannerFile?.name || "";
+  renderReceiptImageField(safeValues = {}) {
+    const imageName = safeValues.receiptImageName || this.pendingScannerFile?.name || "";
     const hasPreview = Boolean(this.pendingScannerPreviewUrl);
-    const hasImage = this.hasScannerImage(safeValues);
-
-    const scanLabel = hasImage
-      ? escapeHtml(this.copy.common.receiptImageChangeLabel)
-      : escapeHtml(this.t("quickActions.receiptScanner.scanButton", "📷 Nuskaityti čekį"));
 
     return `
-      <div class="quick-action-form__field" data-receipt-image-field>
-
-        <label class="quick-action-form__primary" style="display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; width:100%; text-align:center;">
-          ${scanLabel}
-          <input
-            type="file"
-            name="receiptImage"
-            accept="image/*"
-            capture="environment"
-            data-receipt-image-input
-            hidden
-          >
-        </label>
-
-        <input
-          type="hidden"
-          name="receiptImageName"
-          value="${escapeHtml(imageName)}"
-          data-receipt-image-name-input
-        >
-
-        <p class="quick-action-form__helper">
-          ${
-            imageName
-              ? `${escapeHtml(this.copy.common.receiptImageSelectedPrefix)}: ${escapeHtml(imageName)}`
-              : escapeHtml(this.copy.common.receiptImagePlaceholder)
-          }
-        </p>
-
-        ${
-          hasPreview
-            ? `
-          <div class="quick-action-sheet__summary" style="margin-top:0.75rem;">
-            <img
-              src="${escapeHtml(this.pendingScannerPreviewUrl)}"
-              alt="${escapeHtml(
-                imageName || this.copy.common.receiptImageLabel
-              )}"
-              style="display:block; width:100%; max-height:120px; object-fit:cover; border-radius:8px;"
-            >
+      <div style="margin-bottom:12px">
+        ${hasPreview ? `
+          <img src="${escapeHtml(this.pendingScannerPreviewUrl)}" alt="Receipt" style="display:block;width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px">
+        ` : ""}
+        <input type="hidden" name="receiptImageName" value="${escapeHtml(imageName)}" data-receipt-image-name-input>
+        ${imageName ? `
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#5a7d67">
+            <span>${escapeHtml(imageName)}</span>
+            <button type="button" data-remove-receipt-image style="background:none;border:none;color:#e7a99a;cursor:pointer;font-size:13px;padding:2px 6px">&times;</button>
           </div>
-        `
-            : ""
-        }
-
-        <p class="quick-action-form__helper">
-          ${escapeHtml(this.copy.common.receiptImageHelp)}
-        </p>
-
-        ${
-          imageName
-            ? `
-          <div class="quick-action-form__actions" style="justify-content:flex-start;">
-            <button
-              type="button"
-              class="quick-action-form__secondary"
-              data-remove-receipt-image
-            >
-              ${escapeHtml(this.copy.common.receiptImageRemoveLabel)}
-            </button>
-          </div>
-        `
-            : ""
-        }
+        ` : ""}
       </div>
     `;
   }
