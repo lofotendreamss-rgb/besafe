@@ -211,20 +211,23 @@ function injectCSS() {
     }
     .rs-products .rs-products__remove:hover { color: #e74c3c }
 
-    .rs-actions { display: flex; gap: 10px; margin-top: 24px }
+    .rs-actions { display: flex; gap: 10px; margin-top: 24px; position: sticky; bottom: 0; background: #0f1812; padding: 16px 0 8px; z-index: 2; }
     .rs-actions__btn {
-      flex: 1; padding: 12px; border-radius: 12px;
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      border: none; transition: opacity .2s;
+      flex: 1; padding: 14px; border-radius: 2rem;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      border: none; transition: all .2s; font-family: inherit;
     }
-    .rs-actions__btn:hover { opacity: .88 }
+    .rs-actions__btn:hover { transform: translateY(-1px); }
+    .rs-actions__btn:active { transform: scale(0.98); }
     .rs-actions__btn--primary {
       background: #2ecc8a; color: #080d0b;
     }
+    .rs-actions__btn--primary:hover { background: #1a9e66; }
     .rs-actions__btn--secondary {
-      background: rgba(46,204,138,.1); color: #2ecc8a;
+      background: #1a2e1f; color: #9dc4a8;
       border: 1px solid rgba(46,204,138,.2);
     }
+    .rs-actions__btn--secondary:hover { border-color: #2ecc8a; color: #2ecc8a; }
 
     /* ---- step 4: saved ---- */
     .rs-saved { text-align: center; padding: 40px 0 }
