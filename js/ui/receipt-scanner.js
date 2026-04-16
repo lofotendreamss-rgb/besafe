@@ -428,6 +428,10 @@ function renderReviewStep() {
 }
 
 function renderSavedStep() {
+  const amount = parseFloat(formData.totalAmount) || 0;
+  const store = formData.storeName || "";
+  const cat = formData.category || "";
+
   return `
     <div class="rs-saved">
       <div class="rs-saved__check">
@@ -435,8 +439,14 @@ function renderSavedStep() {
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <p class="rs-saved__title">Receipt saved to Transactions!</p>
-      <p class="rs-saved__text">Your expense has been recorded.</p>
+      <p class="rs-saved__title">Receipt saved!</p>
+      <div style="background:rgba(46,204,138,0.08);border:1px solid rgba(46,204,138,0.15);border-radius:10px;padding:12px 16px;margin:12px 0;text-align:left;font-size:13px;color:#9dc4a8">
+        ${store ? `<div><strong style="color:#f2f8f4">Store:</strong> ${store}</div>` : ""}
+        <div><strong style="color:#f2f8f4">Amount:</strong> <span style="color:#e7a99a">\u20AC${amount.toFixed(2)}</span></div>
+        ${cat ? `<div><strong style="color:#f2f8f4">Category:</strong> ${cat}</div>` : ""}
+        <div><strong style="color:#f2f8f4">Date:</strong> ${formData.date || "today"}</div>
+      </div>
+      <p class="rs-saved__text">Your expense has been recorded in Transactions.</p>
       <button class="rs-saved__link" data-rs-view>View in Transactions</button>
     </div>
   `;
@@ -663,6 +673,14 @@ async function saveTransaction() {
     return;
   }
 
+  // Show saving state
+  const saveBtn = overlay?.querySelector("[data-rs-save]");
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+    saveBtn.style.opacity = "0.6";
+  }
+
   const productsSummary = formData.products
     .map((p) => `${p.name} (${p.price.toFixed(2)})`)
     .join(", ");
@@ -711,7 +729,12 @@ async function saveTransaction() {
     render();
   } catch (err) {
     console.error("[ReceiptScanner] Save failed:", err);
-    alert("Could not save the transaction. Please try again.");
+    alert("Could not save the transaction: " + err.message);
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save as Transaction";
+      saveBtn.style.opacity = "1";
+    }
   }
 }
 
