@@ -364,59 +364,45 @@ function renderProcessingStep() {
 
 function renderReviewStep() {
   const categoryOptions = CATEGORIES.map(
-    (c) =>
-      `<option value="${esc(c.value)}" ${
-        formData.category === c.value ? "selected" : ""
-      }>${esc(c.label)}</option>`
+    (c) => `<option value="${esc(c.value)}" ${formData.category === c.value ? "selected" : ""}>${esc(c.label)}</option>`
   ).join("");
 
   const productCount = formData.products.length;
   const productsSummary = formData.products.map((p, i) =>
-    `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(46,204,138,0.08);font-size:13px">
+    `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(46,204,138,0.06)">
       <span style="color:#d4e8dc">${esc(p.name)}</span>
-      <span style="display:flex;align-items:center;gap:6px">
-        <span style="color:#e7a99a">\u20AC${p.price.toFixed(2)}</span>
-        <button data-rs-product-remove="${i}" style="background:none;border:none;color:#e7a99a;cursor:pointer;font-size:16px;padding:0 4px">&times;</button>
-      </span>
+      <span style="color:#e7a99a">\u20AC${p.price.toFixed(2)}</span>
     </div>`
   ).join("");
 
+  const s = "style";
   return `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-      <div class="rs-field" style="margin:0">
-        <label class="rs-field__label">Amount</label>
-        <input class="rs-field__input" type="number" step="0.01" min="0" value="${esc(formData.totalAmount)}" data-rs-total style="font-size:18px;font-weight:700;color:#2ecc8a">
+    <div ${s}="display:flex;gap:8px;margin-bottom:10px">
+      <div ${s}="flex:1">
+        <div ${s}="font-size:11px;color:#5a7d67;margin-bottom:4px">Amount</div>
+        <input type="number" step="0.01" min="0" value="${esc(formData.totalAmount)}" data-rs-total ${s}="width:100%;padding:10px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:8px;color:#2ecc8a;font-size:18px;font-weight:700;font-family:inherit;box-sizing:border-box">
       </div>
-      <div class="rs-field" style="margin:0">
-        <label class="rs-field__label">Date</label>
-        <input class="rs-field__input" type="date" value="${esc(formData.date)}" data-rs-date>
+      <div ${s}="flex:1">
+        <div ${s}="font-size:11px;color:#5a7d67;margin-bottom:4px">Date</div>
+        <input type="date" value="${esc(formData.date)}" data-rs-date ${s}="width:100%;padding:10px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:8px;color:#d4e8dc;font-size:14px;font-family:inherit;box-sizing:border-box">
       </div>
     </div>
 
-    <div class="rs-field" style="margin-bottom:8px">
-      <label class="rs-field__label">Store</label>
-      <input class="rs-field__input" type="text" value="${esc(formData.storeName)}" data-rs-store placeholder="Store name">
+    <div ${s}="margin-bottom:10px">
+      <div ${s}="font-size:11px;color:#5a7d67;margin-bottom:4px">Store</div>
+      <input type="text" value="${esc(formData.storeName)}" data-rs-store placeholder="Store name" ${s}="width:100%;padding:10px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:8px;color:#d4e8dc;font-size:14px;font-family:inherit;box-sizing:border-box">
     </div>
 
-    <div class="rs-field" style="margin-bottom:8px">
-      <label class="rs-field__label">Category</label>
-      <select data-rs-category style="width:100%;padding:10px 12px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:8px;color:#d4e8dc;font-size:14px;font-family:inherit">${categoryOptions}</select>
+    <div ${s}="margin-bottom:10px">
+      <div ${s}="font-size:11px;color:#5a7d67;margin-bottom:4px">Category</div>
+      <select data-rs-category ${s}="width:100%;padding:10px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:8px;color:#d4e8dc;font-size:14px;font-family:inherit;box-sizing:border-box;-webkit-appearance:auto">${categoryOptions}</select>
     </div>
 
-    ${productCount > 0 ? `
-    <details style="margin-bottom:8px">
-      <summary style="cursor:pointer;color:#9dc4a8;font-size:13px;padding:8px 0">Products (${productCount}) \u25BE</summary>
-      <div style="padding:4px 0">${productsSummary}</div>
-    </details>` : ""}
+    ${productCount > 0 ? `<details ${s}="margin-bottom:6px"><summary ${s}="cursor:pointer;color:#5a7d67;font-size:12px;padding:4px 0">Products (${productCount})</summary><div ${s}="padding:4px 0">${productsSummary}</div></details>` : ""}
 
-    <details style="margin-bottom:12px">
-      <summary style="cursor:pointer;color:#9dc4a8;font-size:13px;padding:4px 0">Note \u25BE</summary>
-      <textarea data-rs-note rows="2" style="width:100%;margin-top:6px;padding:10px 12px;background:#0a1009;border:1px solid rgba(46,204,138,0.15);border-radius:8px;color:#d4e8dc;font-size:14px;font-family:inherit;resize:vertical">${esc(formData.note)}</textarea>
-    </details>
-
-    <div style="display:flex;gap:10px;padding-top:8px;border-top:1px solid rgba(46,204,138,0.1)">
-      <button data-rs-rescan style="flex:1;padding:14px;border-radius:2rem;font-size:15px;font-weight:600;cursor:pointer;border:1px solid rgba(46,204,138,0.2);background:#1a2e1f;color:#9dc4a8;font-family:inherit">Scan Again</button>
-      <button data-rs-save style="flex:1;padding:14px;border-radius:2rem;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#2ecc8a;color:#080d0b;font-family:inherit">Save</button>
+    <div ${s}="display:flex;gap:10px;margin-top:12px">
+      <button data-rs-rescan ${s}="flex:1;padding:14px;border-radius:2rem;font-size:14px;font-weight:600;cursor:pointer;border:1px solid rgba(46,204,138,0.2);background:#1a2e1f;color:#9dc4a8;font-family:inherit">Scan Again</button>
+      <button data-rs-save ${s}="flex:1;padding:14px;border-radius:2rem;font-size:14px;font-weight:700;cursor:pointer;border:none;background:#2ecc8a;color:#080d0b;font-family:inherit">Save</button>
     </div>
   `;
 }
