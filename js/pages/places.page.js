@@ -620,12 +620,14 @@ export class PlacesPage {
             >
               ${this.escapeHtml(this.t("places.form.purposeExpense", "Expense place"))}
             </option>
-            <option
-              value="income"
-              ${this.formDraft.purpose === "income" ? "selected" : ""}
-            >
-              ${this.escapeHtml(this.t("places.form.purposeIncome", "Income place"))}
-            </option>
+            ${this.isBusinessPlan() ? `
+              <option
+                value="income"
+                ${this.formDraft.purpose === "income" ? "selected" : ""}
+              >
+                ${this.escapeHtml(this.t("places.form.purposeIncome", "Income place"))}
+              </option>
+            ` : ""}
           </select>
         </div>
 
