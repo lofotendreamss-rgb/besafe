@@ -1,5 +1,6 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
+import { generateReportPDF, generateSavedDocumentPDF } from "../utils/pdf-generator.js";
 
 function getUserPlan() {
   try {
@@ -1508,15 +1509,10 @@ export class ReportsPage {
   printSavedDocument(documentId) {
     const docs = this.getSavedDocuments();
     const doc = docs.find((d) => d.id === documentId);
-    if (!doc || !doc.htmlContent) return;
+    if (!doc) return;
 
-    const printWindow = window.open("", "_blank");
-    if (printWindow) {
-      printWindow.document.write(doc.htmlContent);
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.print();
-    }
+    const locale = getCurrentLanguage() || "en";
+    generateSavedDocumentPDF(doc, locale);
   }
 
   async exportSavedDocument(documentId) {
@@ -1578,6 +1574,42 @@ export class ReportsPage {
       URL.revokeObjectURL(url);
       window.alert(this.t("reports.status.ready", "Report ready to download."));
     }
+  }
+
+  downloadCurrentReportPDF() {
+    const summary = this.currentSummary || this.buildSafeFallbackSummary();
+    const locale = summary.locale || getCurrentLanguage() || "en";
+    const currency = summary.currency || "EUR";
+    const periodLabel = this.getPeriodLabel(this.currentPeriod);
+
+    const transactions = Array.isArray(summary.transactions)
+      ? summary.transactions
+      : Array.isArray(summary.recentTransactions)
+        ? summary.recentTransactions
+        : [];
+
+    generateReportPDF({
+      title: this.t("reports.header.title", "Reports"),
+      period: periodLabel,
+      summary: {
+        income: summary.income ?? 0,
+        expenses: summary.expenses ?? 0,
+        balance: summary.balance ?? 0,
+        transactionCount: summary.transactionCount ?? 0,
+      },
+      transactions,
+      locale,
+      currency,
+    });
+  }
+
+  downloadSavedDocumentPDF(documentId) {
+    const docs = this.getSavedDocuments();
+    const doc = docs.find((d) => d.id === documentId);
+    if (!doc) return;
+
+    const locale = getCurrentLanguage() || "en";
+    generateSavedDocumentPDF(doc, locale);
   }
 
   renderSavedDocumentsSection() {
@@ -1653,6 +1685,15 @@ export class ReportsPage {
                           data-doc-id="${this.escapeHtml(doc.id)}"
                         >
                           ${this.t("reports.export.pdf", "Print")}
+                        </button>
+
+                        <button
+                          type="button"
+                          class="shortcut-btn button-secondary"
+                          data-reports-action="pdf-doc"
+                          data-doc-id="${this.escapeHtml(doc.id)}"
+                        >
+                          PDF
                         </button>
 
                         <button
@@ -1863,6 +1904,19 @@ export class ReportsPage {
         ${this.renderStatus()}
         ${this.renderPeriodSelector()}
         ${this.renderSummaryCards(mergedSummary)}
+
+        <section class="section section--card" aria-label="Export">
+          <div class="button-row">
+            <button
+              type="button"
+              class="shortcut-btn button-secondary"
+              data-reports-action="download-pdf"
+            >
+              ${this.t("reports.export.downloadPdf", "Download PDF")}
+            </button>
+          </div>
+        </section>
+
         ${this.renderSavedDocumentsSection()}
       </div>
     `;
@@ -1903,6 +1957,16 @@ export class ReportsPage {
 
     if (action === "print-doc") {
       this.printSavedDocument(docId);
+      return;
+    }
+
+    if (action === "pdf-doc") {
+      this.downloadSavedDocumentPDF(docId);
+      return;
+    }
+
+    if (action === "download-pdf") {
+      this.downloadCurrentReportPDF();
       return;
     }
 
