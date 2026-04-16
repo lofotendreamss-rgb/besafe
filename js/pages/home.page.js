@@ -430,7 +430,7 @@ export class HomePage {
         `;
       }
 
-      // Advisor insights
+      // Advisor insights (translated via i18n when possible)
       if (insights && insights.length > 0) {
         insights.forEach(item => {
           if (!item.observation) return;
@@ -438,24 +438,55 @@ export class HomePage {
             : item.tone === "stable" ? "insight-card--stable"
             : "insight-card--neutral";
 
+          let obs = item.observation;
+          let exp = item.explanation || "";
+          let sug = item.suggestion || "";
+
+          // Translate advisor insights based on type/status
+          const status = item.type || "";
+          if (status === "score" && item.status) {
+            // Financial health score insight
+            exp = this.t("advisor.status.health." + item.status, exp);
+          } else if (status === "not_enough_data" || status === "early_data" || status === "attention" || status === "stable" || status === "balanced") {
+            obs = this.t("advisor.status." + status + ".obs", obs);
+            sug = this.t("advisor.status." + status + ".sug", sug);
+            // Keep explanation as-is when it contains dynamic amounts (€)
+            if (exp && !exp.includes("€")) {
+              exp = this.t("advisor.status." + status + ".exp", exp);
+            }
+          } else if (status === "unclear_category") {
+            obs = this.t("advisor.status.category.obs", obs);
+            exp = this.t("advisor.status.category.exp", exp);
+          }
+
           html += `
             <div class="insight-card ${toneClass}">
-              <div class="insight-observation">${this.escapeHtml(item.observation)}</div>
-              ${item.explanation ? `<div class="insight-explanation">${this.escapeHtml(item.explanation)}</div>` : ""}
-              ${item.suggestion ? `<div class="insight-suggestion">${this.escapeHtml(item.suggestion)}</div>` : ""}
+              <div class="insight-observation">${this.escapeHtml(obs)}</div>
+              ${exp ? `<div class="insight-explanation">${this.escapeHtml(exp)}</div>` : ""}
+              ${sug ? `<div class="insight-suggestion">${this.escapeHtml(sug)}</div>` : ""}
             </div>
           `;
         });
       }
 
-      // Spending alerts
+      // Spending alerts (translated via i18n when possible)
       if (alerts && alerts.length > 0) {
         alerts.forEach(alert => {
           if (!alert.observation) return;
+
+          let alertObs = alert.observation;
+          let alertSug = alert.suggestion || "";
+          const alertStatus = alert.type || "";
+
+          if (alertStatus === "not_enough_data" || alertStatus === "early_data" || alertStatus === "attention" || alertStatus === "stable" || alertStatus === "balanced") {
+            alertObs = this.t("advisor.status." + alertStatus + ".obs", alertObs);
+            alertSug = this.t("advisor.status." + alertStatus + ".sug", alertSug);
+          }
+
           html += `
             <div class="insight-card insight-card--alert">
-              <div class="insight-observation">${this.escapeHtml(alert.observation)}</div>
-              ${alert.suggestion ? `<div class="insight-suggestion">${this.escapeHtml(alert.suggestion)}</div>` : ""}
+              <div class="insight-observation">${this.escapeHtml(alertObs)}</div>
+              ${alertSug ? `<div class="insight-suggestion">${this.escapeHtml(alertSug)}</div>` : ""}
             </div>
           `;
         });

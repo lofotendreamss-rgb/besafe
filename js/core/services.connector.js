@@ -150,9 +150,11 @@ export async function getFinancialInsights() {
     // 3. Financial score
     const scoreResult = await getFinancialScore();
     if (scoreResult.score !== null) {
+      const healthStatus = scoreResult.score >= 75 ? "good" : scoreResult.score >= 50 ? "medium" : "low";
       insights.push({
         source: "financeScore",
         type: "score",
+        status: healthStatus,
         observation: `Financial health: ${scoreResult.score}/100`,
         explanation: scoreResult.score >= 75
           ? "Your financial health looks stable."
