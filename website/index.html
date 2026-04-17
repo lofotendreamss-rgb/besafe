@@ -260,7 +260,7 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
 .lang-switch{position:relative;margin-left:1rem}
 .lang-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:0.35rem 0.9rem;border-radius:2rem;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-family:var(--font-body);transition:all .2s}
 .lang-btn:hover{border-color:var(--accent);color:var(--accent)}
-.lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:0.5rem;min-width:160px;z-index:1001;box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+.lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:0.5rem;min-width:160px;max-height:70vh;overflow-y:auto;z-index:1001;box-shadow:0 12px 40px rgba(0,0,0,0.5)}
 .lang-dropdown.open{display:block}
 .lang-opt{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;border-radius:8px;cursor:pointer;font-size:0.8rem;color:var(--muted);border:none;background:transparent;width:100%;text-align:left;font-family:var(--font-body);transition:all .15s}
 .lang-opt:hover{background:rgba(46,204,138,0.06);color:var(--text)}
@@ -296,7 +296,6 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
       <button class="lang-opt" data-lang="uk" onclick="setLang('uk')">&#127482;&#127462; Українська</button>
       <button class="lang-opt" data-lang="zh" onclick="setLang('zh')">&#127464;&#127475; 中文</button>
       <button class="lang-opt" data-lang="ja" onclick="setLang('ja')">&#127471;&#127477; 日本語</button>
-      <button class="lang-opt" data-lang="pt" onclick="setLang('pt')">&#127463;&#127479; Português</button>
     </div>
   </div>
   <div class="nav-toggle" onclick="toggleNav()" id="nav-toggle">
