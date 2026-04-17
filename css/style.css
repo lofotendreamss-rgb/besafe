@@ -9728,6 +9728,9 @@ p[data-splash-lang].is-visible{
   position:relative;
   width:90%;
   max-width:340px;
+  max-height:85vh;
+  display:flex;
+  flex-direction:column;
   background:var(--surface, #1a2e1f);
   border-radius:16px;
   padding:28px 24px;
@@ -9777,6 +9780,11 @@ p[data-splash-lang].is-visible{
   display:flex;
   flex-direction:column;
   gap:10px;
+  overflow-y:auto;
+  flex:1 1 auto;
+  min-height:0;
+  -webkit-overflow-scrolling:touch;
+  padding-right:4px;
 }
 
 .lang-modal__option{
