@@ -1865,7 +1865,19 @@ export class QuickActions {
 
             <div style="display:flex;gap:8px;margin-top:6px;flex-direction:row;align-items:stretch">
               ${action === "receipt-scanner" && this.scannerStep === "scan" ? `
+                <button
+                  type="button"
+                  class="quick-action-form__secondary"
+                  data-close-quick-action
+                  style="flex:1"
+                >${escapeHtml(this.copy.common.cancel)}</button>
               ` : action === "receipt-scanner" && this.scannerStep === "scanning" ? `
+                <button
+                  type="button"
+                  class="quick-action-form__secondary"
+                  data-close-quick-action
+                  style="flex:1"
+                >${escapeHtml(this.copy.common.cancel)}</button>
               ` : action === "receipt-scanner" && this.scannerStep === "preview" ? `
                 <button
                   type="button"
@@ -2025,6 +2037,30 @@ export class QuickActions {
     return errors;
   }
 
+  showSuccessToast(message) {
+    const existing = document.querySelector("[data-qa-toast]");
+    if (existing) existing.remove();
+
+    const toast = document.createElement("div");
+    toast.setAttribute("data-qa-toast", "");
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    toast.style.cssText = "position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);z-index:10000;background:#2ecc8a;color:#030d07;padding:12px 20px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,0.3);opacity:0;transition:opacity 0.25s, transform 0.25s;display:flex;align-items:center;gap:8px;max-width:92vw";
+    toast.innerHTML = '<span>\u2713</span><span>' + escapeHtml(String(message || "")) + '</span>';
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.style.opacity = "1";
+      toast.style.transform = "translateX(-50%) translateY(0)";
+    });
+
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      toast.style.transform = "translateX(-50%) translateY(20px)";
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  }
+
   async handleSubmit(event) {
     const form = event.target.closest("[data-quick-action-form]");
     if (!form) {
@@ -2062,6 +2098,7 @@ export class QuickActions {
 
       this.clearDraftValues(action);
       this.closeAction();
+      this.showSuccessToast(this.getActionCopy(action).successTitle || this.t("quickActions.step.success", "Saved"));
     } catch (error) {
       console.warn("[QuickActions] Submit failed:", error);
       const host = this.getOverlayHost();
