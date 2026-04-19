@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BeSafe — Your data. Always.</title>
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VCMCG580CG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VCMCG580CG', { anonymize_ip: true });
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
@@ -318,7 +326,7 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
   <p class="hero-sub fade-up" data-i18n="hero.sub">BeSafe protects what matters to you &#8212; only on your device. No servers, no tracking, no surveillance.</p>
   <div class="hero-btns fade-up">
     <button class="btn-primary" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})" data-i18n="hero.btn1">Start 14-day trial</button>
-    <a href="https://github.com/lofotendreamss-rgb/besafe/releases/latest" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem">&#11015; Download v1.1.0</a>
+    <a href="https://github.com/lofotendreamss-rgb/besafe/releases/latest" target="_blank" class="btn-ghost" onclick="if(window.gtag)gtag('event','download_click',{location:'hero',version:'v1.1.1'})" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem">&#11015; Download v1.1.0</a>
   </div>
   <div class="trust-row fade-up">
     <span class="trust-item"><span class="trust-dot"></span><span data-i18n="trust.1">Offline 99% of the time</span></span>
@@ -568,7 +576,7 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
         <a href="https://besafe-oga3.onrender.com/app" class="submit-btn" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;text-decoration:none;border-radius:2rem">
           &#127760; <span data-i18n="lic.browser">Start in browser</span>
         </a>
-        <a href="https://github.com/lofotendreamss-rgb/besafe/releases/latest" class="lic-copy-btn" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;border-radius:2rem;padding:0.7rem;text-decoration:none">
+        <a href="https://github.com/lofotendreamss-rgb/besafe/releases/latest" onclick="if(window.gtag)gtag('event','download_click',{location:'license_card',version:'v1.1.1'})" class="lic-copy-btn" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;border-radius:2rem;padding:0.7rem;text-decoration:none">
           &#128229; <span data-i18n="lic.download">Download desktop app (Windows)</span>
         </a>
       </div>
@@ -642,6 +650,7 @@ function setBilling(val){
 
 function selectPlan(plan){
   selectedPlan=plan;
+  if(window.gtag)gtag('event','plan_select',{plan:plan});
   document.getElementById('ro-personal').classList.toggle('sel',plan==='personal');
   document.getElementById('ro-business').classList.toggle('sel',plan==='business');
 }
@@ -742,6 +751,7 @@ async function doRegister(){
     document.getElementById('lic-key-display').textContent = data.license_key;
     document.getElementById('reg-form').style.display = 'none';
     document.getElementById('lic-success').classList.add('show');
+    if (window.gtag) gtag('event', 'trial_signup', { plan: 'personal', method: 'form' });
 
   } catch (err) {
     showRegError('Something went wrong. Please try again.');
@@ -789,6 +799,7 @@ async function doLogin(){
     document.getElementById('lic-key-display').textContent = data.license_key;
     document.getElementById('reg-form').style.display = 'none';
     document.getElementById('lic-success').classList.add('show');
+    if (window.gtag) gtag('event', 'login', { method: 'email' });
 
   } catch (err) {
     showRegError('Server error. Try again.');
