@@ -1748,7 +1748,7 @@ export class QuickActions {
 
         <input type="hidden" name="amount"  value="${escapeHtml(r.amount  ? String(r.amount)  : "")}">
         <input type="hidden" name="date"    value="${escapeHtml(r.date    || this.getTodayDateValue())}">
-        <input type="hidden" name="note"    value="${escapeHtml(r.store   ? r.store + " čekis" : "")}">
+        <input type="hidden" name="note"    value="${escapeHtml(r.store   ? r.store + " " + this.t("quickActions.receiptScanner.receiptWord", "receipt") : "")}">
         <input type="hidden" name="categoryId" value="${escapeHtml(r.categoryId || "")}">
         <input type="hidden" name="placeId"    value="${escapeHtml(r.placeId    || "")}">
         <input type="hidden" name="placeName"  value="${escapeHtml(r.placeName  || r.store || "")}">
@@ -2286,7 +2286,7 @@ export class QuickActions {
         amount:     total ? String(total) : "",
         date,
         store:      store || "",
-        note:       store ? `${store} čekis` : "",
+        note:       store ? `${store} ${this.t("quickActions.receiptScanner.receiptWord", "receipt")}` : "",
         placeId,
         placeName,
         categoryId: shoppingCategory ? this.normalizeOptionalId(shoppingCategory.id) : null,
