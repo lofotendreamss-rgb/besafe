@@ -349,11 +349,15 @@ export function stopListening() {
 }
 
 export function mountVoiceButton() {
-  if (document.querySelector("[data-voice-btn]")) return;
-  if (!isSupported()) {
-    console.info("[Voice] SpeechRecognition not supported in this browser.");
+  if (document.querySelector("[data-voice-btn]")) {
+    console.info("[Voice] Button already mounted");
     return;
   }
+  if (!isSupported()) {
+    console.warn("[Voice] SpeechRecognition NOT supported. Use Chrome or Edge. Firefox/Safari desktop = no support.");
+    return;
+  }
+  console.info("[Voice] Mounting button. Supported:", isSupported(), "Locale:", getLocale());
 
   const btn = document.createElement("button");
   btn.setAttribute("data-voice-btn", "");
@@ -366,7 +370,7 @@ export function mountVoiceButton() {
   const style = document.createElement("style");
   style.textContent = `
     .voice-fab{
-      position:fixed; right:20px; bottom:88px; z-index:9998;
+      position:fixed; right:20px; bottom:88px; z-index:99999;
       width:56px; height:56px; border-radius:50%;
       background:#2ecc8a; color:#030d07; border:none; cursor:pointer;
       display:flex; align-items:center; justify-content:center;
