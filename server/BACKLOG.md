@@ -34,6 +34,21 @@ app.set('trust proxy', 1);
 **Related:**
 - `server/middleware/authLicense.js` has a TODO(infra) comment referencing
   this backlog item (see Step 8 + writeAuditFailure helper in that file).
-- After this lands, `authLicense` can be simplified to use `req.ip` directly
-  instead of the manual XFF parse — but that refactor is also deferred
-  to the same sprint for test isolation.
+- `server/middleware/rateLimit.js` mirrors the same XFF parsing.
+- After this lands, both middlewares can be simplified to use `req.ip`
+  directly instead of the manual XFF parse — but that refactor is also
+  deferred to the same sprint for test isolation.
+
+## Security follow-ups
+
+### [ ] Rate-limit /api/webhook if Stripe-signature brute force attempts appear
+
+**Priority:** Low — Stripe signature verification already rejects
+invalid requests quickly, and the webhook endpoint is not user-facing.
+
+If `ai_audit_log` ever records repeated webhook-related errors from a
+single IP, wrap the `/api/webhook` endpoint with
+`createRateLimit({ keyExtractor: keyByIp, ... })`. Keep the raw-body
+middleware chain ordering intact — rate limiter must run AFTER
+`express.raw(...)` so Stripe signature verification still sees the
+untouched body.
