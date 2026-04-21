@@ -8,6 +8,13 @@ import crypto from "crypto";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Rate limiting middleware (Step 1c)
+import {
+  createRateLimit,
+  keyByLicenseBody,
+  keyByIp,
+} from "./middleware/rateLimit.js";
+
 // ============================================================
 // CONFIG
 // ============================================================
@@ -43,6 +50,35 @@ const PLANS = {
 
 const MAX_DEVICES = 2;
 const TRIAL_DAYS = 14;
+
+// ============================================================
+// Rate limiters — Step 1c
+// ============================================================
+//
+// /api/verify-license uses TWO limiters chained (dual protection
+// per security review: single license_key limit can be bypassed by
+// botnets rotating random license_keys, so IP limit provides
+// defence-in-depth. See server/middleware/rateLimit.js).
+//
+//   1. IP limit:          30/min/IP  — catches botnets
+//   2. license_key limit: 10/min/key — catches per-license brute force
+//
+// Both must pass; whichever 429s first rejects. State is in-memory,
+// single-instance only. See TODO(redis) in rateLimit.js for scaling.
+const verifyLicenseRateLimitIp = createRateLimit({
+  limit: 30,
+  windowMs: 60_000,
+  keyExtractor: keyByIp,
+  action: "rate_limit_verify_ip",
+  supabase,
+});
+const verifyLicenseRateLimitKey = createRateLimit({
+  limit: 10,
+  windowMs: 60_000,
+  keyExtractor: keyByLicenseBody,
+  action: "rate_limit_verify_key",
+  supabase,
+});
 
 // ============================================================
 // APP
@@ -475,7 +511,11 @@ app.post("/api/login", async (req, res) => {
 // POST /api/verify-license
 // ============================================================
 
-app.post("/api/verify-license", async (req, res) => {
+app.post(
+  "/api/verify-license",
+  verifyLicenseRateLimitIp,
+  verifyLicenseRateLimitKey,
+  async (req, res) => {
   try {
     const { license_key, device_fingerprint } = req.body;
 
@@ -586,7 +626,8 @@ app.post("/api/verify-license", async (req, res) => {
     console.error("[Verify] Error:", error.message);
     res.status(500).json({ status: "error", error: "Server error." });
   }
-});
+  }
+);
 
 // ============================================================
 // POST /api/webhook — Stripe
