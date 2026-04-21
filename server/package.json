@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node besafe-server.js",
     "start:old": "node server.js",
-    "dev": "node --watch besafe-server.js"
+    "dev": "node --watch besafe-server.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.0",
@@ -16,6 +18,9 @@
     "express": "^4.22.1",
     "nodemailer": "^8.0.5",
     "stripe": "^22.0.1"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.0"
   },
   "description": "",
   "keywords": [],
