@@ -317,11 +317,32 @@ export function startListening() {
   };
 
   recognition.onerror = (ev) => {
-    console.warn("[Voice] Recognition error:", ev.error);
-    const msg = ev.error === "not-allowed"
-      ? t("voice.error.permission", "Reikia mikrofono leidimo.")
-      : t("voice.error.generic", "Klaida. Pabandykite dar kartą.");
-    toast(msg, "error");
+    console.warn("[Voice] Recognition error:", ev.error, ev);
+    let msg;
+    switch (ev.error) {
+      case "not-allowed":
+      case "service-not-allowed":
+        msg = t("voice.error.permission", "Reikia mikrofono leidimo. Nustatymuose leiskite mikrofonui.");
+        break;
+      case "no-speech":
+        msg = t("voice.error.noSpeech", "Negirdėjau. Kalbėkite garsiau.");
+        break;
+      case "audio-capture":
+        msg = t("voice.error.audioCapture", "Mikrofonas nepasiekiamas.");
+        break;
+      case "network":
+        msg = t("voice.error.network", "Reikia interneto balso atpažinimui.");
+        break;
+      case "language-not-supported":
+        msg = t("voice.error.langUnsupported", "Kalba nepalaikoma.");
+        break;
+      case "aborted":
+        msg = null; // silent - user cancelled
+        break;
+      default:
+        msg = t("voice.error.generic", "Klaida") + ": " + ev.error;
+    }
+    if (msg) toast(msg, "error");
     setButtonState("idle");
     isListening = false;
   };
