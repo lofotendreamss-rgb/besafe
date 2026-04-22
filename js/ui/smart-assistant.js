@@ -20,8 +20,10 @@
 // Privacy posture (mirrors voice-assistant):
 //   - License key is never prompted or stored by this module
 //   - Device fingerprint forwarded only if already present locally
-//   - Assistant replies rendered via textContent (never innerHTML) —
-//     hard XSS defence; trusted server can still send arbitrary text
+//   - Assistant replies go through renderMarkdown() which escapes the
+//     entire payload BEFORE applying markdown tag insertions, so any
+//     <script> or event-handler in Claude's reply stays literal text.
+//     User + error bubbles keep plain textContent.
 //
 // Graceful degradation:
 //   - localStorage unavailable (private browsing) → toast + no-op
@@ -60,6 +62,116 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   }[c]));
+}
+
+// ============================================================
+// Minimal markdown renderer — Claude Haiku replies often include
+// lists, bold, inline code, and short headings. Users expect them
+// formatted rather than rendered as raw asterisks.
+//
+// Security contract — two non-negotiable rules:
+//
+//   1. escapeHtml() runs FIRST on the entire input. After this step
+//      every `<`, `>`, `&`, `"`, `'` in the payload is an HTML entity.
+//      There is no way for user-controlled `<script>` or
+//      `<img onerror=...>` to survive.
+//
+//   2. The ONLY tags we insert are a hard-coded whitelist with NO
+//      attributes: <strong>, <em>, <code>, <h3>, <h4>, <ul>, <ol>,
+//      <li>, <p>, <br>. No href, no src, no style — attribute-based
+//      XSS vectors are structurally impossible.
+//
+// Anything outside the markdown syntax we understand becomes plain
+// text in a <p>. This keeps the parser small and predictable.
+//
+// NOT supported (on purpose): links, images, tables, blockquotes,
+// fenced code blocks, nested lists. Add them only if Claude starts
+// emitting them meaningfully — every new feature is new attack
+// surface.
+// ============================================================
+
+function renderMarkdown(text) {
+  if (text === null || text === undefined || text === "") return "";
+  const escaped = escapeHtml(String(text));
+  // Split on blank lines so adjacent lists / paragraphs don't merge.
+  const blocks = escaped.split(/\n\s*\n/);
+  return blocks.map(renderMarkdownBlock).filter(Boolean).join("");
+}
+
+function renderMarkdownBlock(block) {
+  // Trim each line so stray \r (CRLF artefacts) and leading/trailing
+  // whitespace don't defeat the anchor-sensitive regexes below. Claude
+  // occasionally emits `## 5. Title\r` — without trimming, the trailing
+  // \r would land inside <h4>. As a side benefit, indented bullet lists
+  // (`  - item`) are now recognised as lists instead of paragraphs.
+  const lines = block
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0 || block.length === 0);
+  if (lines.length === 0) return "";
+
+  // Heading + following content in the same block (no blank-line
+  // separator). Claude frequently emits:
+  //     ## 1. Title
+  //     - bullet one
+  //     - bullet two
+  // Without this split we'd fail the all-bullet test (first line
+  // isn't a bullet) and fall through to a single paragraph that
+  // swallows the list. Peel the heading off, render it, then recurse
+  // on the rest so the body keeps its block semantics (lists, nested
+  // headings, paragraphs). Recursion depth is bounded by line count —
+  // each call consumes at least one line.
+  if (lines.length > 1) {
+    const h2 = /^##\s+(.+)$/.exec(lines[0]);
+    const h1 = /^#\s+(.+)$/.exec(lines[0]);
+    if (h2 || h1) {
+      const tag     = h2 ? "h4" : "h3";
+      const content = (h2 || h1)[1];
+      const heading = "<" + tag + ">" + renderMarkdownInline(content) + "</" + tag + ">";
+      return heading + renderMarkdownBlock(lines.slice(1).join("\n"));
+    }
+  }
+
+  // Unordered list: every non-empty line starts with `- ` or `* `.
+  if (lines.every((l) => /^[-*]\s+/.test(l))) {
+    const items = lines
+      .map((l) => "<li>" + renderMarkdownInline(l.replace(/^[-*]\s+/, "")) + "</li>")
+      .join("");
+    return "<ul>" + items + "</ul>";
+  }
+
+  // Ordered list: every non-empty line starts with `1. ` (any digit+dot).
+  if (lines.every((l) => /^\d+\.\s+/.test(l))) {
+    const items = lines
+      .map((l) => "<li>" + renderMarkdownInline(l.replace(/^\d+\.\s+/, "")) + "</li>")
+      .join("");
+    return "<ol>" + items + "</ol>";
+  }
+
+  // Single-line heading block: `# foo` → h3, `## foo` → h4.
+  if (lines.length === 1) {
+    const h2 = /^##\s+(.+)$/.exec(lines[0]);
+    if (h2) return "<h4>" + renderMarkdownInline(h2[1]) + "</h4>";
+    const h1 = /^#\s+(.+)$/.exec(lines[0]);
+    if (h1) return "<h3>" + renderMarkdownInline(h1[1]) + "</h3>";
+  }
+
+  // Default: paragraph. Single \n inside the block becomes <br>.
+  return "<p>" + lines.map(renderMarkdownInline).join("<br>") + "</p>";
+}
+
+function renderMarkdownInline(s) {
+  // Order matters:
+  //   code first so its content is visually fenced off from further
+  //   transforms (the regex still scans inside <code>, but that is
+  //   acceptable for a minimal parser — Claude rarely nests bold in
+  //   inline code).
+  //   bold (**) before italic (*) so `**x**` isn't misread as two
+  //   italic openers.
+  return s
+    .replace(/`([^`\n]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*\n]+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*([^*\n]+?)\*/g, "<em>$1</em>");
 }
 
 // ============================================================
@@ -127,6 +239,12 @@ async function sendChatMessage(text) {
     "X-License-Key": licenseKey,
   };
   if (deviceFp) headers["X-Device-Fingerprint"] = deviceFp;
+  // Mirror the UI language to the server so its finance system
+  // prompt knows which language to default to when the user's
+  // message alone isn't enough to detect it. getLang() has its own
+  // try/catch + "en" fallback — always returns a 2-char code.
+  const lang = getLang();
+  if (lang) headers["X-Language"] = lang;
 
   let resp;
   try {
@@ -204,14 +322,22 @@ function buildChatPanel() {
   return wrap;
 }
 
-// NEVER innerHTML here — `text` could contain <script> etc.
-// Assistant replies are trusted server output but we still use
-// textContent to keep the rule uniform (defence-in-depth).
+// Role-specific rendering:
+//   assistant → renderMarkdown(): HTML-escapes first, then injects
+//     a whitelist of tags (<strong>, <em>, <code>, lists, headings,
+//     <p>, <br>). No attributes, so no onerror/onload vectors.
+//   user / error → textContent. No markdown on user input (no
+//     reason to format their own typing) and error strings are
+//     sourced by us, not the network.
 function addBubble(role, text) {
   if (!messagesEl) return null;
   const bubble = document.createElement("div");
   bubble.className = "smart-chat__bubble smart-chat__bubble--" + role;
-  bubble.textContent = String(text || "");
+  if (role === "assistant") {
+    bubble.innerHTML = renderMarkdown(text);
+  } else {
+    bubble.textContent = String(text || "");
+  }
   messagesEl.appendChild(bubble);
   scrollToBottom();
   return bubble;
@@ -502,6 +628,25 @@ function injectStyles() {
       font-size:14px; line-height:1.45;
       word-wrap:break-word; white-space:pre-wrap;
     }
+    .smart-chat__bubble strong{ font-weight:700; }
+    .smart-chat__bubble em{ font-style:italic; }
+    .smart-chat__bubble code{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:12.5px;
+      background:rgba(255,255,255,0.08);
+      padding:1px 5px; border-radius:4px;
+    }
+    .smart-chat__bubble h3,
+    .smart-chat__bubble h4{
+      margin:8px 0 4px; font-weight:700; line-height:1.3;
+    }
+    .smart-chat__bubble h3{ font-size:15px; }
+    .smart-chat__bubble h4{ font-size:14px; }
+    .smart-chat__bubble ul,
+    .smart-chat__bubble ol{ margin:4px 0; padding-left:20px; }
+    .smart-chat__bubble li{ margin-bottom:2px; }
+    .smart-chat__bubble p{ margin:0 0 6px; }
+    .smart-chat__bubble p:last-child{ margin-bottom:0; }
     .smart-chat__bubble--user{
       align-self:flex-end; background:#2ecc8a; color:#030d07;
       border-bottom-right-radius:4px;
