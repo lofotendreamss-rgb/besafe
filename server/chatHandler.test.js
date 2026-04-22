@@ -11,13 +11,19 @@ import { createChatHandler } from './chatHandler.js';
 // (learned from rateLimit.test.js T25).
 const flushPromises = () => new Promise((r) => setImmediate(r));
 
-function createSupabaseStub({ auditInsert = { data: null, error: null } } = {}) {
+function createSupabaseStub({
+  auditInsert = { data: null, error: null },
+  rpcResult   = { data: null, error: null },
+} = {}) {
   const auditBuilder = { insert: vi.fn().mockResolvedValue(auditInsert) };
   const from = vi.fn((table) => {
     if (table === 'ai_audit_log') return auditBuilder;
     throw new Error('unexpected table: ' + table);
   });
-  return { from, _builders: { auditBuilder } };
+  // rpc is invoked fire-and-forget from chatHandler after a
+  // successful Anthropic response to increment ai_daily_usage.
+  const rpc = vi.fn().mockResolvedValue(rpcResult);
+  return { from, rpc, _builders: { auditBuilder } };
 }
 
 function createAnthropicStub({ create } = {}) {

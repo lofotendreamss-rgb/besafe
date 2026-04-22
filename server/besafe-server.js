@@ -18,6 +18,7 @@ import {
 
 import Anthropic from "@anthropic-ai/sdk";
 import { createAuthLicense } from "./middleware/authLicense.js";
+import { createDailyQuota } from "./middleware/dailyQuota.js";
 import { createChatHandler } from "./chatHandler.js";
 
 // ============================================================
@@ -108,6 +109,8 @@ const chatRateLimit = createRateLimit({
   action:       "rate_limit_chat",
   supabase,
 });
+
+const dailyQuota = createDailyQuota(supabase);
 
 const chatHandler = createChatHandler(anthropic, supabase);
 
@@ -667,8 +670,9 @@ app.post(
 app.post(
   "/api/chat",
   authLicense,    // 1. Validates X-License-Key, populates req.license
-  chatRateLimit,  // 2. Enforces 20/min/license_key
-  chatHandler,    // 3. Calls Anthropic, returns response
+  dailyQuota,     // 2. Enforces per-plan daily chat quota
+  chatRateLimit,  // 3. Enforces 20/min/license_key burst limit
+  chatHandler,    // 4. Calls Anthropic, RPC-increments quota on success
 );
 
 // ============================================================

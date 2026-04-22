@@ -263,6 +263,28 @@ export function createChatHandler(anthropic, supabase) {
         tokens_used:   tokensUsed,
       }).catch(() => {});
 
+      // Fire-and-forget quota increment — user already has their
+      // reply; a transient RPC failure is only a monitoring concern
+      // and must not delay or block the response. Wrapped in
+      // try/catch so a synchronous throw (e.g. rpc method missing on
+      // a stub or misconfigured client) never bubbles into the outer
+      // try/catch and mis-classifies a success as an error response.
+      try {
+        supabase.rpc('increment_ai_daily_usage', {
+          p_license_id: req.license.id,
+          p_tokens_in:  response.usage?.input_tokens  ?? 0,
+          p_tokens_out: response.usage?.output_tokens ?? 0,
+        }).then((result) => {
+          if (result?.error) {
+            console.warn('[chatHandler] quota RPC error:', result.error.message);
+          }
+        }).catch((err) => {
+          console.warn('[chatHandler] quota RPC threw:', err?.message);
+        });
+      } catch (err) {
+        console.warn('[chatHandler] quota RPC invocation failed:', err?.message);
+      }
+
       return res.json({
         response:    replyText,
         tokens_used: tokensUsed,
