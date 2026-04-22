@@ -216,7 +216,7 @@ describe('chatHandler — success path', () => {
     expect(body.elapsed_ms).toBeGreaterThanOrEqual(0);
   });
 
-  it('T8: calls anthropic.messages.create with correct model, max_tokens, messages, signal', async () => {
+  it('T8: calls anthropic.messages.create with correct model, max_tokens, system, messages, signal', async () => {
     const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
     const anthropic = createAnthropicStub({ create: createSpy });
     const supabase  = createSupabaseStub();
@@ -229,10 +229,41 @@ describe('chatHandler — success path', () => {
     expect(payload).toEqual({
       model:      'claude-haiku-4-5-20251001',
       max_tokens: 500,
+      system:     expect.stringContaining('BeSafe Assistant'),
       messages:   [{ role: 'user', content: 'what is 2+2?' }],
     });
     expect(opts).toHaveProperty('signal');
     expect(opts.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it('T8b: X-Language header resolves to full language name in system prompt', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    await handler(mockReq({ headers: { 'X-Language': 'lt' } }), mockRes());
+
+    expect(createSpy.mock.calls[0][0].system).toContain('Lithuanian');
+  });
+
+  it('T8c: missing X-Language defaults to English in system prompt', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    await handler(mockReq(), mockRes());
+
+    expect(createSpy.mock.calls[0][0].system).toContain('English');
+  });
+
+  it('T8d: unknown X-Language code falls back to English', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    await handler(mockReq({ headers: { 'X-Language': 'xx' } }), mockRes());
+
+    expect(createSpy.mock.calls[0][0].system).toContain('English');
   });
 
   it('T9: audit insert receives success row with tokens_used = input + output', async () => {

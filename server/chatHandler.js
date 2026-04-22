@@ -2,12 +2,13 @@
 // chatHandler — Express handler for BeSafe's POST /api/chat
 // ============================================================
 //
-// Step 2a scope: stateless infrastructure sanity check.
-//   * Anthropic call: claude-haiku-4-5, single-turn, no system prompt
+// Step 2a–2c scope: stateless single-turn chat with a finance-scoped
+// system prompt and per-request language routing via X-Language.
+//   * Anthropic call: claude-haiku-4-5, single-turn, SYSTEM_PROMPT_TEMPLATE
+//   * X-Language header → {LANGUAGE} placeholder in the template
 //   * Audit log:      one row per Anthropic call (success OR error)
-//   * NO conversations / messages table writes (Step 2b owns history)
-//   * NO tool calling (Step 2c)
-//   * NO multi-language (Step 2b)
+//   * NO conversations / messages table writes (future step owns history)
+//   * NO tool calling (future step)
 //
 // Factory pattern — accepts the anthropic + supabase clients so this
 // module:
@@ -78,6 +79,79 @@ const ANTHROPIC_TIMEOUT_MS = 30_000;
 const MAX_FINGERPRINT_LENGTH = 256;
 
 // ============================================================
+// Language routing — maps 2-char codes from the X-Language header
+// to full English names that are substituted into the system
+// prompt's {LANGUAGE} placeholder. Mirrors the 14 languages
+// shipped in js/core/i18n.js. Anything missing / unknown /
+// malformed degrades silently to English.
+// ============================================================
+const LANG_NAMES = {
+  lt: 'Lithuanian',
+  en: 'English',
+  de: 'German',
+  es: 'Spanish',
+  fr: 'French',
+  it: 'Italian',
+  no: 'Norwegian',
+  pl: 'Polish',
+  pt: 'Portuguese',
+  sv: 'Swedish',
+  ru: 'Russian',
+  uk: 'Ukrainian',
+  zh: 'Chinese',
+  ja: 'Japanese',
+};
+const DEFAULT_LANGUAGE = 'English';
+
+// Header values are normally 2-char codes. Cap the slice so an
+// attacker can't smuggle a megabyte header into our Map lookup.
+const MAX_LANG_CODE_LENGTH = 8;
+
+// ============================================================
+// System prompt template — allocated once at module load. The
+// {LANGUAGE} placeholder is filled per-request from the
+// X-Language header (see resolveLanguage below).
+// ============================================================
+const SYSTEM_PROMPT_TEMPLATE = `You are BeSafe Assistant — a friendly, privacy-first personal finance helper built into the BeSafe app.
+
+Your scope:
+- Personal budgeting, saving strategies, and expense tracking
+- Explaining financial concepts clearly (interest, compound growth, tax basics, etc.)
+- Helping users understand their own financial situation and make informed decisions
+- Practical money habits for everyday life, families, and small businesses
+
+Your personality:
+- Warm, calm, and practical — not preachy or alarmist
+- Concrete and action-oriented (give examples with real numbers when helpful)
+- Privacy-respecting: you never ask for account numbers, passwords, card details, or government IDs
+- Honest about limits: if a question requires professional legal/tax/investment advice, say so and recommend a qualified advisor
+
+Hard rules:
+- You do NOT help with: software development, programming, code writing, general IT support, legal document drafting, medical advice, or any topic outside personal finance. If asked, briefly and politely redirect: "I'm BeSafe's finance assistant, so I can only help with money-related questions. For {topic}, please use a dedicated tool or professional."
+- You do NOT make specific investment recommendations (no "buy X stock"). You can explain concepts (diversification, index funds, risk levels) in general terms.
+- You do NOT give tax or legal advice as if from a licensed professional. You can explain general principles.
+
+Language:
+- Respond in the same language the user writes in
+- If unclear, default to {LANGUAGE}
+- Keep responses concise by default (3-8 sentences). Expand with lists and headings only when the user explicitly asks for detail or when a structured breakdown genuinely helps.
+
+Formatting:
+- Use markdown: **bold** for emphasis, bullet lists for enumerations, ## for headings only when the answer is long
+- Currency: use the € symbol by default unless the user writes in another currency
+- Numbers: use the user's locale conventions when obvious (1 000,50 € for most EU; $1,000.50 for US English)`;
+
+// Extracts the full language name from the X-Language header.
+// Missing / unknown / non-string values all resolve to English so
+// the template always substitutes into something sensible.
+function resolveLanguage(req) {
+  const raw = req?.headers?.['x-language'];
+  if (typeof raw !== 'string' || raw.length === 0) return DEFAULT_LANGUAGE;
+  const code = raw.slice(0, MAX_LANG_CODE_LENGTH).toLowerCase();
+  return LANG_NAMES[code] || DEFAULT_LANGUAGE;
+}
+
+// ============================================================
 // Factory
 // ============================================================
 
@@ -140,11 +214,18 @@ export function createChatHandler(anthropic, supabase) {
     const controller = new AbortController();
     const timeoutId  = setTimeout(() => controller.abort(), ANTHROPIC_TIMEOUT_MS);
 
+    // Resolve the user's language BEFORE the Anthropic call so we can
+    // build the system prompt with the correct fallback. Resolution is
+    // O(1) — single header read + Map lookup.
+    const language     = resolveLanguage(req);
+    const systemPrompt = SYSTEM_PROMPT_TEMPLATE.replace('{LANGUAGE}', language);
+
     try {
       const response = await anthropic.messages.create(
         {
           model:      MODEL,
           max_tokens: MAX_OUTPUT_TOKENS,
+          system:     systemPrompt,
           messages:   [{ role: 'user', content: message }],
         },
         { signal: controller.signal },
