@@ -39,6 +39,42 @@ app.set('trust proxy', 1);
   directly instead of the manual XFF parse — but that refactor is also
   deferred to the same sprint for test isolation.
 
+### [ ] /api/verify-license trial expiry silently broken — trial_ends_at column missing
+
+**Priority:** Medium
+**Effort:** Low (add column OR remove logic)
+**Impact:** Trial licenses never expire via /api/verify-license
+
+**Problem:**
+`/api/verify-license` ([besafe-server.js:556-637](server/besafe-server.js#L556-L637))
+reads `license.trial_ends_at` to detect expired trials and transition
+them to `read_only` / `expired`. The `licenses` table in the current
+Supabase schema does NOT have a `trial_ends_at` column
+(confirmed via `information_schema.columns` query 2026-04-22).
+
+Because `.select("*")` silently returns `undefined` for missing
+columns, `license.trial_ends_at` is `undefined` and the branch
+`if (license.status === "trial" && license.trial_ends_at)` is
+never true — trials keep responding as `active` forever.
+
+Discovered while fixing a related bug in `authLicense.js` where
+`.select('... trial_ends_at')` produced a PostgREST error that
+mis-surfaced as `license_not_found` (fixed: column removed from
+SELECT list in that middleware).
+
+**Solution (pick one):**
+1. Add `trial_ends_at timestamptz` column to `licenses` via migration,
+   and backfill existing trial rows from `users.trial_ends_at`.
+2. Delete the trial-expiry branch from `/api/verify-license` and rely
+   on `/api/check-trials` cron + `users.trial_ends_at` for status
+   transitions.
+
+**Why separate sprint:**
+- Schema migration needs coordination with `/api/check-trials` cron
+- Decision between "add column" vs "delete dead code" is a product call
+- Live trial licenses are not impacted in a user-visible way today
+  (they show as active, which is the intended pre-expiry behavior)
+
 ## Security follow-ups
 
 ### [ ] Rate-limit /api/webhook if Stripe-signature brute force attempts appear
