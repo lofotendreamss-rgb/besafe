@@ -13,7 +13,12 @@ import {
   createRateLimit,
   keyByLicenseBody,
   keyByIp,
+  keyByLicenseHeader,
 } from "./middleware/rateLimit.js";
+
+import Anthropic from "@anthropic-ai/sdk";
+import { createAuthLicense } from "./middleware/authLicense.js";
+import { createChatHandler } from "./chatHandler.js";
 
 // ============================================================
 // CONFIG
@@ -28,6 +33,16 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
+
+// Fail-fast: Anthropic API key required for /api/chat endpoint.
+// Missing key should crash server at boot, not on first user request.
+if (!process.env.ANTHROPIC_API_KEY) {
+  throw new Error("[besafe-server] ANTHROPIC_API_KEY required in .env");
+}
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
 const mailer = nodemailer.createTransport({
   service: "gmail",
@@ -79,6 +94,22 @@ const verifyLicenseRateLimitKey = createRateLimit({
   action: "rate_limit_verify_key",
   supabase,
 });
+
+// ============================================================
+// AI chat endpoint middleware chain (Step 2a)
+// ============================================================
+
+const authLicense = createAuthLicense(supabase);
+
+const chatRateLimit = createRateLimit({
+  limit:        20,
+  windowMs:     60_000,
+  keyExtractor: keyByLicenseHeader,
+  action:       "rate_limit_chat",
+  supabase,
+});
+
+const chatHandler = createChatHandler(anthropic, supabase);
 
 // ============================================================
 // APP
@@ -627,6 +658,17 @@ app.post(
     res.status(500).json({ status: "error", error: "Server error." });
   }
   }
+);
+
+// ============================================================
+// POST /api/chat — AI assistant (Step 2a: stateless, no system prompt)
+// ============================================================
+
+app.post(
+  "/api/chat",
+  authLicense,    // 1. Validates X-License-Key, populates req.license
+  chatRateLimit,  // 2. Enforces 20/min/license_key
+  chatHandler,    // 3. Calls Anthropic, returns response
 );
 
 // ============================================================
