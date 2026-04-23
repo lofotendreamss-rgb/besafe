@@ -674,9 +674,23 @@ app.post(
 app.post(
   "/api/chat",
   authLicense,    // 1. Validates X-License-Key, populates req.license
-  dailyQuota,     // 2. Enforces per-plan daily chat quota
-  chatRateLimit,  // 3. Enforces 20/min/license_key burst limit
-  chatHandler,    // 4. Calls Anthropic, RPC-increments quota on success
+  (req, res, next) => {
+    // 2. Trial-gate — AI is a paid-plan feature. Trial users see
+    //    the license modal flow successfully, the chat panel opens,
+    //    and they only hit this 402 when they try to send. The UI
+    //    translates `trial_no_ai` into an upgrade CTA.
+    if (req.license && req.license.status === "trial") {
+      return res.status(402).json({
+        error: "trial_no_ai",
+        message: "AI asistentas neprieinamas bandomojoje versijoje. Užsisakyk Personal planą.",
+        upgrade_required: true,
+      });
+    }
+    next();
+  },
+  dailyQuota,     // 3. Enforces per-plan daily chat quota
+  chatRateLimit,  // 4. Enforces 20/min/license_key burst limit
+  chatHandler,    // 5. Calls Anthropic, RPC-increments quota on success
 );
 
 // ============================================================
