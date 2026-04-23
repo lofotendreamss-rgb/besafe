@@ -212,7 +212,7 @@ export function createAuthLicense(supabase, options = {}) {
     try {
       const { data, error } = await supabase
         .from('licenses')
-        .select('id, user_id, license_key, status, plan, trial_ends_at')
+        .select('id, user_id, license_key, status, plan')
         .eq('license_key', normalizedKey)
         .single();
 

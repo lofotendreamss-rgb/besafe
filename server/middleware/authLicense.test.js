@@ -58,7 +58,6 @@ const VALID_LICENSE = Object.freeze({
   license_key:   VALID_KEY,
   status:        'active',
   plan:          'personal',
-  trial_ends_at: null,
 });
 
 describe('authLicense middleware', () => {
