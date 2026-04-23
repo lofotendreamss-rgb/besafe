@@ -1,5 +1,36 @@
 # BeSafe Server — Backlog
 
+## 🔴 HIGH PRIORITY: Device tracking bug in /api/verify-license
+
+**Impact:** Personal plan users get locked out of their own license after just
+2 activations, even from the same browser. Bug exists since initial implementation.
+
+**Root cause (3 issues):**
+1. `devices_used` counter increments on EVERY /api/verify-license call without
+   checking device_fingerprint dedup
+2. `devices` table is never INSERT'ed into — only the counter on `licenses` table
+   is updated (ghost devices)
+3. No deduplication logic — same fingerprint counted N times across N calls
+
+**Temporary workaround (applied 2026-04-23):**
+- Bumped `devices_max` default from 2 to 10 for Personal plan
+  (`const MAX_DEVICES = 10` in besafe-server.js)
+- Ran one-off script to reset `devices_used = 0` and `devices_max = 10`
+  on all existing Personal licenses
+- This masks the bug's effect for early users but doesn't fix it
+
+**Proper fix required:**
+1. INSERT into `devices` table with fingerprint on first verify
+2. On subsequent verify with same fingerprint: update `last_seen_at`, DON'T increment
+3. Compute `devices_used` dynamically: `SELECT COUNT(*) FROM devices WHERE license_id = X`
+4. Add DB migration to create proper `devices` table schema if missing
+
+**Files to modify:**
+- `server/besafe-server.js` L548-650 (/api/verify-license handler)
+- Possibly `supabase/migrations/` new migration for devices table
+
+---
+
 ## Infrastructure improvements
 
 ### [ ] Set Express trust proxy for Render deployment
