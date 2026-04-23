@@ -449,6 +449,16 @@ function classifyError(err) {
     return t("assistant.error.unauthorized", "Reikia galiojančios licencijos.");
   }
 
+  // Trial users hit this when they try to use AI. They have a valid
+  // license, but AI is a paid-plan-only feature. Show upgrade CTA
+  // instead of the generic "try later" which would be misleading.
+  if (code === "trial_no_ai" || err?.status === 402) {
+    return t(
+      "assistant.error.trialNoAi",
+      "AI asistentas — tik mokamiems planams. Atnaujinti planą jūsų paskyroje."
+    );
+  }
+
   // Daily quota exhausted — distinct from burst rate limit. User needs
   // to wait until midnight UTC or upgrade their plan. Retry-After
   // contains seconds until reset, but we express it as "rytoj" for UX.

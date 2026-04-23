@@ -22,6 +22,55 @@ import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 
 const LICENSE_KEY_PATTERN = /^BSAFE-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
 
+/**
+ * Generate a device fingerprint and persist it to localStorage.
+ * Matches the algorithm in license.checker.js so both modules
+ * produce consistent values for the same device.
+ *
+ * Critical for /api/verify-license: the server rejects requests with
+ * null/missing device_fingerprint as {"status":"invalid"} (400). In
+ * fresh Incognito windows localStorage starts empty, so just reading
+ * besafe_device_fp used to return null and the modal would mislead
+ * the user with "Invalid key. Check your email." — this helper
+ * ensures we always send a real value.
+ *
+ * Returns the fingerprint string. Never returns null — on rare
+ * crypto/screen access failures, falls back to a timestamp-based ID.
+ */
+function generateDeviceFingerprint() {
+  try {
+    const stored = localStorage.getItem("besafe_device_fp");
+    if (stored) return stored;
+
+    const nav = window.navigator;
+    const raw = [
+      nav.userAgent,
+      nav.language,
+      nav.hardwareConcurrency,
+      screen.width,
+      screen.height,
+      screen.colorDepth,
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      nav.platform,
+    ].join("|");
+
+    let hash = 0;
+    for (let i = 0; i < raw.length; i++) {
+      const ch = raw.charCodeAt(i);
+      hash = ((hash << 5) - hash) + ch;
+      hash |= 0;
+    }
+    const fp = "fp_" + Math.abs(hash).toString(36) + "_" + Date.now().toString(36);
+    localStorage.setItem("besafe_device_fp", fp);
+    return fp;
+  } catch (err) {
+    console.warn("[LicenseModal] fingerprint generation failed:", err);
+    // Last-resort fallback: pure timestamp. Still a non-null string
+    // so the server's !device_fingerprint check doesn't reject us.
+    return "fp_fallback_" + Date.now().toString(36);
+  }
+}
+
 let modalEl = null;
 let inputEl = null;
 let submitBtn = null;
@@ -153,10 +202,11 @@ async function handleSubmit() {
   submitBtn.textContent = t("license.activating", "Aktyvuojama...");
 
   try {
-    const deviceFp = (() => {
-      try { return localStorage.getItem("besafe_device_fp") || null; }
-      catch { return null; }
-    })();
+    // Ensure we always have a fingerprint — generates one if missing,
+    // reuses existing from localStorage otherwise. Server rejects
+    // requests with null/missing device_fingerprint as {"status":"invalid"}
+    // (400), which the modal would misreport as "Invalid key".
+    const deviceFp = generateDeviceFingerprint();
 
     const res = await fetch("/api/verify-license", {
       method:  "POST",
@@ -232,4 +282,33 @@ export function closeLicenseModal() {
   if (!modalEl) return;
   modalEl.classList.remove("is-open");
   currentOnSuccess = null;
+}
+
+// Auto-open modal if URL has ?activate=1 (landing nav entry point for
+// users who received a license key via email and need to activate it
+// in a real browser — the besafe:// protocol handler only works in
+// Electron desktop builds).
+if (typeof window !== "undefined") {
+  try {
+    if (new URLSearchParams(window.location.search).get("activate") === "1") {
+      const trigger = () => {
+        showLicenseModal(() => {
+          // After successful activation, strip the ?activate=1 from the URL
+          // so a browser refresh doesn't re-open the modal.
+          try {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("activate");
+            window.history.replaceState({}, "", url.toString());
+          } catch {}
+        });
+      };
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", trigger);
+      } else {
+        setTimeout(trigger, 150);
+      }
+    }
+  } catch (err) {
+    console.warn("[LicenseModal] auto-trigger failed:", err);
+  }
 }
