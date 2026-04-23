@@ -107,6 +107,12 @@ const DEFAULT_LANGUAGE = 'English';
 // attacker can't smuggle a megabyte header into our Map lookup.
 const MAX_LANG_CODE_LENGTH = 8;
 
+// Hard cap on the serialised financeContext block we accept from
+// the client. At 50 KB we drop the block, log a warning, and still
+// serve the chat reply without context — fail-open for UX, fail-closed
+// for the Anthropic bill (oversized prompts balloon token usage).
+const MAX_FINANCE_CONTEXT_BYTES = 50_000;
+
 // ============================================================
 // System prompt template — allocated once at module load. The
 // {LANGUAGE} placeholder is filled per-request from the
@@ -119,6 +125,9 @@ Your scope:
 - Explaining financial concepts clearly (interest, compound growth, tax basics, etc.)
 - Helping users understand their own financial situation and make informed decisions
 - Practical money habits for everyday life, families, and small businesses
+
+User data:
+- When a <user_finance_context> block is present in this prompt, it contains the user's real financial snapshot (current month totals, top categories, recent transactions). Use it to give personalized, data-driven answers — reference specific amounts and categories when relevant. If the block is empty, missing, or the numbers are all zero, acknowledge the user hasn't added transactions yet and gently suggest they start tracking.
 
 Your personality:
 - Warm, calm, and practical — not preachy or alarmist
@@ -217,8 +226,36 @@ export function createChatHandler(anthropic, supabase) {
     // Resolve the user's language BEFORE the Anthropic call so we can
     // build the system prompt with the correct fallback. Resolution is
     // O(1) — single header read + Map lookup.
-    const language     = resolveLanguage(req);
-    const systemPrompt = SYSTEM_PROMPT_TEMPLATE.replace('{LANGUAGE}', language);
+    const language    = resolveLanguage(req);
+    const basePrompt  = SYSTEM_PROMPT_TEMPLATE.replace('{LANGUAGE}', language);
+
+    // Optional <user_finance_context> block — only injected when the
+    // client sent a sane, bounded object. Placed BEFORE the base
+    // prompt so the rules/guardrails remain the last thing Claude
+    // reads (models weight the tail of the system message higher).
+    let financeContextBlock = '';
+    const rawContext = req?.body?.financeContext;
+    if (rawContext && typeof rawContext === 'object' && !Array.isArray(rawContext)) {
+      try {
+        const serialized = JSON.stringify(rawContext, null, 2);
+        if (serialized.length > MAX_FINANCE_CONTEXT_BYTES) {
+          console.warn(
+            '[chatHandler] financeContext too large (' +
+            serialized.length + ' chars); dropping'
+          );
+        } else {
+          financeContextBlock =
+            '<user_finance_context>\n' +
+            'Šis vartotojo finansinis snapshot\'as (EUR). Naudok šį kontekstą asmeniškiems atsakymams:\n\n' +
+            serialized + '\n' +
+            '</user_finance_context>\n\n';
+        }
+      } catch (err) {
+        console.warn('[chatHandler] financeContext serialize failed:', err?.message);
+      }
+    }
+
+    const systemPrompt = financeContextBlock + basePrompt;
 
     try {
       const response = await anthropic.messages.create(

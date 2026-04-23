@@ -36,6 +36,7 @@
 
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { startListening as voiceStartListening } from "./voice-assistant.js";
+import { buildFinanceContext } from "../services/ai/finance.context.js";
 
 // ============================================================
 // i18n — mirror the voice-assistant helpers so translator keys
@@ -246,12 +247,29 @@ async function sendChatMessage(text) {
   const lang = getLang();
   if (lang) headers["X-Language"] = lang;
 
+  // Gather the user's finance snapshot locally BEFORE sending. This
+  // is wrapped in try/catch as belt-and-braces — buildFinanceContext
+  // already has its own internal guard, but a hostile localStorage
+  // env (e.g. Safari private browsing) shouldn't block sending a
+  // message. Falls back to null, which the server tolerates (silently
+  // ignores when not an object or above the 50 KB cap).
+  let financeContext = null;
+  try {
+    financeContext = buildFinanceContext();
+  } catch (err) {
+    console.warn("[SmartAssistant] finance context build failed:", err);
+    financeContext = null;
+  }
+
   let resp;
   try {
     resp = await fetch("/api/chat", {
       method:  "POST",
       headers,
-      body:    JSON.stringify({ message: text }),
+      body:    JSON.stringify({
+        message: text,
+        ...(financeContext ? { financeContext } : {}),
+      }),
     });
   } catch (netErr) {
     const err = new Error("network");

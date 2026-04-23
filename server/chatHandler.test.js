@@ -272,6 +272,67 @@ describe('chatHandler — success path', () => {
     expect(createSpy.mock.calls[0][0].system).toContain('English');
   });
 
+  it('T_FC1: omitted financeContext → no </user_finance_context> closing tag (template mentions the tag name but never closes it)', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    await handler(mockReq(), mockRes());
+
+    expect(createSpy).toHaveBeenCalledTimes(1);
+    const payload = createSpy.mock.calls[0][0];
+    // Closing tag is the distinctive marker — template only REFERENCES
+    // <user_finance_context> descriptively, it never emits </...> itself.
+    expect(payload.system).not.toContain('</user_finance_context>');
+    // Base prompt still present — proves we didn't accidentally skip the build.
+    expect(payload.system).toContain('BeSafe Assistant');
+  });
+
+  it('T_FC2: valid financeContext → system prompt wraps JSON in <user_finance_context>, rules block stays last', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    const ctx = {
+      currency: 'EUR',
+      currentMonth: { label: '2026-04', expenses: 247.5 },
+    };
+
+    await handler(mockReq({ body: { message: 'hi', financeContext: ctx } }), mockRes());
+
+    const payload = createSpy.mock.calls[0][0];
+    expect(payload.system).toContain('<user_finance_context>');
+    expect(payload.system).toContain('</user_finance_context>');
+    expect(payload.system).toContain('"currency": "EUR"');
+    expect(payload.system).toContain('"currentMonth"');
+    expect(payload.system).toContain('2026-04');
+    // Context must appear BEFORE the base prompt so rules weigh heavier at the tail.
+    expect(payload.system.indexOf('<user_finance_context>'))
+      .toBeLessThan(payload.system.indexOf('BeSafe Assistant'));
+  });
+
+  it('T_FC3: oversized financeContext (>50KB) → dropped, warning logged, Claude still called without context', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    // 60_000 chars easily exceeds the 50_000 byte cap after JSON.stringify.
+    const huge = { fill: 'x'.repeat(60_000) };
+
+    await handler(mockReq({ body: { message: 'hi', financeContext: huge } }), mockRes());
+
+    // Claude was still called — fail-open for UX.
+    expect(createSpy).toHaveBeenCalledTimes(1);
+    const payload = createSpy.mock.calls[0][0];
+    // Same distinctive marker as T_FC1 — closing tag only appears
+    // when the block was actually injected.
+    expect(payload.system).not.toContain('</user_finance_context>');
+    // Warning emitted through the warnSpy set up in beforeEach.
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('financeContext too large'),
+    );
+  });
+
   it('T9: audit insert receives success row with tokens_used = input + output', async () => {
     const anthropic = createAnthropicStub({
       create: vi.fn().mockResolvedValue(validAnthropicResponse({
