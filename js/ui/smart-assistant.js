@@ -261,6 +261,12 @@ async function sendChatMessage(text) {
     financeContext = null;
   }
 
+  // Build history = all tracked turns EXCEPT the current one. The last
+  // entry in conversationHistory is the user message we're about to
+  // send — already transmitted via the `message` field, so including it
+  // in `history` would duplicate it in Claude's view.
+  const history = conversationHistory.slice(0, -1);
+
   let resp;
   try {
     resp = await fetch("/api/chat", {
@@ -268,6 +274,7 @@ async function sendChatMessage(text) {
       headers,
       body:    JSON.stringify({
         message: text,
+        ...(history.length > 0 ? { history } : {}),
         ...(financeContext ? { financeContext } : {}),
       }),
     });
@@ -301,6 +308,12 @@ let inputEl = null;
 let sendBtn = null;
 let isSending = false;
 
+// Sliding window of recent chat turns sent to the server as context.
+// User + assistant messages only — errors are UI-only and never sent.
+// Capped at MAX_HISTORY_TURNS*2 entries (user+assistant pairs).
+const MAX_HISTORY_TURNS = 3;  // = 6 messages total (3 user + 3 assistant)
+let conversationHistory = [];
+
 function buildChatPanel() {
   const wrap = document.createElement("div");
   wrap.setAttribute("data-smart-chat", "");
@@ -311,8 +324,13 @@ function buildChatPanel() {
   wrap.innerHTML =
     '<div class="smart-chat__header">' +
       '<span class="smart-chat__title">' + escapeHtml(t("assistant.title", "BeSafe Asistentas")) + '</span>' +
-      '<button type="button" class="smart-chat__close" data-smart-close ' +
-        'aria-label="' + escapeHtml(t("assistant.close", "Uždaryti")) + '">×</button>' +
+      '<div class="smart-chat__actions">' +
+        '<button type="button" class="smart-chat__clear-btn" data-smart-clear ' +
+          'title="' + escapeHtml(t("assistant.newChat", "Naujas pokalbis")) + '" ' +
+          'aria-label="' + escapeHtml(t("assistant.newChat", "Naujas pokalbis")) + '">↻</button>' +
+        '<button type="button" class="smart-chat__close" data-smart-close ' +
+          'aria-label="' + escapeHtml(t("assistant.close", "Uždaryti")) + '">×</button>' +
+      '</div>' +
     '</div>' +
     '<div class="smart-chat__messages" data-smart-messages></div>' +
     '<div class="smart-chat__input-row">' +
@@ -327,8 +345,10 @@ function buildChatPanel() {
   inputEl    = wrap.querySelector("[data-smart-input]");
   sendBtn    = wrap.querySelector("[data-smart-send]");
   const closeBtn = wrap.querySelector("[data-smart-close]");
+  const clearBtn = wrap.querySelector("[data-smart-clear]");
 
   closeBtn.addEventListener("click", closeChat);
+  if (clearBtn) clearBtn.addEventListener("click", clearChat);
   sendBtn.addEventListener("click", () => submitMessage());
   inputEl.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -358,6 +378,18 @@ function addBubble(role, text) {
   }
   messagesEl.appendChild(bubble);
   scrollToBottom();
+
+  // Track user + assistant turns for context memory. Errors are UI-only
+  // and never sent to Claude — replaying them would just confuse the model.
+  if (role === "user" || role === "assistant") {
+    conversationHistory.push({ role, content: String(text || "") });
+    // Keep only the last N turns (user+assistant pairs).
+    const maxEntries = MAX_HISTORY_TURNS * 2;
+    if (conversationHistory.length > maxEntries) {
+      conversationHistory = conversationHistory.slice(-maxEntries);
+    }
+  }
+
   return bubble;
 }
 
@@ -460,6 +492,15 @@ function closeChat() {
   chatPanel.classList.add("smart-chat--closing");
   // Panel is kept in the DOM — transcript persists across reopen,
   // same pattern as Intercom / Crisp widgets.
+}
+
+// Starts a fresh conversation: clears both the DOM transcript AND the
+// context-memory buffer that gets shipped to the server with each
+// /api/chat request. Keeps chatPanel itself mounted so the open/close
+// animation + input focus state don't flicker.
+function clearChat() {
+  if (messagesEl) messagesEl.innerHTML = "";
+  conversationHistory = [];
 }
 
 // ============================================================
@@ -632,6 +673,17 @@ function injectStyles() {
       font-size:22px; line-height:1; cursor:pointer; padding:0 6px;
     }
     .smart-chat__close:hover{ color:#f2f8f4; }
+    .smart-chat__actions{
+      display:flex; align-items:center; gap:4px;
+    }
+    .smart-chat__clear-btn{
+      background:transparent; border:none; color:#9dc4a8;
+      font-size:16px; line-height:1; cursor:pointer;
+      padding:4px 8px; border-radius:6px;
+    }
+    .smart-chat__clear-btn:hover{
+      color:#f2f8f4; background:rgba(46,204,138,0.12);
+    }
     .smart-chat__messages{
       flex:1; overflow-y:auto; padding:14px;
       display:flex; flex-direction:column; gap:8px;

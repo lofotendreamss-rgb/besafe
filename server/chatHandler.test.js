@@ -333,6 +333,85 @@ describe('chatHandler — success path', () => {
     );
   });
 
+  it('T_H1: omitted history → messages array has only the current user turn', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    await handler(mockReq({ body: { message: 'hello' } }), mockRes());
+
+    const payload = createSpy.mock.calls[0][0];
+    expect(payload.messages).toHaveLength(1);
+    expect(payload.messages[0]).toEqual({ role: 'user', content: 'hello' });
+  });
+
+  it('T_H2: valid history with 2 turns → messages array has 3 entries in order', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    const history = [
+      { role: 'user',      content: 'first q' },
+      { role: 'assistant', content: 'first a' },
+    ];
+    await handler(mockReq({ body: { message: 'second q', history } }), mockRes());
+
+    const payload = createSpy.mock.calls[0][0];
+    expect(payload.messages).toHaveLength(3);
+    expect(payload.messages[0]).toEqual({ role: 'user',      content: 'first q' });
+    expect(payload.messages[1]).toEqual({ role: 'assistant', content: 'first a' });
+    expect(payload.messages[2]).toEqual({ role: 'user',      content: 'second q' });
+  });
+
+  it('T_H3: history entries with invalid role or malformed content are filtered; valid ones survive', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    const history = [
+      { role: 'user',      content: 'valid one' },
+      { role: 'system',    content: 'reject — role not allowed' },
+      { role: 'assistant', content: '' },
+      { role: 'assistant', content: 'x'.repeat(2001) },
+      { role: 'user',      content: 123 },
+      null,
+      { role: 'assistant', content: 'valid two' },
+    ];
+
+    await handler(mockReq({ body: { message: 'now', history } }), mockRes());
+
+    const payload = createSpy.mock.calls[0][0];
+    // 2 surviving history entries + 1 current user message = 3 total.
+    expect(payload.messages).toHaveLength(3);
+    expect(payload.messages[0]).toEqual({ role: 'user',      content: 'valid one' });
+    expect(payload.messages[1]).toEqual({ role: 'assistant', content: 'valid two' });
+    expect(payload.messages[2]).toEqual({ role: 'user',      content: 'now' });
+  });
+
+  it('T_H4: history with >20 messages → full history dropped, warning logged, current turn still sent', async () => {
+    const createSpy = vi.fn().mockResolvedValue(validAnthropicResponse());
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+
+    // 25 small messages — exceeds MAX_HISTORY_MESSAGES (20) but well
+    // under MAX_HISTORY_BYTES (30 KB), so the count gate triggers.
+    const history = Array.from({ length: 25 }, (_, i) => ({
+      role:    i % 2 === 0 ? 'user' : 'assistant',
+      content: 'msg ' + i,
+    }));
+
+    await handler(mockReq({ body: { message: 'current', history } }), mockRes());
+
+    // Only the current user message should reach Claude.
+    const payload = createSpy.mock.calls[0][0];
+    expect(payload.messages).toHaveLength(1);
+    expect(payload.messages[0]).toEqual({ role: 'user', content: 'current' });
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('history too many messages'),
+    );
+  });
+
   it('T9: audit insert receives success row with tokens_used = input + output', async () => {
     const anthropic = createAnthropicStub({
       create: vi.fn().mockResolvedValue(validAnthropicResponse({

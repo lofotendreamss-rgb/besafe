@@ -113,6 +113,15 @@ const MAX_LANG_CODE_LENGTH = 8;
 // for the Anthropic bill (oversized prompts balloon token usage).
 const MAX_FINANCE_CONTEXT_BYTES = 50_000;
 
+// Hard caps on conversation history from client. 20 messages covers
+// any realistic multi-turn window; 30 KB blocks accidental/malicious
+// payloads without clipping normal conversations (~1.5 KB per message
+// on average). MAX_HISTORY_MESSAGE_LENGTH mirrors MAX_MESSAGE_LENGTH
+// so prior turns can't smuggle prompts longer than the current-turn cap.
+const MAX_HISTORY_MESSAGES       = 20;
+const MAX_HISTORY_BYTES          = 30_000;
+const MAX_HISTORY_MESSAGE_LENGTH = 2000;
+
 // ============================================================
 // System prompt template — allocated once at module load. The
 // {LANGUAGE} placeholder is filled per-request from the
@@ -257,13 +266,58 @@ export function createChatHandler(anthropic, supabase) {
 
     const systemPrompt = financeContextBlock + basePrompt;
 
+    // Validate and sanitise conversation history from client. Multi-stage
+    // guard mirrors the financeContext pattern: size cap first, then
+    // count cap, then per-entry shape validation. Failing any size/count
+    // gate drops the whole history (fail-open for the current turn);
+    // failing per-entry validation drops just that entry.
+    const rawHistory = req?.body?.history;
+    let sanitizedHistory = [];
+
+    if (Array.isArray(rawHistory) && rawHistory.length > 0) {
+      try {
+        const serialized = JSON.stringify(rawHistory);
+        if (serialized.length > MAX_HISTORY_BYTES) {
+          console.warn(
+            '[chatHandler] history too large (' + serialized.length +
+            ' chars); dropping'
+          );
+        } else if (rawHistory.length > MAX_HISTORY_MESSAGES) {
+          console.warn(
+            '[chatHandler] history too many messages (' + rawHistory.length +
+            '); dropping'
+          );
+        } else {
+          sanitizedHistory = rawHistory
+            .filter((msg) =>
+              msg &&
+              typeof msg === 'object' &&
+              (msg.role === 'user' || msg.role === 'assistant') &&
+              typeof msg.content === 'string' &&
+              msg.content.length > 0 &&
+              msg.content.length <= MAX_HISTORY_MESSAGE_LENGTH
+            )
+            .map((msg) => ({ role: msg.role, content: msg.content }));
+        }
+      } catch (err) {
+        console.warn('[chatHandler] history validation failed:', err?.message);
+        sanitizedHistory = [];
+      }
+    }
+
+    // Build Anthropic messages array: prior turns first, current turn last.
+    const messages = [
+      ...sanitizedHistory,
+      { role: 'user', content: message },
+    ];
+
     try {
       const response = await anthropic.messages.create(
         {
           model:      MODEL,
           max_tokens: MAX_OUTPUT_TOKENS,
           system:     systemPrompt,
-          messages:   [{ role: 'user', content: message }],
+          messages,
         },
         { signal: controller.signal },
       );
