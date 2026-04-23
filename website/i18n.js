@@ -4,7 +4,7 @@ let currentLang=localStorage.getItem("besafe_website_lang")||"en";
 
 const T={
 en:{
-"nav.about":"About us","nav.how":"How it works","nav.pricing":"Plans","nav.start":"Get started","nav.trial":"14 days free",
+"nav.about":"About us","nav.how":"How it works","nav.pricing":"Plans","nav.start":"Get started","nav.signin":"Sign in","nav.trial":"14 days free",
 "badge":"Privacy without compromise",
 "hero.t1":"Your data.","hero.t2":"Your property.",
 "hero.sub":"BeSafe protects what matters to you \u2014 only on your device. No servers, no tracking, no surveillance.",
@@ -65,7 +65,7 @@ en:{
 "ft.priv":"Privacy policy","ft.terms":"Terms of use","ft.docs":"Documentation","ft.contact":"Contact","ft.copy":"\u00A9 2026 BeSafe. All rights reserved."
 },
 lt:{
-"nav.about":"Apie mus","nav.how":"Kaip veikia","nav.pricing":"Planai","nav.start":"Pradeti","nav.trial":"14 dienu nemokamai",
+"nav.about":"Apie mus","nav.how":"Kaip veikia","nav.pricing":"Planai","nav.start":"Pradeti","nav.signin":"Prisijungti","nav.trial":"14 dienu nemokamai",
 "badge":"Privatumas be kompromisu",
 "hero.t1":"Jusu duomenys.","hero.t2":"Jusu nuosavybe.",
 "hero.sub":"BeSafe saugo tai, kas jums svarbu \u2014 tik jusu irenginyje. Nei serveriai, nei sekimas, nei stebejimas.",
@@ -126,7 +126,7 @@ lt:{
 "ft.priv":"Privatumo politika","ft.terms":"Naudojimo salygos","ft.docs":"Dokumentacija","ft.contact":"Kontaktai","ft.copy":"\u00A9 2026 BeSafe. Visi teises saugomos."
 },
 de:{
-"nav.about":"Uber uns","nav.how":"Wie es funktioniert","nav.pricing":"Preise","nav.start":"Loslegen","nav.trial":"14 Tage kostenlos",
+"nav.about":"Uber uns","nav.how":"Wie es funktioniert","nav.pricing":"Preise","nav.start":"Loslegen","nav.signin":"Anmelden","nav.trial":"14 Tage kostenlos",
 "badge":"Privatsphare ohne Kompromisse",
 "hero.t1":"Ihre Daten.","hero.t2":"Ihr Eigentum.",
 "hero.sub":"BeSafe schutzt, was Ihnen wichtig ist \u2014 nur auf Ihrem Gerat. Keine Server, kein Tracking, keine Uberwachung.",
@@ -184,7 +184,7 @@ de:{
 "ft.priv":"Datenschutz","ft.terms":"Nutzungsbedingungen","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alle Rechte vorbehalten."
 },
 fr:{
-"nav.about":"A propos","nav.how":"Comment ca marche","nav.pricing":"Tarifs","nav.start":"Commencer","nav.trial":"14 jours gratuits",
+"nav.about":"A propos","nav.how":"Comment ca marche","nav.pricing":"Tarifs","nav.start":"Commencer","nav.signin":"Se connecter","nav.trial":"14 jours gratuits",
 "badge":"Confidentialite sans compromis",
 "hero.t1":"Vos donnees.","hero.t2":"Votre propriete.",
 "hero.sub":"BeSafe protege ce qui compte pour vous \u2014 uniquement sur votre appareil. Pas de serveurs, pas de suivi.",
@@ -242,7 +242,7 @@ fr:{
 "ft.priv":"Confidentialite","ft.terms":"Conditions","ft.docs":"Documentation","ft.contact":"Contact","ft.copy":"\u00A9 2026 BeSafe. Tous droits reserves."
 },
 es:{
-"nav.about":"Sobre nosotros","nav.how":"Como funciona","nav.pricing":"Precios","nav.start":"Empezar","nav.trial":"14 dias gratis",
+"nav.about":"Sobre nosotros","nav.how":"Como funciona","nav.pricing":"Precios","nav.start":"Empezar","nav.signin":"Iniciar sesión","nav.trial":"14 dias gratis",
 "badge":"Privacidad sin compromisos",
 "hero.t1":"Tus datos.","hero.t2":"Tu propiedad.",
 "hero.sub":"BeSafe protege lo que te importa \u2014 solo en tu dispositivo. Sin servidores, sin rastreo, sin vigilancia.",
@@ -300,7 +300,7 @@ es:{
 "ft.priv":"Privacidad","ft.terms":"Terminos","ft.docs":"Documentacion","ft.contact":"Contacto","ft.copy":"\u00A9 2026 BeSafe. Todos los derechos reservados."
 },
 it:{
-"nav.about":"Chi siamo","nav.how":"Come funziona","nav.pricing":"Prezzi","nav.start":"Inizia","nav.trial":"14 giorni gratis",
+"nav.about":"Chi siamo","nav.how":"Come funziona","nav.pricing":"Prezzi","nav.start":"Inizia","nav.signin":"Accedi","nav.trial":"14 giorni gratis",
 "badge":"Privacy senza compromessi","hero.t1":"I tuoi dati.","hero.t2":"La tua proprieta.",
 "hero.sub":"BeSafe protegge cio che conta per te \u2014 solo sul tuo dispositivo.",
 "hero.btn1":"Prova gratuita di 14 giorni","hero.btn2":"Come funziona \u2192",
@@ -355,7 +355,7 @@ it:{
 "ft.priv":"Privacy","ft.terms":"Termini","ft.docs":"Documentazione","ft.contact":"Contatti","ft.copy":"\u00A9 2026 BeSafe. Tutti i diritti riservati."
 },
 pl:{
-"nav.about":"O nas","nav.how":"Jak to dziala","nav.pricing":"Cennik","nav.start":"Zacznij","nav.trial":"14 dni za darmo",
+"nav.about":"O nas","nav.how":"Jak to dziala","nav.pricing":"Cennik","nav.start":"Zacznij","nav.signin":"Zaloguj się","nav.trial":"14 dni za darmo",
 "badge":"Prywatnosc bez kompromisow","hero.t1":"Twoje dane.","hero.t2":"Twoja wlasnosc.",
 "hero.sub":"BeSafe chroni to, co dla Ciebie wazne \u2014 tylko na Twoim urzadzeniu.",
 "hero.btn1":"14-dniowy okres probny","hero.btn2":"Jak to dziala \u2192",
@@ -410,7 +410,7 @@ pl:{
 "ft.priv":"Polityka prywatnosci","ft.terms":"Regulamin","ft.docs":"Dokumentacja","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Wszelkie prawa zastrzezone."
 },
 ru:{
-"nav.about":"O nas","nav.how":"Kak eto rabotaet","nav.pricing":"Tseny","nav.start":"Nachat","nav.trial":"14 dney besplatno",
+"nav.about":"O nas","nav.how":"Kak eto rabotaet","nav.pricing":"Tseny","nav.start":"Nachat","nav.signin":"Voyti","nav.trial":"14 dney besplatno",
 "badge":"\u041A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0431\u0435\u0437 \u043A\u043E\u043C\u043F\u0440\u043E\u043C\u0438\u0441\u0441\u043E\u0432",
 "hero.t1":"\u0412\u0430\u0448\u0438 \u0434\u0430\u043D\u043D\u044B\u0435.","hero.t2":"\u0412\u0430\u0448\u0430 \u0441\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0441\u0442\u044C.",
 "hero.sub":"BeSafe \u0437\u0430\u0449\u0438\u0449\u0430\u0435\u0442 \u0442\u043E, \u0447\u0442\u043E \u0432\u0430\u043C \u0432\u0430\u0436\u043D\u043E \u2014 \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430 \u0432\u0430\u0448\u0435\u043C \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0435.",
@@ -466,7 +466,7 @@ ru:{
 "ft.priv":"\u041A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C","ft.terms":"\u0423\u0441\u043B\u043E\u0432\u0438\u044F","ft.docs":"\u0414\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u044F","ft.contact":"\u041A\u043E\u043D\u0442\u0430\u043A\u0442\u044B","ft.copy":"\u00A9 2026 BeSafe. \u0412\u0441\u0435 \u043F\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043D\u044B."
 },
 uk:{
-"nav.about":"Про нас","nav.how":"Як це працює","nav.pricing":"Ціни","nav.start":"Почати","nav.trial":"14 днів безкоштовно",
+"nav.about":"Про нас","nav.how":"Як це працює","nav.pricing":"Ціни","nav.start":"Почати","nav.signin":"Увійти","nav.trial":"14 днів безкоштовно",
 "badge":"Конфіденційність без компромісів","hero.t1":"Ваші дані.","hero.t2":"Ваша власність.",
 "hero.sub":"BeSafe захищає те, що вам важливо \u2014 тільки на вашому пристрої.",
 "hero.btn1":"14 днів безкоштовно","hero.btn2":"Як це працює \u2192",
@@ -521,7 +521,7 @@ uk:{
 "ft.priv":"Конфіденційність","ft.terms":"Умови","ft.docs":"Документація","ft.contact":"Контакти","ft.copy":"\u00A9 2026 BeSafe. Всі права захищені."
 },
 ja:{
-"nav.about":"私たちについて","nav.how":"仕組み","nav.pricing":"料金","nav.start":"始める","nav.trial":"14日間無料",
+"nav.about":"私たちについて","nav.how":"仕組み","nav.pricing":"料金","nav.start":"始める","nav.signin":"ログイン","nav.trial":"14日間無料",
 "badge":"妥協なきプライバシー","hero.t1":"あなたのデータ。","hero.t2":"あなたの財産。",
 "hero.sub":"BeSafeはあなたの大切なものを守ります \u2014 デバイス上のみに。サーバーなし、追跡なし。",
 "hero.btn1":"14日間無料トライアル","hero.btn2":"仕組みを見る \u2192",
@@ -576,7 +576,7 @@ ja:{
 "ft.priv":"プライバシーポリシー","ft.terms":"利用規約","ft.docs":"ドキュメント","ft.contact":"お問い合わせ","ft.copy":"\u00A9 2026 BeSafe. All rights reserved."
 },
 no:{
-"nav.about":"Om oss","nav.how":"Slik fungerer det","nav.pricing":"Priser","nav.start":"Kom i gang","nav.trial":"14 dager gratis",
+"nav.about":"Om oss","nav.how":"Slik fungerer det","nav.pricing":"Priser","nav.start":"Kom i gang","nav.signin":"Logg inn","nav.trial":"14 dager gratis",
 "badge":"Personvern uten kompromisser",
 "hero.t1":"Dine data.","hero.t2":"Din eiendom.",
 "hero.sub":"BeSafe beskytter det som betyr noe for deg \u2014 kun p\u00E5 din enhet. Ingen servere, ingen sporing, ingen overv\u00E5kning.",
@@ -637,7 +637,7 @@ no:{
 "ft.priv":"Personvernerkl\u00E6ring","ft.terms":"Bruksvilk\u00E5r","ft.docs":"Dokumentasjon","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alle rettigheter forbeholdt."
 },
 sv:{
-"nav.about":"Om oss","nav.how":"S\u00E5 fungerar det","nav.pricing":"Priser","nav.start":"Kom ig\u00E5ng","nav.trial":"14 dagar gratis",
+"nav.about":"Om oss","nav.how":"S\u00E5 fungerar det","nav.pricing":"Priser","nav.start":"Kom ig\u00E5ng","nav.signin":"Logga in","nav.trial":"14 dagar gratis",
 "badge":"Integritet utan kompromisser",
 "hero.t1":"Dina data.","hero.t2":"Din egendom.",
 "hero.sub":"BeSafe skyddar det som \u00E4r viktigt f\u00F6r dig \u2014 bara p\u00E5 din enhet. Inga servrar, ingen sp\u00E5rning, ingen \u00F6vervakning.",
@@ -698,7 +698,7 @@ sv:{
 "ft.priv":"Integritetspolicy","ft.terms":"Anv\u00E4ndarvillkor","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alla r\u00E4ttigheter f\u00F6rbeh\u00E5llna."
 },
 zh:{
-"nav.about":"\u5173\u4E8E\u6211\u4EEC","nav.how":"\u5982\u4F55\u8FD0\u4F5C","nav.pricing":"\u4EF7\u683C\u65B9\u6848","nav.start":"\u7ACB\u5373\u5F00\u59CB","nav.trial":"14\u5929\u514D\u8D39\u8BD5\u7528",
+"nav.about":"\u5173\u4E8E\u6211\u4EEC","nav.how":"\u5982\u4F55\u8FD0\u4F5C","nav.pricing":"\u4EF7\u683C\u65B9\u6848","nav.start":"\u7ACB\u5373\u5F00\u59CB","nav.signin":"\u767B\u5F55","nav.trial":"14\u5929\u514D\u8D39\u8BD5\u7528",
 "badge":"\u9690\u79C1\u4FDD\u62A4\uFF0C\u7EDD\u4E0D\u59A5\u534F",
 "hero.t1":"\u60A8\u7684\u6570\u636E\u3002","hero.t2":"\u60A8\u7684\u8D22\u4EA7\u3002",
 "hero.sub":"BeSafe \u4FDD\u62A4\u60A8\u91CD\u89C6\u7684\u4E00\u5207 \u2014 \u4EC5\u5728\u60A8\u7684\u8BBE\u5907\u4E0A\u3002\u65E0\u670D\u52A1\u5668\uFF0C\u65E0\u8DDF\u8E2A\uFF0C\u65E0\u76D1\u63A7\u3002",
@@ -759,7 +759,7 @@ zh:{
 "ft.priv":"\u9690\u79C1\u653F\u7B56","ft.terms":"\u4F7F\u7528\u6761\u6B3E","ft.docs":"\u6587\u6863","ft.contact":"\u8054\u7CFB\u6211\u4EEC","ft.copy":"\u00A9 2026 BeSafe. \u7248\u6743\u6240\u6709\u3002"
 },
 pt:{
-"nav.about":"Sobre n\u00F3s","nav.how":"Como funciona","nav.pricing":"Planos","nav.start":"Comece agora","nav.trial":"14 dias gr\u00E1tis",
+"nav.about":"Sobre n\u00F3s","nav.how":"Como funciona","nav.pricing":"Planos","nav.start":"Comece agora","nav.signin":"Entrar","nav.trial":"14 dias gr\u00E1tis",
 "badge":"Privacidade sem compromisso",
 "hero.t1":"Seus dados.","hero.t2":"Sua propriedade.",
 "hero.sub":"O BeSafe protege o que importa para voc\u00EA \u2014 apenas no seu dispositivo. Sem servidores, sem rastreamento, sem vigil\u00E2ncia.",

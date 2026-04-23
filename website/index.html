@@ -285,6 +285,7 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
     <a href="#how" data-i18n="nav.how">How it works</a>
     <a href="#pricing" data-i18n="nav.pricing">Plans</a>
     <a href="#register" data-i18n="nav.start">Get started</a>
+    <a href="https://besafe-oga3.onrender.com/app?activate=1" data-i18n="nav.signin">Sign in</a>
     <a class="btn-nav" href="#register" data-i18n="nav.trial">14 days free</a>
   </div>
   <div class="lang-switch">
@@ -762,51 +763,10 @@ async function doRegister(){
 }
 
 async function doLogin(){
-  const email = document.getElementById('reg-email');
-  const btn = document.getElementById('submit-btn');
-  const errorEl = document.getElementById('reg-error');
-  errorEl.style.display = 'none';
-
-  if(!email.value || !email.value.includes('@')){
-    email.classList.add('error');
-    email.focus();
-    setTimeout(() => email.classList.remove('error'), 2000);
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Checking...';
-  btn.style.opacity = '0.6';
-
-  try {
-    const res = await fetch(API_URL + '/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.value.trim() }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      showRegError(data.error || 'Login failed.');
-      btn.disabled = false;
-      btn.textContent = 'Login \u2192';
-      btn.style.opacity = '1';
-      return;
-    }
-
-    // Show license key
-    document.getElementById('lic-key-display').textContent = data.license_key;
-    document.getElementById('reg-form').style.display = 'none';
-    document.getElementById('lic-success').classList.add('show');
-    if (window.gtag) gtag('event', 'login', { method: 'email' });
-
-  } catch (err) {
-    showRegError('Server error. Try again.');
-    btn.disabled = false;
-    btn.textContent = 'Login \u2192';
-    btn.style.opacity = '1';
-  }
+  // Redirect users with an existing license key straight to the app's
+  // activation modal. The old flow tried to email a besafe:// link that
+  // only Electron could handle — web users were stuck in a dead loop.
+  window.location.href = '/app?activate=1';
 }
 
 function copyLicKey(){
