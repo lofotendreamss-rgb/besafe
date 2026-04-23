@@ -443,13 +443,27 @@ async function submitMessage() {
 
 function classifyError(err) {
   const code = err?.code || err?.status;
+
   if (code === "no_license" || err?.status === 401) {
     return t("assistant.error.unauthorized", "Reikia galiojančios licencijos.");
   }
+
+  // Daily quota exhausted — distinct from burst rate limit. User needs
+  // to wait until midnight UTC or upgrade their plan. Retry-After
+  // contains seconds until reset, but we express it as "rytoj" for UX.
+  if (code === "daily_limit_reached") {
+    return t(
+      "assistant.error.dailyLimitReached",
+      "Pasiekėte dienos žinučių limitą. Bandykite rytoj arba atnaujinkite planą."
+    );
+  }
+
+  // Burst rate limit — 20 req/min guard. User just needs to slow down.
   if (err?.status === 429) {
     const retry = err.retryAfter ? " (" + err.retryAfter + "s)" : "";
     return t("assistant.error.rateLimited", "Per daug užklausų. Bandykite vėliau") + retry + ".";
   }
+
   if (code === "message_required" || code === "message_empty") {
     return t("assistant.error.messageRequired", "Įveskite žinutę.");
   }
@@ -462,6 +476,17 @@ function classifyError(err) {
   if (code === "network") {
     return t("assistant.error.network", "Nėra interneto ryšio.");
   }
+
+  // Anthropic upstream errors (502/503) — distinct from a misconfigured
+  // server. Tell the user it's temporary and they should retry soon.
+  if (code === "upstream_error" || code === "service_unavailable" ||
+      err?.status === 502 || err?.status === 503) {
+    return t(
+      "assistant.error.serviceBusy",
+      "Asistentas laikinai užimtas. Bandykite po minutės."
+    );
+  }
+
   return t("assistant.error.generic", "Asistentas šiuo metu nepasiekiamas. Bandykite vėliau.");
 }
 
