@@ -37,6 +37,7 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { startListening as voiceStartListening } from "./voice-assistant.js";
 import { buildFinanceContext } from "../services/ai/finance.context.js";
+import { showLicenseModal } from "./license-modal.js";
 
 // ============================================================
 // i18n — mirror the voice-assistant helpers so translator keys
@@ -491,10 +492,13 @@ function classifyError(err) {
 }
 
 function openChat() {
-  // Fail early if no license — avoid opening the panel only to stall
-  // on the first message. User needs a clear actionable toast instead.
+  // No license saved — show activation modal. After successful activation,
+  // reopen the chat panel automatically (onSuccess callback re-enters
+  // openChat which will now find the key in localStorage and proceed).
   if (!readLicenseKey()) {
-    toast(t("assistant.error.noLicense", "Reikia licencijos."), "error");
+    showLicenseModal(() => {
+      openChat();
+    });
     return;
   }
   if (chatPanel) {
