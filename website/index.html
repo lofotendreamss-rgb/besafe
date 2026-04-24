@@ -40,6 +40,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1.25re
 .nav-links{display:flex;gap:2.5rem;align-items:center}
 .nav-links a{color:var(--muted);font-size:0.82rem;text-decoration:none;letter-spacing:0.05em;transition:color .2s}
 .nav-links a:hover{color:var(--accent)}
+.nav-links a[data-i18n="nav.signin"]{color:var(--text);border:1px solid rgba(46,204,138,0.5);padding:0.35rem 1rem;border-radius:2rem;transition:all .2s}
+.nav-links a[data-i18n="nav.signin"]:hover{border-color:var(--accent);color:var(--accent)}
 .btn-nav{background:var(--accent)!important;color:#030d07!important;padding:0.45rem 1.4rem!important;border-radius:2rem!important;font-weight:500!important;letter-spacing:0.05em!important;transition:opacity .2s!important}
 .btn-nav:hover{opacity:0.82!important}
 .nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
@@ -284,7 +286,6 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
     <a href="#about" data-i18n="nav.about">About us</a>
     <a href="#how" data-i18n="nav.how">How it works</a>
     <a href="#pricing" data-i18n="nav.pricing">Plans</a>
-    <a href="#register" data-i18n="nav.start">Get started</a>
     <a href="https://besafe-oga3.onrender.com/app?activate=1" data-i18n="nav.signin">Sign in</a>
     <a class="btn-nav" href="#register" data-i18n="nav.trial">14 days free</a>
   </div>
