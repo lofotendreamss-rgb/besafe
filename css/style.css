@@ -2524,6 +2524,13 @@ select.quick-action-form__input option{
     gap:6px;
   }
 
+  .app-nav #nav-places,
+  .app-nav--shell #nav-places,
+  .app-nav #nav-categories,
+  .app-nav--shell #nav-categories{
+    grid-row:2;
+  }
+
   .transactions-header__actions,
   .transactions-filters,
   .page-top-actions{
