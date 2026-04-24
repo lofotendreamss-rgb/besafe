@@ -779,6 +779,20 @@ async function handleWebhook(req, res) {
   const { type, data } = event;
   console.log(`[Webhook] ${type}`);
 
+  // ---- Idempotency gate ----
+  const { error: dedupErr } = await supabase
+    .from('webhook_events')
+    .insert({ event_id: event.id, event_type: type });
+
+  if (dedupErr) {
+    if (dedupErr.code === '23505') {
+      console.log(`[Webhook] Duplicate ${type} (evt=${event.id}) — skipping`);
+      return res.status(200).json({ received: true, duplicate: true });
+    }
+    console.error(`[Webhook] Dedup insert failed for ${event.id}:`, dedupErr.message);
+    return res.status(500).send('Dedup check failed');
+  }
+
   try {
     switch (type) {
       // ---- Subscription created or updated ----
@@ -944,6 +958,12 @@ async function handleWebhook(req, res) {
   } catch (error) {
     console.error(`[Webhook] Error processing ${type}:`, error.message);
   }
+
+  // Mark event as successfully processed
+  await supabase
+    .from('webhook_events')
+    .update({ processed_at: new Date().toISOString() })
+    .eq('event_id', event.id);
 
   res.json({ received: true });
 }
