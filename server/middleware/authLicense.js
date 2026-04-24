@@ -254,6 +254,31 @@ export function createAuthLicense(supabase, options = {}) {
     // UX: /api/verify-license remains the dedicated path where a
     // real user sees their real status + renewal flow.
     // ----------------------------------------------------------
+    // INACTIVE statuses — user has a real, known license that's no longer
+    // entitled to active features. Returns 403 with actionable error code
+    // so the UI can show a specific "renew" message instead of the generic
+    // 401 "unauthorized". This intentionally leaks slightly more info than
+    // the generic 401 fallback below, matching the plan-gate precedent at
+    // step 7 — judged worth the UX trade-off since the attacker still
+    // needs a VALID license_key to reach this branch.
+    const INACTIVE_STATUSES = ['cancelled', 'expired', 'payment_failed'];
+    if (INACTIVE_STATUSES.includes(license.status)) {
+      await writeAuditFailure(supabase, {
+        req,
+        license_id: license.id,
+        license_key: license.license_key,
+        action: 'auth_failure',
+        status: 'unauthorized',
+        error_message: 'license_status_' + license.status,
+      });
+      return res.status(403).json({
+        error:          'subscription_ended',
+        current_status: license.status,
+        upgrade_url:    '/upgrade.html',
+      });
+    }
+
+    // Any other non-active status (future-proof catch-all) → generic 401.
     if (!ACTIVE_STATUSES.includes(license.status)) {
       await writeAuditFailure(supabase, {
         req,

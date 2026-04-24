@@ -235,7 +235,7 @@ describe('authLicense middleware', () => {
     expect(row.error_message).toBe('license_not_found');
   });
 
-  it('10. [auth] status=cancelled → 401 generic + audit (license_id populated)', async () => {
+  it('10. [auth] status=cancelled → 403 subscription_ended + audit (license_id populated)', async () => {
     const supabase = createSupabaseStub({
       licenseLookup: { data: { ...VALID_LICENSE, status: 'cancelled' }, error: null },
     });
@@ -245,8 +245,12 @@ describe('authLicense middleware', () => {
 
     await mw(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: 'unauthorized' });
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith({
+      error:          'subscription_ended',
+      current_status: 'cancelled',
+      upgrade_url:    '/upgrade.html',
+    });
     expect(next).not.toHaveBeenCalled();
 
     const row = supabase._builders.auditBuilder.insert.mock.calls[0][0];
@@ -254,7 +258,7 @@ describe('authLicense middleware', () => {
     expect(row.error_message).toBe('license_status_cancelled');
   });
 
-  it('11. [auth] status=expired → 401 generic + audit row', async () => {
+  it('11. [auth] status=expired → 403 subscription_ended + audit row', async () => {
     const supabase = createSupabaseStub({
       licenseLookup: { data: { ...VALID_LICENSE, status: 'expired' }, error: null },
     });
@@ -264,12 +268,16 @@ describe('authLicense middleware', () => {
 
     await mw(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json.mock.calls[0][0]).toMatchObject({
+      error:          'subscription_ended',
+      current_status: 'expired',
+    });
     const row = supabase._builders.auditBuilder.insert.mock.calls[0][0];
     expect(row.error_message).toBe('license_status_expired');
   });
 
-  it('12. [auth] status=payment_failed → 401 generic + audit row', async () => {
+  it('12. [auth] status=payment_failed → 403 subscription_ended + audit row', async () => {
     const supabase = createSupabaseStub({
       licenseLookup: { data: { ...VALID_LICENSE, status: 'payment_failed' }, error: null },
     });
@@ -279,7 +287,11 @@ describe('authLicense middleware', () => {
 
     await mw(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json.mock.calls[0][0]).toMatchObject({
+      error:          'subscription_ended',
+      current_status: 'payment_failed',
+    });
     const row = supabase._builders.auditBuilder.insert.mock.calls[0][0];
     expect(row.error_message).toBe('license_status_payment_failed');
   });
@@ -383,12 +395,14 @@ describe('authLicense middleware', () => {
       { licenseLookup: { data: null, error: { message: 'x' } } },
       mockReq({ 'x-license-key': VALID_KEY })
     );                                                                            // not found
-    await capture(
-      { licenseLookup: { data: { ...VALID_LICENSE, status: 'cancelled' }, error: null } },
-      mockReq({ 'x-license-key': VALID_KEY })
-    );                                                                            // cancelled
+    // Note: status=cancelled/expired/payment_failed no longer return 401 —
+    // they return 403 with a specific subscription_ended body (see tests
+    // 10-12). The enumeration-resistance guarantee narrows to the cases
+    // above (pre-DB-lookup rejections + not-found), which is still what
+    // matters: an attacker probing random keys cannot distinguish
+    // "invalid format" from "not in DB".
 
-    // All five snapshots must be byte-identical
+    // All four snapshots must be byte-identical
     expect(new Set(bodies).size).toBe(1);
     expect(JSON.parse(bodies[0])).toEqual({ error: 'unauthorized' });
   });

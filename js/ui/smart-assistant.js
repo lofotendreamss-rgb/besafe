@@ -454,11 +454,14 @@ async function submitMessage() {
   } catch (err) {
     typing?.remove();
     addBubble("error", classifyError(err));
-    // Trial users get an inline "Upgrade" CTA so they don't have to
-    // hunt for the pricing page. Only shown on trial_no_ai (402) —
-    // other errors (network, rate limit, daily quota) get their own
+    // Trial users + cancelled/expired users get an inline "Upgrade" CTA
+    // so they don't have to hunt for the pricing page. Both reach the
+    // same /upgrade.html — the error bubble text differs (trial vs
+    // subscription_ended) but the actionable next step is identical.
+    // Other errors (network, rate limit, daily quota) get their own
     // wording from classifyError and don't need a CTA.
-    if (err?.code === "trial_no_ai" || err?.status === 402) {
+    if (err?.code === "trial_no_ai" || err?.status === 402 ||
+        err?.code === "subscription_ended") {
       addUpgradeCta();
     }
   } finally {
@@ -482,6 +485,17 @@ function classifyError(err) {
     return t(
       "assistant.error.trialNoAi",
       "AI asistentas — tik mokamiems planams. Atnaujinti planą jūsų paskyroje."
+    );
+  }
+
+  // Subscription ended (cancelled / expired / payment_failed). User has
+  // a real license — it's just inactive. Show a specific "renew" message
+  // rather than the generic "unauthorized" that would be technically true
+  // but misleading ("I paid before, why is it unauthorized now?").
+  if (code === "subscription_ended") {
+    return t(
+      "assistant.error.subscriptionEnded",
+      "Prenumerata atšaukta. Atnaujink planą kad galėtum vėl naudotis AI."
     );
   }
 
