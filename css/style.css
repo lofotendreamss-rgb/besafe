@@ -1309,6 +1309,11 @@ select.quick-action-form__input{
   background-repeat:no-repeat;
 }
 
+select.quick-action-form__input option{
+  color:var(--text);
+  background:#12201f;
+}
+
 .quick-action-form__textarea{
   resize:vertical;
   min-height:96px;
