@@ -369,6 +369,14 @@ export function stopListening() {
   setButtonState("idle");
 }
 
+const MOBILE_QUERY = "(max-width: 640px)";
+
+function getMountTarget() {
+  const slot = document.getElementById("ai-launcher-slot");
+  if (slot && window.matchMedia(MOBILE_QUERY).matches) return slot;
+  return document.body;
+}
+
 export function mountVoiceButton() {
   if (document.querySelector("[data-voice-btn]")) {
     console.info("[Voice] Button already mounted");
@@ -415,9 +423,23 @@ export function mountVoiceButton() {
     }
   `;
   document.head.appendChild(style);
-  document.body.appendChild(btn);
+
+  const initialTarget = getMountTarget();
+  initialTarget.appendChild(btn);
+  if (initialTarget !== document.body) btn.classList.add("voice-fab--in-nav");
 
   btn.addEventListener("click", () => startListening());
+
+  const mq = window.matchMedia(MOBILE_QUERY);
+  const onViewportChange = () => {
+    const target = getMountTarget();
+    if (btn.parentElement !== target) {
+      target.appendChild(btn);
+      btn.classList.toggle("voice-fab--in-nav", target !== document.body);
+    }
+  };
+  if (mq.addEventListener) mq.addEventListener("change", onViewportChange);
+  else if (mq.addListener) mq.addListener(onViewportChange);
 }
 
 // Auto-mount when imported

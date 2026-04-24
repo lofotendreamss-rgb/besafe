@@ -1314,6 +1314,10 @@ select.quick-action-form__input option{
   background:#12201f;
 }
 
+.app-nav__ai-slot{
+  display:none;
+}
+
 .quick-action-form__textarea{
   resize:vertical;
   min-height:96px;
@@ -2529,6 +2533,23 @@ select.quick-action-form__input option{
   .app-nav #nav-categories,
   .app-nav--shell #nav-categories{
     grid-row:2;
+  }
+
+  .app-nav__ai-slot{
+    display:flex;
+    align-items:stretch;
+    justify-content:stretch;
+    grid-row:2;
+  }
+
+  .voice-fab--in-nav{
+    position:static !important;
+    right:auto !important;
+    bottom:auto !important;
+    width:100% !important;
+    height:52px !important;
+    border-radius:12px !important;
+    box-shadow:none !important;
   }
 
   .transactions-header__actions,
