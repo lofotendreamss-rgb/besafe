@@ -4,7 +4,7 @@
 // ============================================================
 
 const API_URL = "https://besafe-oga3.onrender.com";
-const UPGRADE_URL = "https://www.besafe.fyi/#pricing";
+const UPGRADE_URL = "/upgrade.html";
 const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // ---- State ----
