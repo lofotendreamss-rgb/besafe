@@ -331,6 +331,63 @@ async function sendLicenseEmail(email, licenseKey, plan) {
   });
 }
 
+async function sendReactivationEmail(email, licenseKey, plan) {
+  const planLabel = plan === "business" ? "Business" : "Personal";
+
+  await mailer.sendMail({
+    from:    `"BeSafe" <${process.env.EMAIL_FROM}>`,
+    to:      email,
+    subject: "Welcome back to BeSafe ✨",
+    html: `
+      <div style="font-family:-apple-system,sans-serif;max-width:520px;margin:0 auto;padding:2rem;background:#0f1812;color:#f2f8f4;border-radius:16px">
+        <div style="text-align:center;margin-bottom:1.5rem">
+          <span style="font-size:1.8rem;color:#2ecc8a;font-weight:700">BeSafe</span>
+        </div>
+        <h1 style="color:#f2f8f4;font-size:1.4rem;text-align:center;margin-bottom:0.5rem">Welcome back!</h1>
+        <p style="color:#2ecc8a;text-align:center;margin-bottom:1.5rem;font-weight:500">Your ${planLabel} plan is active again</p>
+        <p style="color:#9dc4a8;line-height:1.7;text-align:center">
+          Your data was exactly where you left it &#8212; BeSafe never deletes anything.
+          All your transactions, categories, and AI conversation history are ready to use.
+        </p>
+        <div style="text-align:center;margin:1.5rem 0">
+          <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;text-decoration:none">Open BeSafe &#8594;</a>
+        </div>
+        <p style="font-size:0.72rem;color:#5a7d67;text-align:center;margin-top:1.5rem">
+          License: <code style="color:#2ecc8a">${licenseKey}</code>
+        </p>
+      </div>
+    `,
+  });
+}
+
+async function sendWelcomeToPaidEmail(email, licenseKey, plan) {
+  const planLabel = plan === "business" ? "Business" : "Personal";
+
+  await mailer.sendMail({
+    from:    `"BeSafe" <${process.env.EMAIL_FROM}>`,
+    to:      email,
+    subject: `Welcome to BeSafe ${planLabel} ✨`,
+    html: `
+      <div style="font-family:-apple-system,sans-serif;max-width:520px;margin:0 auto;padding:2rem;background:#0f1812;color:#f2f8f4;border-radius:16px">
+        <div style="text-align:center;margin-bottom:1.5rem">
+          <span style="font-size:1.8rem;color:#2ecc8a;font-weight:700">BeSafe</span>
+        </div>
+        <h1 style="color:#f2f8f4;font-size:1.4rem;text-align:center;margin-bottom:0.5rem">Thank you!</h1>
+        <p style="color:#2ecc8a;text-align:center;margin-bottom:1.5rem;font-weight:500">Your ${planLabel} plan is active</p>
+        <p style="color:#9dc4a8;line-height:1.7;text-align:center">
+          You now have full access to the AI assistant, plus everything else that makes BeSafe yours.
+        </p>
+        <div style="text-align:center;margin:1.5rem 0">
+          <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;text-decoration:none">Open BeSafe &#8594;</a>
+        </div>
+        <p style="font-size:0.72rem;color:#5a7d67;text-align:center;margin-top:1.5rem">
+          License: <code style="color:#2ecc8a">${licenseKey}</code> &#183; Plan: ${planLabel}
+        </p>
+      </div>
+    `,
+  });
+}
+
 // ============================================================
 // POST /api/register
 // ============================================================
@@ -431,6 +488,7 @@ app.post("/api/register", async (req, res) => {
     const { error: licError } = await supabase.from("licenses").insert({
       license_key: licenseKey,
       user_id: userId,
+      email: normalizedEmail,
       plan: selectedPlan,
       billing: "monthly",
       status: "trial",
@@ -731,11 +789,12 @@ async function handleWebhook(req, res) {
 
         const { data: license } = await supabase
           .from("licenses")
-          .select("license_key, status")
+          .select("license_key, status, plan, email, user_id")
           .eq("stripe_customer_id", customerId)
           .single();
 
         if (license) {
+          const prevStatus = license.status;
           const newStatus = subscription.status === "active" ? "active"
             : subscription.status === "trialing" ? "trial"
             : license.status;
@@ -750,6 +809,43 @@ async function handleWebhook(req, res) {
             .eq("license_key", license.license_key);
 
           console.log(`[Webhook] ${license.license_key} → ${newStatus}`);
+
+          // On `created` (not `updated`), if we just transitioned into
+          // an active subscription, send the right welcome email. Skip
+          // on `updated` events because those fire on every renewal /
+          // plan change / small Stripe-side tweak — we don't want to
+          // spam the user with "welcome" each month.
+          if (type === "customer.subscription.created" && newStatus === "active") {
+            // Resolve email: prefer license.email (backfilled or set
+            // at register), fall back to users.email via user_id.
+            let email = license.email;
+            if (!email && license.user_id) {
+              const { data: u } = await supabase
+                .from("users")
+                .select("email")
+                .eq("id", license.user_id)
+                .single();
+              email = u?.email;
+            }
+
+            if (email) {
+              try {
+                if (prevStatus === "cancelled") {
+                  await sendReactivationEmail(email, license.license_key, license.plan);
+                  console.log(`[Webhook] Reactivation email → ${email}`);
+                } else if (prevStatus === "trial") {
+                  await sendWelcomeToPaidEmail(email, license.license_key, license.plan);
+                  console.log(`[Webhook] Welcome-to-paid email → ${email}`);
+                }
+                // prevStatus === 'active' → no-op (subscription.created
+                // firing with status already active; likely webhook replay)
+              } catch (e) {
+                console.error("[Webhook] Welcome email failed:", e.message);
+              }
+            } else {
+              console.warn(`[Webhook] No email for ${license.license_key} — welcome skipped`);
+            }
+          }
         }
         break;
       }
