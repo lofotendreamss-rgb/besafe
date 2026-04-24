@@ -779,6 +779,11 @@ async function handleWebhook(req, res) {
   const { type, data } = event;
   console.log(`[Webhook] ${type}`);
 
+  if (!event.id) {
+    console.warn('[Webhook] Missing event.id — malformed request');
+    return res.status(400).json({ error: 'Invalid webhook payload' });
+  }
+
   // ---- Idempotency gate ----
   const { error: dedupErr } = await supabase
     .from('webhook_events')
