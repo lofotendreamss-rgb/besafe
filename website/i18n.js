@@ -410,7 +410,7 @@ pl:{
 "ft.priv":"Polityka prywatnosci","ft.terms":"Regulamin","ft.docs":"Dokumentacja","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Wszelkie prawa zastrzezone."
 },
 ru:{
-"nav.about":"O nas","nav.how":"Kak eto rabotaet","nav.pricing":"Tseny","nav.start":"Nachat","nav.signin":"Voyti","nav.trial":"14 dney besplatno",
+"nav.about":"О нас","nav.how":"Как это работает","nav.pricing":"Цены","nav.start":"Начать","nav.signin":"Войти","nav.trial":"14 дней бесплатно",
 "badge":"\u041A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0431\u0435\u0437 \u043A\u043E\u043C\u043F\u0440\u043E\u043C\u0438\u0441\u0441\u043E\u0432",
 "hero.t1":"\u0412\u0430\u0448\u0438 \u0434\u0430\u043D\u043D\u044B\u0435.","hero.t2":"\u0412\u0430\u0448\u0430 \u0441\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0441\u0442\u044C.",
 "hero.sub":"BeSafe \u0437\u0430\u0449\u0438\u0449\u0430\u0435\u0442 \u0442\u043E, \u0447\u0442\u043E \u0432\u0430\u043C \u0432\u0430\u0436\u043D\u043E \u2014 \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430 \u0432\u0430\u0448\u0435\u043C \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0435.",
