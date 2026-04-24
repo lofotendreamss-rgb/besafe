@@ -394,6 +394,25 @@ function addBubble(role, text) {
   return bubble;
 }
 
+// Renders a standalone upgrade button below the most recent bubble.
+// Target is a RELATIVE /upgrade.html so the link works regardless of
+// which host the app is deployed on (Render now, potentially Vercel
+// or a custom domain later). `?plan=personal` pre-selects the lower
+// tier — user can still switch on upgrade.html. `_self` nav keeps
+// mobile UX simple (browser back returns to chat).
+function addUpgradeCta() {
+  if (!messagesEl) return null;
+  const link = document.createElement("a");
+  link.className = "smart-chat__upgrade-cta";
+  link.href      = "/upgrade.html?plan=personal";
+  link.target    = "_self";
+  link.rel       = "noopener noreferrer";
+  link.textContent = t("assistant.error.trialNoAiButton", "Atnaujinti planą →");
+  messagesEl.appendChild(link);
+  scrollToBottom();
+  return link;
+}
+
 function addTypingIndicator() {
   if (!messagesEl) return null;
   const el = document.createElement("div");
@@ -435,6 +454,13 @@ async function submitMessage() {
   } catch (err) {
     typing?.remove();
     addBubble("error", classifyError(err));
+    // Trial users get an inline "Upgrade" CTA so they don't have to
+    // hunt for the pricing page. Only shown on trial_no_ai (402) —
+    // other errors (network, rate limit, daily quota) get their own
+    // wording from classifyError and don't need a CTA.
+    if (err?.code === "trial_no_ai" || err?.status === 402) {
+      addUpgradeCta();
+    }
   } finally {
     isSending = false;
     sendBtn.disabled = false;
@@ -767,6 +793,18 @@ function injectStyles() {
     .smart-chat__bubble--error{
       align-self:flex-start; background:#e7a99a; color:#030d07;
       border-bottom-left-radius:4px;
+    }
+    .smart-chat__upgrade-cta{
+      align-self:flex-start; display:inline-block;
+      background:#2ecc8a; color:#030d07;
+      padding:8px 14px; border-radius:14px;
+      font-size:13px; font-weight:600;
+      text-decoration:none;
+      margin-top:-4px;
+      transition:background .2s, transform .2s;
+    }
+    .smart-chat__upgrade-cta:hover{
+      background:#3ed89b; transform:translateX(2px);
     }
     .smart-chat__typing{
       display:flex; gap:4px; align-items:center; padding:11px 14px;
