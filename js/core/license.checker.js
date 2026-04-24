@@ -3,6 +3,16 @@
 // Checks license status on load and every 24 hours
 // ============================================================
 
+import { createTranslator, getCurrentLanguage } from "./i18n.js";
+
+function t(key, fallback) {
+  try {
+    return createTranslator(getCurrentLanguage())(key, fallback);
+  } catch {
+    return fallback;
+  }
+}
+
 const API_URL = "https://besafe-oga3.onrender.com";
 const UPGRADE_URL = "/upgrade.html";
 const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
@@ -90,21 +100,21 @@ export async function checkLicenseStatus() {
       case "read_only":
         _licenseStatus = "read_only";
         localStorage.setItem("besafe_license_status", "read_only");
-        showUpgradeBanner();
+        showUpgradeBanner(t("banner.subscriptionEnded", "Subscription ended. Renew your plan to continue."));
         setReadOnlyMode(true);
         break;
 
       case "expired":
         _licenseStatus = "expired";
         localStorage.setItem("besafe_license_status", "expired");
-        showUpgradeBanner();
+        showUpgradeBanner(t("banner.trialEnded", "Your trial has ended. Upgrade to continue."));
         setReadOnlyMode(true);
         break;
 
       case "payment_required":
         _licenseStatus = "read_only";
         localStorage.setItem("besafe_license_status", "read_only");
-        showUpgradeBanner("Payment failed. Please update your payment method.");
+        showUpgradeBanner(t("banner.paymentFailed", "Payment failed. Update your payment method."));
         setReadOnlyMode(true);
         break;
 
@@ -169,7 +179,7 @@ export function showUpgradeBanner(customMessage) {
     "gap:12px",
   ].join(";");
 
-  const message = customMessage || "Your free trial has ended. Upgrade to continue using BeSafe";
+  const message = customMessage || t("banner.subscriptionEnded", "Subscription ended. Renew your plan to continue.");
 
   banner.innerHTML = `
     <span>${message}</span>
