@@ -97,6 +97,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1.25re
 .secure-row{display:flex;align-items:center;justify-content:center;gap:0.5rem;font-size:0.7rem;color:var(--muted);margin-top:1rem;opacity:0.7}
 .error-msg{display:none;background:rgba(204,68,68,0.1);border:1px solid rgba(204,68,68,0.3);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#e88}
 .success-msg{display:none;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.3);border-radius:10px;padding:1.5rem;text-align:center;font-size:0.9rem;color:var(--accent)}
+.cancelled-msg{display:none;background:rgba(255,165,0,0.08);border:1px solid rgba(255,165,0,0.25);border-radius:10px;padding:1.5rem;text-align:center;font-size:0.9rem;color:#ffa726}
 
 /* MANAGE SUBSCRIPTION */
 .manage-section{max-width:480px;margin:2.5rem auto 0;text-align:center}
@@ -144,6 +145,13 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
   <strong style="font-size:1.1rem">Upgrade successful!</strong>
   <p style="margin-top:0.5rem;color:var(--muted);font-size:0.85rem">Your subscription is now active. You can close this page and continue using BeSafe.</p>
   <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;margin-top:1rem;background:var(--accent);color:#030d07;padding:0.65rem 2rem;border-radius:2rem;text-decoration:none;font-weight:500;font-size:0.88rem">Open BeSafe &rarr;</a>
+</div>
+
+<!-- CANCELLED MESSAGE (shown after Stripe cancel) -->
+<div id="cancelled-msg" class="cancelled-msg" style="max-width:600px;margin:2rem auto;display:none">
+  <div style="font-size:1.5rem;margin-bottom:0.5rem">&#9888;</div>
+  <strong style="font-size:1.1rem">Checkout cancelled</strong>
+  <p style="margin-top:0.5rem;color:var(--muted);font-size:0.85rem">No charges were made. You can try again anytime by selecting a plan below.</p>
 </div>
 
 <!-- PAGE -->
@@ -282,6 +290,11 @@ const PRICES = {
   // Show success message if redirected from Stripe
   if (params.get('success') === 'true') {
     document.getElementById('success-msg').style.display = 'block';
+  }
+
+  // Show cancelled message if redirected from Stripe cancel
+  if (params.get('cancelled') === 'true') {
+    document.getElementById('cancelled-msg').style.display = 'block';
   }
 
   // Pre-select plan from URL
