@@ -70,7 +70,7 @@ lt:{
 "hero.t1":"Jūsų duomenys.","hero.t2":"Jūsų nuosavybė.",
 "hero.sub":"BeSafe saugo tai, kas jums svarbu \u2014 tik jūsų įrenginyje. Nei serveriai, nei sekimas, nei stebėjimas.",
 "hero.btn1":"Pradėti 14 dienų bandymą","hero.btn2":"Kaip tai veikia \u2192",
-"trust.1":"Neprisijung\u0119s 99% laiko","trust.2":"2 įrenginiai viename plane","trust.3":"14 kalbų","trust.4":"Duomenys niekada neištrinami",
+"trust.1":"Neprisijungęs 99% laiko","trust.2":"2 įrenginiai viename plane","trust.3":"14 kalbų","trust.4":"Duomenys niekada neištrinami",
 "stat.1":"99%","stat.1l":"Veikia offline","stat.2":"0","stat.2l":"Duomenų serveryje","stat.3":"14","stat.3l":"Kalbų","stat.4":"2","stat.4l":"renginiai / planas",
 "phi.eye":"BeSafe filosofija","phi.t1":"Trys principai.","phi.t2":"Jokių kompromisų.",
 "phi01.t":"Vartotojas \u2014 šeimininkas","phi01.p":"Jūs priimate visus sprendimus dėl savo duomenų. Visada, absoliučiai, be išimčių. Mes tik suteikiame įrankį.",

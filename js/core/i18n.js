@@ -888,7 +888,7 @@ const dictionaries = {
     "app.subtitle.home":
       "Aiškiai matykite svarbiausius skaičius ir ramiai pasirinkite kitą žingsnį.",
 
-     "plan.switch.toBusiness": "Perjungti \u012F Versl\u0105",
+     "plan.switch.toBusiness": "Perjungti į Verslą",
      "plan.switch.toPersonal": "Perjungti į Personal",
      "plan.current.personal": "Asmeninis planas aktyvus",
      "plan.current.business": "Verslo planas aktyvus",
