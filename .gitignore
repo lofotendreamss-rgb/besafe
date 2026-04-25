@@ -3,3 +3,15 @@ dist/
 *.exe
 electron/dist/
 .env
+
+# Editor/IDE
+.claude/
+
+# Windows junk
+desktop.ini
+Thumbs.db
+
+# Temp scripts
+*.tmp.mjs
+*.tmp.cjs
+*.tmp.js
