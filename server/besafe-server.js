@@ -689,35 +689,90 @@ app.post(
       }
     }
 
-    // Device limit check (using devices_used/devices_max columns)
-    const devicesUsed = license.devices_used || 0;
+    // Device limit check (using devices table as source of truth)
     const maxDevices = license.devices_max || MAX_DEVICES;
+    const nowIso = new Date().toISOString();
 
-    if (devicesUsed >= maxDevices) {
+    // Check if this fingerprint is already registered for this license
+    const { data: existingDevice } = await supabase
+      .from("devices")
+      .select("id")
+      .eq("license_id", license.id)
+      .eq("device_fingerprint", device_fingerprint)
+      .maybeSingle();
+
+    if (existingDevice) {
+      // Known device - just refresh last_seen_at, no count change
+      await supabase
+        .from("devices")
+        .update({ last_seen_at: nowIso })
+        .eq("id", existingDevice.id);
+
+      await supabase
+        .from("licenses")
+        .update({ last_checked_at: nowIso })
+        .eq("license_key", license_key);
+
+      const { count: realCount } = await supabase
+        .from("devices")
+        .select("id", { count: "exact", head: true })
+        .eq("license_id", license.id);
+
+      console.log(`[Verify] OK (known) | ${license_key} | device:${device_fingerprint.substring(0, 8)}... | ${license.status}`);
+
+      return res.json({
+        status: "active",
+        plan: license.plan,
+        billing: license.billing,
+        devices_used: realCount || 0,
+        max_devices: maxDevices,
+      });
+    }
+
+    // New device - count real devices, enforce limit
+    const { count: currentCount } = await supabase
+      .from("devices")
+      .select("id", { count: "exact", head: true })
+      .eq("license_id", license.id);
+
+    const realUsed = currentCount || 0;
+
+    if (realUsed >= maxDevices) {
       return res.json({
         status: "device_limit",
         error: `Pasiektas irenginiu limitas (${maxDevices}).`,
         max_devices: maxDevices,
-        current_devices: devicesUsed,
+        current_devices: realUsed,
       });
     }
 
-    // Update device count + last checked
+    // Register new device
+    await supabase
+      .from("devices")
+      .insert({
+        license_id: license.id,
+        device_fingerprint: device_fingerprint,
+        device_name: req.body.device_name || null,
+        first_seen_at: nowIso,
+        last_seen_at: nowIso,
+      });
+
+    // Sync devices_used cache with real count
     await supabase
       .from("licenses")
       .update({
-        devices_used: devicesUsed + 1,
-        last_checked_at: new Date().toISOString(),
+        devices_used: realUsed + 1,
+        last_checked_at: nowIso,
       })
       .eq("license_key", license_key);
 
-    console.log(`[Verify] OK | ${license_key} | device:${device_fingerprint.substring(0, 8)}... | ${license.status}`);
+    console.log(`[Verify] OK (new) | ${license_key} | device:${device_fingerprint.substring(0, 8)}... | ${license.status}`);
 
     res.json({
       status: "active",
       plan: license.plan,
       billing: license.billing,
-      devices_used: devicesUsed + 1,
+      devices_used: realUsed + 1,
       max_devices: maxDevices,
     });
   } catch (error) {
