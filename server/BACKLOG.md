@@ -1,37 +1,95 @@
 # BeSafe Server — Backlog
 
-## 🔴 HIGH PRIORITY: Device tracking bug in /api/verify-license
+## ✅ FIXED in b26335a (2026-04-26): Device tracking bug in /api/verify-license
 
-**Impact:** Personal plan users get locked out of their own license after just
-2 activations, even from the same browser. Bug exists since initial implementation.
+**Original impact:** Personal plan users got locked out of their own license
+after just 2 activations, even from the same browser. Bug existed since
+initial implementation.
 
-**Root cause (3 issues):**
-1. `devices_used` counter increments on EVERY /api/verify-license call without
-   checking device_fingerprint dedup
-2. `devices` table is never INSERT'ed into — only the counter on `licenses` table
-   is updated (ghost devices)
-3. No deduplication logic — same fingerprint counted N times across N calls
+**Fix summary (commit b26335a):**
+- `devices` table is now the source of truth — `realUsed` is computed via
+  `SELECT count(*) FROM devices WHERE license_id = X`, not via the cached
+  `licenses.devices_used` column.
+- Fingerprint dedup: on verify, we look up `(license_id, device_fingerprint)`
+  in `devices`. If found → only `last_seen_at` is updated, count does NOT
+  change. If not found → INSERT new row, then enforce `realUsed >= maxDevices`.
+- Same browser/device re-verifying never inflates the counter again.
+- `licenses.devices_used` is still updated for backwards compat but is no
+  longer authoritative.
 
-**Temporary workaround (applied 2026-04-23):**
-- Bumped `devices_max` default from 2 to 10 for Personal plan
-  (`const MAX_DEVICES = 10` in besafe-server.js)
-- Ran one-off script to reset `devices_used = 0` and `devices_max = 10`
-  on all existing Personal licenses
-- This masks the bug's effect for early users but doesn't fix it
-
-**Proper fix required:**
-1. INSERT into `devices` table with fingerprint on first verify
-2. On subsequent verify with same fingerprint: update `last_seen_at`, DON'T increment
-3. Compute `devices_used` dynamically: `SELECT COUNT(*) FROM devices WHERE license_id = X`
-4. Add DB migration to create proper `devices` table schema if missing
-
-**Files to modify:**
-- `server/besafe-server.js` L548-650 (/api/verify-license handler)
-- Possibly `supabase/migrations/` new migration for devices table
+**Follow-up (2026-04-28):**
+- Restored `MAX_DEVICES` from temp value 10 back to **3** as the new product
+  decision (phone + laptop + work computer for Personal plan).
+- Existing licenses with `devices_max=10` (set by the 2026-04-23 workaround
+  script) need a one-off SQL rollback to `devices_max=3`. Query drafted but
+  not yet executed — see ops notes / migration plan.
 
 ---
 
 ## Infrastructure improvements
+
+### [ ] Schema drift: setup-database.sql doesn't reflect live Supabase schema
+
+**Priority:** Medium
+**Effort:** Medium (one-off DDL audit + decision on path forward)
+**Impact:** New dev environments bootstrapped from `setup-database.sql` will
+diverge from production. Code that references column/table names not in the
+file appears to "work by magic" because it only works against live Supabase.
+
+**Discovered:** 2026-04-28, while restoring `MAX_DEVICES` to 3 after the
+b26335a fix.
+
+**Concrete drifts found:**
+
+1. **`max_devices` vs `devices_max` (column rename).**
+   - `setup-database.sql` declares `max_devices INTEGER DEFAULT 3` on the
+     `licenses` table.
+   - Runtime code in `server/besafe-server.js` reads `license.devices_max`
+     (e.g. line ~693 in `/api/verify-license` handler) and writes
+     `devices_max` on INSERT (line ~498).
+   - Therefore prod schema has a `devices_max` column. The setup file is
+     stale on the column name.
+
+2. **`devices` JSONB column vs `devices` table.**
+   - `setup-database.sql` declares `devices JSONB DEFAULT '[]'::jsonb`
+     on the `licenses` table.
+   - The b26335a fix uses `devices` as a **separate table** with columns
+     `id`, `license_id` (FK → licenses.id), `device_fingerprint`,
+     `device_name`, `first_seen_at`, `last_seen_at`.
+   - Therefore prod has a `devices` table, not a JSONB column. Possibly
+     both exist (table added later, JSONB never dropped) — needs audit.
+
+3. **No migration file creates the `devices` table.**
+   - `supabase/migrations/` contains only AI-assistant, audit-status,
+     and ai-daily-usage migrations. Nothing creates `devices` or alters
+     `licenses` to add `devices_max`.
+   - The schema was likely changed via Supabase Dashboard SQL editor
+     ad-hoc, with no checked-in migration. This is the root cause of the
+     drift.
+
+**Action (pick one):**
+
+**A. Capture live schema as a migration (recommended).**
+   - Use `pg_dump --schema-only` against prod Supabase to capture current
+     DDL.
+   - Diff against `setup-database.sql`, write a single
+     `2026XXXXXX_capture_live_schema.sql` migration that brings a fresh
+     DB from "setup-database.sql state" up to "live state".
+   - Going forward, all DDL changes go through migrations. No more
+     Dashboard ad-hoc SQL.
+
+**B. Demote `setup-database.sql` to "fresh dev only".**
+   - Add a banner: "DO NOT use against production — this is the
+     pre-migrations bootstrap. Apply migrations after running this file."
+   - Update column names (`max_devices` → `devices_max`) and replace
+     `devices JSONB` with the proper `devices` table DDL, but make
+     clear it's the dev-bootstrap baseline, not authoritative.
+
+**Why separate sprint:**
+- Requires DB access and prod-to-file diffing, not just code changes.
+- Decision between A and B is a workflow call (do we want migrations
+  to be the source of truth going forward, yes or no?).
+- Touching schema files invites accidental DDL changes — keep isolated.
 
 ### [ ] Set Express trust proxy for Render deployment
 
@@ -107,6 +165,56 @@ SELECT list in that middleware).
   (they show as active, which is the intended pre-expiry behavior)
 
 ## Security follow-ups
+
+### [ ] Electron security upgrade (v36 → v41)
+
+**Priority:** High — but defer to dedicated sprint, do not bundle with other work.
+**Effort:** Medium (breaking change, needs end-to-end desktop QA)
+**Impact:** Closes 18 high-severity Electron advisories surfaced by `npm audit`
+on 2026-04-28 (ASAR integrity bypass, several use-after-free issues, AppleScript
+injection in `app.moveToApplicationsFolder`, IPC reply spoofing via service
+worker, registry key path injection in `app.setAsDefaultProtocolClient`,
+HTTP response header injection, and others).
+
+**What to upgrade:**
+- `electron`: current `<=39.8.4` → `41.3.0` (breaking; drives the audit fix)
+- `npm audit fix --force` will also bump the transitive chain:
+  `tar` → 7.5.13, `cacache`, `node-gyp`, `@electron/rebuild`,
+  `app-builder-lib`, `dmg-builder`, `electron-builder`,
+  `electron-builder-squirrel-windows`, `make-fetch-happen`,
+  `http-proxy-agent`, `@tootallnate/once`. These together close the
+  remaining 12 audit findings (2 low, 10 high) recorded after the
+  2026-04-28 non-breaking `npm audit fix` run.
+
+**Why a separate sprint (do not bundle):**
+- Major Electron bumps frequently change preload script sandbox semantics,
+  contextIsolation defaults, and `webPreferences` validation. Need to retest
+  `electron/preload.js` and every IPC channel.
+- Licensing flow runs through Electron (`electron/license.html` +
+  main-process IPC). Regression here locks users out of the desktop app —
+  exactly the surface we just stabilized in commit b26335a.
+- electron-builder major bumps have historically broken signing/notarization
+  and the squirrel-windows installer. Need a clean test build on Windows
+  before shipping.
+
+**Test checklist before merging:**
+- [ ] App launches on Windows (primary target) and macOS if applicable
+- [ ] License activation flow: fresh install → enter key → verify → unlock
+- [ ] License re-verify on relaunch does NOT trigger `device_limit` (this is
+      the regression mode b26335a fixed at the server side; preload/IPC
+      changes could re-introduce a client-side equivalent)
+- [ ] Preload-exposed APIs in `electron/preload.js` still reachable from
+      renderer with contextIsolation enabled
+- [ ] `electron-builder` produces a working installer (not just a dev run)
+- [ ] Auto-update path (if any) still works against the old installed base
+
+**Files likely to need attention:**
+- `electron/main.js` — `webPreferences`, `BrowserWindow` options, IPC handlers
+- `electron/preload.js` — `contextBridge` exposures
+- `package.json` — `electron`, `electron-builder` versions, build scripts
+- `build/` — packaging config
+
+**Recorded:** 2026-04-28 (deferred from same-day audit run).
 
 ### [ ] Rate-limit /api/webhook if Stripe-signature brute force attempts appear
 
