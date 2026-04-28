@@ -8,7 +8,14 @@
 //   * X-Language header → {LANGUAGE} placeholder in the template
 //   * Audit log:      one row per Anthropic call (success OR error)
 //   * NO conversations / messages table writes (future step owns history)
-//   * NO tool calling (future step)
+//
+// Phase 3 step 2/6 (2026-04-28): tool calling wired in. Anthropic
+// receives the schema list from server/ai/tools.js; tool_use blocks in
+// the response are parsed into a `toolCalls` array on the JSON reply.
+// Execution + confirmation UI live in steps 3/6 and 4/6 respectively —
+// this step only builds the rails. Backward compatible: clients that
+// don't know about toolCalls see the same `response` text field they
+// always saw.
 //
 // Factory pattern — accepts the anthropic + supabase clients so this
 // module:
@@ -158,6 +165,17 @@ Formatting:
 - Use markdown: **bold** for emphasis, bullet lists for enumerations, ## for headings only when the answer is long
 - Currency: use the € symbol by default unless the user writes in another currency
 - Numbers: use the user's locale conventions when obvious (1 000,50 € for most EU; $1,000.50 for US English)`;
+
+// ============================================================
+// Tool calling — Phase 3 step 2/6.
+//
+// Schemas live in server/ai/tools.js (single source of truth, served
+// from backend so frontend can't spoof). We pass the full list to
+// every Anthropic call; Claude decides which tools (if any) to invoke
+// based on the user's message. The decision flow remains 100% in
+// Anthropic's hands — server/handler are dumb routers.
+// ============================================================
+import { tools as TOOLS } from './ai/tools.js';
 
 // Extracts the full language name from the X-Language header.
 // Missing / unknown / non-string values all resolve to English so
@@ -318,6 +336,7 @@ export function createChatHandler(anthropic, supabase) {
           max_tokens: MAX_OUTPUT_TOKENS,
           system:     systemPrompt,
           messages,
+          tools:      TOOLS,
         },
         { signal: controller.signal },
       );
@@ -332,15 +351,53 @@ export function createChatHandler(anthropic, supabase) {
         (response.usage?.input_tokens  ?? 0) +
         (response.usage?.output_tokens ?? 0);
 
-      // FIX: .find(type === 'text') instead of content[0] so we stay
-      // correct when Claude returns mixed blocks (reasoning models
-      // emit `thinking` blocks before `text`; tool calling adds
-      // `tool_use` blocks). Haiku + single-turn doesn't hit this today,
-      // but Step 2c will — worth the 1-line future-proofing now.
-      // Defensive fallback to empty string if no text block at all —
-      // better to send "" than 500.
-      const textBlock = response.content?.find((b) => b.type === 'text');
-      const replyText = textBlock?.text ?? '';
+      // Claude can return three block types: `text` (regular reply),
+      // `thinking` (reasoning models — ignored by us), and `tool_use`
+      // (action requests). We split text vs tool_use so the client
+      // gets a clean string reply AND a structured action list.
+      //
+      // Text blocks are joined with newlines: most replies have one
+      // text block, but Anthropic explicitly allows multi-block
+      // responses (e.g. text-then-tool_use-then-text). Defensive
+      // fallback to empty string if no text block at all — sending ""
+      // is better than 500.
+      const contentBlocks  = response.content ?? [];
+      const textBlocks     = contentBlocks.filter((b) => b.type === 'text');
+      const toolUseBlocks  = contentBlocks.filter((b) => b.type === 'tool_use');
+
+      const replyText = textBlocks.map((b) => b.text).join('\n');
+
+      // Map each tool_use block into a frontend-shaped action. The
+      // `requiresConfirmation` flag is looked up from our own schema
+      // (not Claude's input) — Claude has no concept of "confirm
+      // first", that's our security model. Unknown tool name (Claude
+      // hallucinated a call) defaults to `true` so unauthorized
+      // server-side mutations stay impossible. ToolExecutor (step 3/6)
+      // will reject the call with an explicit error.
+      const toolCalls = toolUseBlocks.map((b) => {
+        const schemaEntry = TOOLS.find((t) => t.name === b.name);
+        return {
+          id:                   b.id,
+          name:                 b.name,
+          input:                b.input,
+          requiresConfirmation: schemaEntry?.requiresConfirmation ?? true,
+        };
+      });
+
+      // Dev observability — log tool_use occurrences (count + names
+      // only, no args) so we can trace Claude's tool decisions in
+      // production logs without leaking user data. Skipped on pure
+      // text replies to keep happy-path logs quiet.
+      if (toolCalls.length > 0) {
+        console.log(
+          '[chatHandler] tool_use:',
+          toolCalls.length,
+          'tools:',
+          toolCalls.map((t) => t.name).join(', '),
+          'stop_reason:',
+          response.stop_reason
+        );
+      }
 
       // Fire-and-forget — response latency must NOT depend on the
       // audit write (mirrors rateLimit.js FIX #1).
@@ -381,6 +438,7 @@ export function createChatHandler(anthropic, supabase) {
         tokens_used: tokensUsed,
         model:       MODEL,
         elapsed_ms,
+        ...(toolCalls.length > 0 ? { toolCalls } : {}),
       });
     } catch (err) {
       clearTimeout(timeoutId);

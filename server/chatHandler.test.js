@@ -237,7 +237,12 @@ describe('chatHandler — success path', () => {
       max_tokens: 500,
       system:     expect.stringContaining('BeSafe Assistant'),
       messages:   [{ role: 'user', content: 'what is 2+2?' }],
+      // Phase 3 step 2/6: tool schema list passed to every Anthropic
+      // call. Asserted via expect.any(Array) here — content is covered
+      // by tools.js own integrity tests.
+      tools:      expect.any(Array),
     });
+    expect(payload.tools.length).toBeGreaterThan(0);
     expect(opts).toHaveProperty('signal');
     expect(opts.signal).toBeInstanceOf(AbortSignal);
   });
@@ -461,6 +466,86 @@ describe('chatHandler — success path', () => {
     await handler(mockReq(), res);
 
     expect(res.json.mock.calls[0][0].response).toBe('The answer is 4.');
+  });
+
+  it('T_TOOL1: tool_use blocks → response.toolCalls populated with schema-derived requiresConfirmation', async () => {
+    // Claude returns one text block + one tool_use block (mixed
+    // content). We expect:
+    //   - response: text body unchanged
+    //   - toolCalls: array with one entry, requiresConfirmation: true
+    //     (addTransaction is a WRITE tool per server/ai/tools.js)
+    const anthropic = createAnthropicStub({
+      create: vi.fn().mockResolvedValue({
+        content: [
+          { type: 'text', text: 'Sure, let me add that.' },
+          {
+            type:  'tool_use',
+            id:    'toolu_abc123',
+            name:  'addTransaction',
+            input: { amount: 25.5, type: 'expense', category: 'Maistas' },
+          },
+        ],
+        stop_reason: 'tool_use',
+        usage:       { input_tokens: 30, output_tokens: 12 },
+      }),
+    });
+    const handler = createChatHandler(anthropic, createSupabaseStub());
+    const res     = mockRes();
+
+    await handler(mockReq({ body: { message: 'pridėk 25.50 už pietus' } }), res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.response).toBe('Sure, let me add that.');
+    expect(Array.isArray(body.toolCalls)).toBe(true);
+    expect(body.toolCalls).toHaveLength(1);
+    expect(body.toolCalls[0]).toEqual({
+      id:                   'toolu_abc123',
+      name:                 'addTransaction',
+      input:                { amount: 25.5, type: 'expense', category: 'Maistas' },
+      requiresConfirmation: true,
+    });
+  });
+
+  it('T_TOOL2: pure-text reply → response.toolCalls is omitted (backward compat)', async () => {
+    // No tool_use blocks → toolCalls field MUST NOT appear in the
+    // response. Clients that don't know about toolCalls should see
+    // the same shape they always saw.
+    const handler = createChatHandler(createAnthropicStub(), createSupabaseStub());
+    const res     = mockRes();
+
+    await handler(mockReq(), res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body).not.toHaveProperty('toolCalls');
+  });
+
+  it('T_TOOL3: unknown tool name from Claude → requiresConfirmation defaults to true (fail-safe)', async () => {
+    // Defense in depth: if Claude hallucinates a tool name we don't
+    // ship, we MUST default requiresConfirmation to true so unauth
+    // execution can never bypass the user. ToolExecutor (step 3/6)
+    // will reject the call entirely; this test pins the safe default.
+    const anthropic = createAnthropicStub({
+      create: vi.fn().mockResolvedValue({
+        content: [
+          {
+            type:  'tool_use',
+            id:    'toolu_xyz',
+            name:  'fakeNonexistentTool',
+            input: {},
+          },
+        ],
+        stop_reason: 'tool_use',
+        usage:       { input_tokens: 5, output_tokens: 3 },
+      }),
+    });
+    const handler = createChatHandler(anthropic, createSupabaseStub());
+    const res     = mockRes();
+
+    await handler(mockReq(), res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.toolCalls).toHaveLength(1);
+    expect(body.toolCalls[0].requiresConfirmation).toBe(true);
   });
 });
 
