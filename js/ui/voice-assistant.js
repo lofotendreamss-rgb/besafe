@@ -30,105 +30,6 @@ function isSupported() {
   return Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
 }
 
-/**
- * Bando perskaityti tekstą balsu. Bando preferred kalbą, fallback'ina
- * į bet kokį turimą balsą, jei OS neturi preferred lang voice'o.
- *
- * Kokybės principas (kūrėjas patvirtino 2026-04-28): "kokybiškai" TTS
- * prasme = "vartotojas girdi nors kažkokį balsą", ne "tobulas akcentas".
- * Anglų balsas LT tekstui yra geriau už tylumą. BeSafe yra globalus
- * produktas (14 kalbų) — TTS turi veikti kiekvienam vartotojui pasaulyje,
- * neatsižvelgiant į jų OS balsų sąrašą.
- *
- * Jokio silent failure: kiekviena nesėkmė loginama console.warn'u, kad
- * dev'as galėtų atsekti, kodėl vartotojas negirdi atsakymo.
- *
- * @param {string} text — tekstas, kurį reikia perskaityti
- * @returns {boolean} — true jei utterance paleista, false priešingu atveju
- */
-function speak(text) {
-  try {
-    if (!window.speechSynthesis) {
-      console.warn("[Voice] speechSynthesis not available in this browser");
-      return false;
-    }
-
-    const cleanText = String(text || "").trim();
-    if (!cleanText) {
-      // Tuščias tekstas — valid case, ne klaida (pvz. Claude grąžino
-      // tuščią response). Tylim be log'o, bet grąžinam false aiškumui.
-      return false;
-    }
-
-    const preferredLang = getLocale();  // pvz. "lt-LT"
-    const voices = window.speechSynthesis.getVoices();
-
-    // Bandyti rasti balsą preferred kalbai. Tikrinam tiek pilną tag'ą
-    // ("lt-LT"), tiek kalbos branduolį ("lt-*") — pvz. jei OS turi tik
-    // "lt-BY", vis tiek tinka.
-    const langPrefix = preferredLang.split("-")[0] + "-";
-    let chosenVoice = voices.find(
-      (v) => v.lang === preferredLang || v.lang.startsWith(langPrefix)
-    );
-
-    // Fallback — pirmas turimas balsas (paprastai default OS voice).
-    // Globalumo principas: jei vartotojas Windows'e turi tik anglišką
-    // Microsoft George, bus skaitoma su anglišku akcentu, bet bus garsas.
-    if (!chosenVoice && voices.length > 0) {
-      chosenVoice = voices[0];
-      console.warn(
-        "[Voice] No voice for " + preferredLang +
-          ", falling back to " + chosenVoice.lang +
-          " (" + chosenVoice.name + ")"
-      );
-    }
-
-    // Jokio balso visai sistemoje — neįmanoma kalbėti. Reta situacija
-    // (Linux be speech-dispatcher'io, headless Chrome, ir pan.).
-    if (!chosenVoice) {
-      console.warn("[Voice] No TTS voices available on this system");
-      return false;
-    }
-
-    const u = new SpeechSynthesisUtterance(cleanText);
-    u.voice = chosenVoice;
-    u.lang = chosenVoice.lang;  // sutampa su voice'o kalba — be tarpusavio konflikto
-    u.rate = 1;
-    u.pitch = 1;
-
-    window.speechSynthesis.cancel();  // pertraukia ankstesnę utterance
-    window.speechSynthesis.speak(u);
-    return true;
-  } catch (err) {
-    console.warn("[Voice] speak() failed:", err);
-    return false;
-  }
-}
-
-// ============================================================
-// Voices warm-up — Chrome (ir kai kurios kitos naršyklės) krauna
-// SpeechSynthesis voices ASYNC'iškai. Pirmas getVoices() iškvietimas
-// grąžina tuščią masyvą; tikrasis sąrašas atvyksta per `voiceschanged`
-// event'ą. Triggering'inam load'ą iš anksto modulio init'inime, kad
-// pirmasis vartotojo voice command'as (kuris ir taip užtruks STT
-// + Claude) jau gautų užkrautas voices. Vienkartinis listener'is —
-// nuimam jį, kai voices pasiekiami.
-// ============================================================
-if (typeof window !== "undefined" && window.speechSynthesis) {
-  // Pirmas getVoices() trigger'ina lazy load'ą kai kuriuose engine'uose.
-  // Rezultato nereikia — tikslas yra side effect'as.
-  window.speechSynthesis.getVoices();
-
-  if (window.speechSynthesis.getVoices().length === 0) {
-    const onVoicesChanged = () => {
-      // Voices dabar cache'inti naršyklės. Sekantys getVoices() kvietimai
-      // speak() viduje grąžins užpildytą sąrašą.
-      window.speechSynthesis.removeEventListener("voiceschanged", onVoicesChanged);
-    };
-    window.speechSynthesis.addEventListener("voiceschanged", onVoicesChanged);
-  }
-}
-
 function toast(message, kind = "success") {
   const existing = document.querySelector("[data-voice-toast]");
   if (existing) existing.remove();
@@ -216,7 +117,7 @@ async function handleAddExpense(text) {
   if (!amount || amount <= 0) {
     const msg = t("voice.error.noAmount", "Nepavyko atpažinti sumos. Pabandykite dar kartą.");
     toast(msg, "error");
-    speak(msg);
+    console.log("[Voice DEADCODE] would have spoken:", msg);
     return;
   }
 
@@ -254,7 +155,7 @@ async function handleAddExpense(text) {
 
     const msg = t("voice.success.expenseAdded", "Pridėta {amount} € išlaida").replace("{amount}", amount.toFixed(2));
     toast(msg, "success");
-    speak(msg);
+    console.log("[Voice DEADCODE] would have spoken:", msg);
 
     // Refresh home if available
     try {
@@ -264,7 +165,7 @@ async function handleAddExpense(text) {
     console.warn("[Voice] Add expense failed:", err);
     const msg = t("voice.error.saveFailed", "Nepavyko išsaugoti. Bandykite per formą.");
     toast(msg, "error");
-    speak(msg);
+    console.log("[Voice DEADCODE] would have spoken:", msg);
   }
 }
 
@@ -281,11 +182,11 @@ async function handleShowBudget() {
       .replace("{income}", income.toFixed(2))
       .replace("{expenses}", expenses.toFixed(2));
     toast(msg, "success");
-    speak(msg);
+    console.log("[Voice DEADCODE] would have spoken:", msg);
   } catch {
     const msg = t("voice.error.readFailed", "Nepavyko nuskaityti duomenų.");
     toast(msg, "error");
-    speak(msg);
+    console.log("[Voice DEADCODE] would have spoken:", msg);
   }
 }
 
@@ -304,11 +205,11 @@ async function handleMonthlySpending() {
     const msg = t("voice.response.monthly", "Šį mėnesį išleidote {amount} €.")
       .replace("{amount}", monthExpenses.toFixed(2));
     toast(msg, "success");
-    speak(msg);
+    console.log("[Voice DEADCODE] would have spoken:", msg);
   } catch {
     const msg = t("voice.error.readFailed", "Nepavyko nuskaityti duomenų.");
     toast(msg, "error");
-    speak(msg);
+    console.log("[Voice DEADCODE] would have spoken:", msg);
   }
 }
 
@@ -317,7 +218,7 @@ function handleReport() {
     window.location.hash = "#/reports";
     const msg = t("voice.response.reportOpen", "Atidaroma ataskaita.");
     toast(msg, "success");
-    speak(msg);
+    console.log("[Voice DEADCODE] would have spoken:", msg);
   } catch {}
 }
 
@@ -353,7 +254,7 @@ async function executeCommand(text) {
     default: {
       const msg = t("voice.error.unknown", "Nesupratau komandos. Pabandykite: „Pridėk 20 eurų maistui“.");
       toast(msg, "error");
-      speak(msg);
+      console.log("[Voice DEADCODE] would have spoken:", msg);
     }
   }
 }
@@ -411,11 +312,9 @@ export function startListening() {
 
     // Capability check #2 — internetas. /api/chat reikalauja online
     // (skirtingai nei Phase 1 lokalios komandos, kurios veikia offline).
-    // Patvirtinam balsu IR vizualiai, kad vartotojas tikrai suprato.
     if (!navigator.onLine) {
       const msg = t("voice.offlineRequired", "Voice asistentui reikia interneto");
       toast(msg, "error");
-      speak(msg);
       setButtonState("idle");
       isListening = false;
       return;
@@ -445,17 +344,11 @@ export function startListening() {
       await new Promise((resolve) => requestAnimationFrame(resolve));
 
       // Siunčiam į Claude per shared pipeline (chat.client.js).
-      // Voice + tekstas dalinasi vieną pokalbio istoriją.
-      const response = await submitMessageWithText(transcript);
-
-      // TTS — Claude atsakymas balsu. Phase 1 native speak() naudoja
-      // OS-level engine (Windows SAPI / macOS Speech / Linux speech-
-      // dispatcher), tad veikia ir Electron'e (skirtingai nei STT).
-      // Empty response → submitMessageWithText jau buvo atvaizdavęs
-      // klaidą bubble'iu, čia tiesiog tylim.
-      if (response && typeof response === "string" && response.trim()) {
-        speak(response);
-      }
+      // Voice + tekstas dalinasi vieną pokalbio istoriją. Atsakymas
+      // rodomas TIK tekstu chat panel'e — TTS pašalintas Phase 3
+      // step 0/6, nes globaliai (14 kalbų × OS balsų matrica) jis
+      // negalėjo veikti kokybiškai.
+      await submitMessageWithText(transcript);
     } catch (err) {
       console.warn("[Voice] Claude pipeline failed:", err);
       toast(classifyError(err), "error");
