@@ -30,16 +30,103 @@ function isSupported() {
   return Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
 }
 
+/**
+ * Bando perskaityti tekstą balsu. Bando preferred kalbą, fallback'ina
+ * į bet kokį turimą balsą, jei OS neturi preferred lang voice'o.
+ *
+ * Kokybės principas (kūrėjas patvirtino 2026-04-28): "kokybiškai" TTS
+ * prasme = "vartotojas girdi nors kažkokį balsą", ne "tobulas akcentas".
+ * Anglų balsas LT tekstui yra geriau už tylumą. BeSafe yra globalus
+ * produktas (14 kalbų) — TTS turi veikti kiekvienam vartotojui pasaulyje,
+ * neatsižvelgiant į jų OS balsų sąrašą.
+ *
+ * Jokio silent failure: kiekviena nesėkmė loginama console.warn'u, kad
+ * dev'as galėtų atsekti, kodėl vartotojas negirdi atsakymo.
+ *
+ * @param {string} text — tekstas, kurį reikia perskaityti
+ * @returns {boolean} — true jei utterance paleista, false priešingu atveju
+ */
 function speak(text) {
   try {
-    if (!window.speechSynthesis) return;
-    const u = new SpeechSynthesisUtterance(String(text || ""));
-    u.lang = getLocale();
+    if (!window.speechSynthesis) {
+      console.warn("[Voice] speechSynthesis not available in this browser");
+      return false;
+    }
+
+    const cleanText = String(text || "").trim();
+    if (!cleanText) {
+      // Tuščias tekstas — valid case, ne klaida (pvz. Claude grąžino
+      // tuščią response). Tylim be log'o, bet grąžinam false aiškumui.
+      return false;
+    }
+
+    const preferredLang = getLocale();  // pvz. "lt-LT"
+    const voices = window.speechSynthesis.getVoices();
+
+    // Bandyti rasti balsą preferred kalbai. Tikrinam tiek pilną tag'ą
+    // ("lt-LT"), tiek kalbos branduolį ("lt-*") — pvz. jei OS turi tik
+    // "lt-BY", vis tiek tinka.
+    const langPrefix = preferredLang.split("-")[0] + "-";
+    let chosenVoice = voices.find(
+      (v) => v.lang === preferredLang || v.lang.startsWith(langPrefix)
+    );
+
+    // Fallback — pirmas turimas balsas (paprastai default OS voice).
+    // Globalumo principas: jei vartotojas Windows'e turi tik anglišką
+    // Microsoft George, bus skaitoma su anglišku akcentu, bet bus garsas.
+    if (!chosenVoice && voices.length > 0) {
+      chosenVoice = voices[0];
+      console.warn(
+        "[Voice] No voice for " + preferredLang +
+          ", falling back to " + chosenVoice.lang +
+          " (" + chosenVoice.name + ")"
+      );
+    }
+
+    // Jokio balso visai sistemoje — neįmanoma kalbėti. Reta situacija
+    // (Linux be speech-dispatcher'io, headless Chrome, ir pan.).
+    if (!chosenVoice) {
+      console.warn("[Voice] No TTS voices available on this system");
+      return false;
+    }
+
+    const u = new SpeechSynthesisUtterance(cleanText);
+    u.voice = chosenVoice;
+    u.lang = chosenVoice.lang;  // sutampa su voice'o kalba — be tarpusavio konflikto
     u.rate = 1;
     u.pitch = 1;
-    window.speechSynthesis.cancel();
+
+    window.speechSynthesis.cancel();  // pertraukia ankstesnę utterance
     window.speechSynthesis.speak(u);
-  } catch {}
+    return true;
+  } catch (err) {
+    console.warn("[Voice] speak() failed:", err);
+    return false;
+  }
+}
+
+// ============================================================
+// Voices warm-up — Chrome (ir kai kurios kitos naršyklės) krauna
+// SpeechSynthesis voices ASYNC'iškai. Pirmas getVoices() iškvietimas
+// grąžina tuščią masyvą; tikrasis sąrašas atvyksta per `voiceschanged`
+// event'ą. Triggering'inam load'ą iš anksto modulio init'inime, kad
+// pirmasis vartotojo voice command'as (kuris ir taip užtruks STT
+// + Claude) jau gautų užkrautas voices. Vienkartinis listener'is —
+// nuimam jį, kai voices pasiekiami.
+// ============================================================
+if (typeof window !== "undefined" && window.speechSynthesis) {
+  // Pirmas getVoices() trigger'ina lazy load'ą kai kuriuose engine'uose.
+  // Rezultato nereikia — tikslas yra side effect'as.
+  window.speechSynthesis.getVoices();
+
+  if (window.speechSynthesis.getVoices().length === 0) {
+    const onVoicesChanged = () => {
+      // Voices dabar cache'inti naršyklės. Sekantys getVoices() kvietimai
+      // speak() viduje grąžins užpildytą sąrašą.
+      window.speechSynthesis.removeEventListener("voiceschanged", onVoicesChanged);
+    };
+    window.speechSynthesis.addEventListener("voiceschanged", onVoicesChanged);
+  }
 }
 
 function toast(message, kind = "success") {
