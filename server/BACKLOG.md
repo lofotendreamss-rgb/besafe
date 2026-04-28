@@ -171,6 +171,137 @@ SELECT list in that middleware).
 - Live trial licenses are not impacted in a user-visible way today
   (they show as active, which is the intended pre-expiry behavior)
 
+## 🎤 Voice Assistant
+
+### [ ] Voice Assistant Phase 2: fix or replace Web Speech API in Electron
+
+**Priority:** Medium
+**Effort:** ~3-5 day sprint, NOT MVP scope
+**Impact:** Voice button visibly listens but no transcript ever arrives.
+Affects every language tested by the user, in Electron desktop builds.
+
+**Diagnosis (2026-04-28, read-only audit, no code touched):**
+
+The Web Speech API (`window.webkitSpeechRecognition`) in Electron has
+no working speech-to-text backend. Chrome's `webkitSpeechRecognition`
+relies on a Google Cloud Speech endpoint accessed via an API key
+compiled into the Chrome binary; Electron's bundled Chromium strips
+that key. As a result, in Electron:
+
+- `window.webkitSpeechRecognition` is defined → `isSupported()`
+  returns true → the mic FAB mounts and the listening pulse starts.
+- `recognition.start()` succeeds without throwing.
+- The microphone may even capture audio (Electron's default media
+  permission handling is non-deterministic without an explicit
+  handler — see below).
+- **`onresult` never fires.** The cloud STT call has no backend to
+  reach. The session ends silently via `onend`, or with
+  `onerror.error === "network"` / `"service-not-allowed"`.
+
+The user's report ("klauso, bet neperduoda transkripcijos") matches
+this Electron behavior exactly, and the language-independence of the
+failure rules out misconfigured `recognition.lang`.
+
+**Files involved (no changes proposed in this entry):**
+- `js/ui/voice-assistant.js:310-317` — `onresult` handler that never
+  fires in Electron. The lang wiring at L279 (`r.lang = getLocale()`)
+  is correct; the locale map at L4-8 covers 14 languages.
+- `js/ui/voice-assistant.js:319-348` — `onerror` handler is
+  comprehensive (covers not-allowed, service-not-allowed, no-speech,
+  audio-capture, network, language-not-supported, aborted, generic).
+- `electron/main.js` — **no `setPermissionRequestHandler`**, no
+  `setPermissionCheckHandler`, no media/microphone wiring at all.
+  This is a contributing structural gap but not the root cause —
+  even with a correct permission handler, the missing STT backend
+  remains the dominant blocker.
+- `electron/preload.js` — exposes only DB IPC + license activation;
+  no microphone or speech bridge.
+- `index.html:802-819` — both voice and smart assistants are loaded
+  via dynamic `import()` after `<script type="module" src=".../app.js">`.
+
+**Architecture gap (separate concern, but related):**
+
+`js/ui/voice-assistant.js` uses a **local regex parser** with 4 hard-
+coded command shapes (`pridėk|add`, `biudžet|budget`,
+`išleid|monthly`, `ataskait|report`). Anything else is rejected with
+"Nesupratau komandos." The transcript NEVER reaches
+`js/ui/smart-assistant.js` or `/api/chat` (Claude Haiku). The two
+modules communicate one-way only: smart-assistant calls
+`voiceStartListening()` from voice-assistant; nothing flows back.
+See `js/ui/smart-assistant.js:38, 611, 648-659` (the cloneNode-based
+button hijack pattern).
+
+This gap means even if Web Speech worked perfectly in Electron,
+voice would still feel thin (4 commands) compared to the Claude-
+powered text chat. Phase 2 should close this gap so the voice surface
+delivers on the product's "hybrid: text primary, voice complementary"
+positioning.
+
+**Solution options:**
+
+- **A. Web/PWA only.** Disable the voice FAB in Electron (gate on
+  `window.electronAPI` presence). Web/PWA users keep working voice;
+  desktop installer users see only the chat surface. Lowest effort
+  (~half day), lowest reward — abandons voice on the platform that
+  most needs it.
+
+- **B. Local Whisper (transformers.js or whisper.cpp wasm).**
+  Replace `webkitSpeechRecognition` with a local STT model running
+  in-browser. Aligns with BeSafe's privacy posture (no audio leaves
+  the device) and removes the Electron limitation entirely. Higher
+  effort (~3 days incl. model loading UX, language switching, cold
+  start latency); meaningful value.
+
+- **C. Cloud Whisper / Deepgram / OpenAI STT API.** Fastest STT
+  quality, lowest engineering effort (~1 day), but **off-brand** —
+  conflicts with BeSafe's "your data stays local" stance and would
+  require a new privacy disclosure.
+
+- **D. Wire voice transcript into smart-assistant chat.** Independent
+  of A/B/C. Replace `parseCommand`/`executeCommand` with a path that
+  feeds the transcript into smart-assistant as a pre-populated input
+  (or directly POST /api/chat). Turns the voice surface from a 4-
+  command toy into the same Claude-backed assistant the text path
+  already uses.
+
+**Recommendation: B + D combo for Phase 2.** Local Whisper closes
+the Electron gap on-brand; the voice→smart wiring elevates the MVP
+regex-parser into a genuinely useful assistant. Both can be delivered
+in the same sprint because they touch adjacent layers
+(`voice-assistant.js` STT integration + the onresult callback flow).
+
+**Pre-flight observability (optional, ~10 min, not in this commit):**
+
+If we ever want to confirm the Electron diagnosis empirically before
+committing to a solution, add 5-6 console.log lines to
+`js/ui/voice-assistant.js`:
+
+- L353  → `recognition.onstart = () => console.log("[Voice] onstart")`
+- L353  → `recognition.onaudiostart`/`onaudioend` for mic engagement
+- L353  → `recognition.onspeechstart`/`onspeechend` for "did we hear
+          speech?"
+- L312  → `console.log("[Voice] onresult fired, raw:", ev.results)`
+- L351  → `console.log("[Voice] onend fired, isListening:",
+          isListening)` inside the existing `onend` handler
+
+One Electron run with these in place separates A (Electron API
+limitation — onstart fires, onresult never does) from B (permission
+denied — onerror with "not-allowed" before onstart) from anything
+else. Recording this as future-self note rather than a code change.
+
+**Why separate sprint / not MVP:**
+- Phase 1 voice was scoped as a hint at a future capability, not the
+  primary input. Hybrid product philosophy: text is primary, voice
+  complementary. Shipping with voice broken in Electron is acceptable
+  as long as the chat surface works (it does).
+- Solution B requires model selection (which Whisper variant?
+  whisper-tiny ~75MB? whisper-small ~500MB?) and bundling decisions
+  (lazy-load? bundled? CDN?) — these are product calls that need
+  more than just an engineering sprint.
+- Solution D forces a re-think of voice's role in the product:
+  "shortcut commands" vs. "spoken chat with Claude." Different UX,
+  different cost (Claude-per-request vs. free local regex).
+
 ## Security follow-ups
 
 ### [ ] Electron security upgrade (v36 → v41)
