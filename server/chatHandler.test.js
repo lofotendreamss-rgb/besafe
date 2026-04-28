@@ -1,5 +1,20 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+// Phase 3 step 3/6: agent loop calls executeTool() for read tools.
+// Mocking the module globally so tests can both (a) assert call patterns
+// and (b) inject canned tool results without standing up Supabase.
+// vi.mock() is hoisted above the imports below — vitest handles this.
+// Default mock returns a generic success so tests that don't care about
+// tool execution still pass through cleanly.
+vi.mock('./ai/toolExecutor.js', () => ({
+  executeTool: vi.fn().mockResolvedValue({
+    success: true,
+    result:  { mocked: true },
+  }),
+}));
+
 import { createChatHandler } from './chatHandler.js';
+import { executeTool }       from './ai/toolExecutor.js';
 
 // ============================================================
 // Shared helpers — mirror rateLimit.test.js patterns
@@ -76,11 +91,24 @@ function mockReq({
 // ============================================================
 
 let warnSpy;
+let logSpy;
 beforeEach(() => {
   warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  // Phase 3 step 3/6 — agent loop emits per-iteration console.log
+  // ("Executing tool: X", "Agent loop completed in N iterations").
+  // Silence to keep test output clean.
+  logSpy  = vi.spyOn(console, 'log').mockImplementation(() => {});
+  // Reset the global executeTool mock between tests so leftover state
+  // (mockResolvedValueOnce queues, call counters) doesn't bleed.
+  vi.mocked(executeTool).mockReset();
+  vi.mocked(executeTool).mockResolvedValue({
+    success: true,
+    result:  { mocked: true },
+  });
 });
 afterEach(() => {
   warnSpy.mockRestore();
+  logSpy.mockRestore();
   vi.useRealTimers();
 });
 
@@ -546,6 +574,165 @@ describe('chatHandler — success path', () => {
     const body = res.json.mock.calls[0][0];
     expect(body.toolCalls).toHaveLength(1);
     expect(body.toolCalls[0].requiresConfirmation).toBe(true);
+  });
+});
+
+// ============================================================
+// GROUP 3.5: Agent loop (Phase 3 step 3/6)
+//
+// Loop drives Claude through multiple iterations when read tools
+// are involved: tool_use → server executes → tool_result → Claude
+// synthesises final answer. Write tools and unknown tools break
+// the loop and surface to the client.
+// ============================================================
+
+describe('chatHandler — agent loop', () => {
+  it('T_AGENT1: read tool → loop iterates, executeTool called, final text returned', async () => {
+    // Iteration 1: Claude requests getBalance (read tool, no confirmation).
+    // Iteration 2: server feeds tool_result back; Claude synthesises text.
+    const createSpy = vi.fn()
+      .mockResolvedValueOnce({
+        content: [
+          {
+            type:  'tool_use',
+            id:    'toolu_balance',
+            name:  'getBalance',
+            input: { period: 'current_month' },
+          },
+        ],
+        stop_reason: 'tool_use',
+        usage:       { input_tokens: 50, output_tokens: 10 },
+      })
+      .mockResolvedValueOnce({
+        content: [
+          { type: 'text', text: 'Šio mėnesio balansas: 250 €.' },
+        ],
+        stop_reason: 'end_turn',
+        usage:       { input_tokens: 80, output_tokens: 25 },
+      });
+
+    vi.mocked(executeTool).mockResolvedValueOnce({
+      success: true,
+      result:  {
+        period:        'current_month',
+        balance:       250,
+        total_income:  1000,
+        total_expenses: 750,
+      },
+    });
+
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+    const res       = mockRes();
+
+    await handler(mockReq({ body: { message: 'koks mano balansas?' } }), res);
+
+    // Two Anthropic round-trips: tool request + final synthesis.
+    expect(createSpy).toHaveBeenCalledTimes(2);
+
+    // executeTool invoked exactly once with the schema-derived shape.
+    expect(vi.mocked(executeTool)).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(executeTool).mock.calls[0][0]).toMatchObject({
+      toolName:  'getBalance',
+      toolInput: { period: 'current_month' },
+      license:   expect.objectContaining({ id: VALID_LICENSE.id }),
+    });
+
+    // Final response is the text from iteration 2; no toolCalls
+    // surfaced to client (read tools were resolved server-side).
+    const body = res.json.mock.calls[0][0];
+    expect(body.response).toBe('Šio mėnesio balansas: 250 €.');
+    expect(body).not.toHaveProperty('toolCalls');
+
+    // Tokens accumulated across both iterations: (50+10) + (80+25) = 165.
+    expect(body.tokens_used).toBe(165);
+  });
+
+  it('T_AGENT2: write tool → loop breaks at iter 1, executeTool NOT called, toolCalls returned', async () => {
+    // addTransaction is requiresConfirmation:true → loop must break
+    // before executing. Frontend will surface confirmation UI.
+    const createSpy = vi.fn().mockResolvedValueOnce({
+      content: [
+        { type: 'text', text: 'Sure, I will add that.' },
+        {
+          type:  'tool_use',
+          id:    'toolu_add',
+          name:  'addTransaction',
+          input: { amount: 25.5, type: 'expense', category: 'Maistas' },
+        },
+      ],
+      stop_reason: 'tool_use',
+      usage:       { input_tokens: 30, output_tokens: 12 },
+    });
+
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+    const res       = mockRes();
+
+    await handler(mockReq({ body: { message: 'pridėk 25.50 už pietus' } }), res);
+
+    // One Anthropic call only — loop broke before second iteration.
+    expect(createSpy).toHaveBeenCalledTimes(1);
+
+    // executeTool MUST NOT be called for write tools — that path is
+    // reserved for the confirmation flow (step 4/6 + step 5/6).
+    expect(vi.mocked(executeTool)).not.toHaveBeenCalled();
+
+    // Response carries toolCalls for the frontend to confirm.
+    const body = res.json.mock.calls[0][0];
+    expect(body.response).toBe('Sure, I will add that.');
+    expect(body.toolCalls).toHaveLength(1);
+    expect(body.toolCalls[0]).toMatchObject({
+      name:                 'addTransaction',
+      requiresConfirmation: true,
+    });
+  });
+
+  it('T_AGENT3: max iterations safety → 500 tool_loop_exceeded + audit error', async () => {
+    // Pathological case: Claude perpetually requests another read
+    // tool. Loop must terminate after MAX_TOOL_ITERATIONS=5 with a
+    // 500 + audit row, not hang the request slot.
+    const createSpy = vi.fn().mockResolvedValue({
+      content: [
+        {
+          type:  'tool_use',
+          id:    'toolu_loop',
+          name:  'getBalance',
+          input: {},
+        },
+      ],
+      stop_reason: 'tool_use',
+      usage:       { input_tokens: 20, output_tokens: 5 },
+    });
+
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const supabase  = createSupabaseStub();
+    const handler   = createChatHandler(anthropic, supabase);
+    const res       = mockRes();
+
+    await handler(mockReq(), res);
+
+    // Exactly 5 Anthropic calls (the cap).
+    expect(createSpy).toHaveBeenCalledTimes(5);
+
+    // executeTool ran 5 times too — once per iteration.
+    expect(vi.mocked(executeTool)).toHaveBeenCalledTimes(5);
+
+    // 500 with stable error code — no Anthropic details leaked.
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json.mock.calls[0][0]).toEqual({ error: 'tool_loop_exceeded' });
+
+    // Audit row written with status:error and the same code so quota
+    // tracking + abuse pattern detection see the loop blowout.
+    await flushPromises();
+    const auditCall = supabase._builders.auditBuilder.insert.mock.calls[0][0];
+    expect(auditCall).toMatchObject({
+      action:        'chat',
+      status:        'error',
+      error_message: 'tool_loop_exceeded',
+    });
+    // Tokens summed across all 5 iterations: 5 × (20+5) = 125.
+    expect(auditCall.tokens_used).toBe(125);
   });
 });
 

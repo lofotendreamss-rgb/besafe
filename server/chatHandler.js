@@ -176,6 +176,15 @@ Formatting:
 // Anthropic's hands — server/handler are dumb routers.
 // ============================================================
 import { tools as TOOLS } from './ai/tools.js';
+import { executeTool }    from './ai/toolExecutor.js';
+
+// Cap on agent loop iterations. Each iteration = one Anthropic
+// round-trip plus N tool executions. 5 iterations covers realistic
+// multi-tool flows (e.g. "show last month's spending broken down by
+// category" might need queryTransactions + getCategorySpending)
+// without letting a runaway Claude burn budget or hold the response
+// slot for minutes. Phase 3 step 3/6.
+const MAX_TOOL_ITERATIONS = 5;
 
 // Extracts the full language name from the X-Language header.
 // Missing / unknown / non-string values all resolve to English so
@@ -330,50 +339,140 @@ export function createChatHandler(anthropic, supabase) {
     ];
 
     try {
-      const response = await anthropic.messages.create(
-        {
-          model:      MODEL,
-          max_tokens: MAX_OUTPUT_TOKENS,
-          system:     systemPrompt,
-          messages,
-          tools:      TOOLS,
-        },
-        { signal: controller.signal },
-      );
+      // ----------------------------------------------------------
+      // Phase 3 step 3/6 — agent loop.
+      //
+      // Each iteration is one Anthropic round-trip. If Claude returns
+      // tool_use for READ tools (queryTransactions / getBalance /
+      // getCategorySpending), we execute server-side via toolExecutor
+      // and feed the result back as `tool_result` messages, then loop.
+      // WRITE tools (requiresConfirmation: true) and UNKNOWN tools
+      // (no schema match) break the loop and surface to the frontend
+      // for confirmation/rejection (step 4/6 UI).
+      //
+      // The single AbortController + timeoutId from above bound the
+      // ENTIRE loop, not each iteration. 30s for full agent flow is
+      // intentional — keeps total request latency predictable.
+      //
+      // Token + tool execution counters accumulate across iterations
+      // so the audit row + quota RPC + response report the full cost.
+      // ----------------------------------------------------------
+      const messagesArray   = [...messages];   // mutable — agent loop appends
+      let finalResponse     = null;
+      let totalInputTokens  = 0;
+      let totalOutputTokens = 0;
+      let iterations        = 0;
+      let toolExecutionCount = 0;
+
+      while (iterations < MAX_TOOL_ITERATIONS) {
+        iterations++;
+
+        const response = await anthropic.messages.create(
+          {
+            model:      MODEL,
+            max_tokens: MAX_OUTPUT_TOKENS,
+            system:     systemPrompt,
+            messages:   messagesArray,
+            tools:      TOOLS,
+          },
+          { signal: controller.signal },
+        );
+
+        totalInputTokens  += response.usage?.input_tokens  ?? 0;
+        totalOutputTokens += response.usage?.output_tokens ?? 0;
+
+        const content       = response.content ?? [];
+        const toolUseBlocks = content.filter((b) => b.type === 'tool_use');
+
+        // No tool_use OR Claude finished its turn — done.
+        if (toolUseBlocks.length === 0 || response.stop_reason !== 'tool_use') {
+          finalResponse = response;
+          break;
+        }
+
+        // Find tools that should NOT execute server-side:
+        //   - WRITE tools (requiresConfirmation: true) → confirmation flow
+        //   - UNKNOWN tools (no schema match — Claude hallucinated)
+        //     → fail-safe: treat like write, surface to client so user
+        //        sees what Claude tried and can reject.
+        const breakingTools = toolUseBlocks.filter((b) => {
+          const schemaEntry = TOOLS.find((t) => t.name === b.name);
+          return schemaEntry === undefined || schemaEntry.requiresConfirmation === true;
+        });
+
+        if (breakingTools.length > 0) {
+          finalResponse = response;
+          break;
+        }
+
+        // All tools are READ — execute and feed tool_result blocks
+        // back to Claude. Anthropic message format requires the
+        // assistant's tool_use turn followed by a user turn carrying
+        // tool_result blocks (matched by tool_use_id).
+        messagesArray.push({ role: 'assistant', content });
+
+        const toolResults = [];
+        for (const toolUse of toolUseBlocks) {
+          console.log('[chatHandler] Executing tool:', toolUse.name);
+          toolExecutionCount++;
+
+          const execResult = await executeTool({
+            toolName:  toolUse.name,
+            toolInput: toolUse.input,
+            license:   req.license,
+            supabase,
+          });
+
+          toolResults.push({
+            type:        'tool_result',
+            tool_use_id: toolUse.id,
+            content:     JSON.stringify(execResult.success ? execResult.result : { error: execResult.error }),
+            is_error:    !execResult.success,
+          });
+        }
+
+        messagesArray.push({ role: 'user', content: toolResults });
+        // Loop continues — Claude reads tool_result and synthesises
+        // a final answer (or requests more tools).
+      }
+
       clearTimeout(timeoutId);
 
+      // Hit the iteration cap without Claude settling. Usually means
+      // Claude is in a tool-call loop (e.g. data so noisy it keeps
+      // re-querying). Audit + 500 — frontend can retry on next message.
+      if (!finalResponse) {
+        console.warn(
+          '[chatHandler] Agent loop exceeded MAX_TOOL_ITERATIONS=' +
+          MAX_TOOL_ITERATIONS + ', tool_executions=' + toolExecutionCount
+        );
+
+        writeAuditEvent(supabase, {
+          req,
+          license_id:    req.license.id,
+          license_key:   req.license.license_key,
+          action:        'chat',
+          status:        'error',
+          error_message: 'tool_loop_exceeded',
+          tokens_used:   totalInputTokens + totalOutputTokens,
+        }).catch(() => {});
+
+        return res.status(500).json({ error: 'tool_loop_exceeded' });
+      }
+
       const elapsed_ms = Date.now() - start;
+      const totalTokens = totalInputTokens + totalOutputTokens;
 
-      // Sum input + output for billing visibility. Optional chaining
-      // in case Anthropic changes the usage shape in a future SDK
-      // version — we degrade to 0 rather than crashing.
-      const tokensUsed =
-        (response.usage?.input_tokens  ?? 0) +
-        (response.usage?.output_tokens ?? 0);
-
-      // Claude can return three block types: `text` (regular reply),
-      // `thinking` (reasoning models — ignored by us), and `tool_use`
-      // (action requests). We split text vs tool_use so the client
-      // gets a clean string reply AND a structured action list.
-      //
-      // Text blocks are joined with newlines: most replies have one
-      // text block, but Anthropic explicitly allows multi-block
-      // responses (e.g. text-then-tool_use-then-text). Defensive
-      // fallback to empty string if no text block at all — sending ""
-      // is better than 500.
-      const contentBlocks  = response.content ?? [];
+      // Build response from the final Anthropic call. Read tools have
+      // already been executed and their results fed back; remaining
+      // tool_use blocks are write/unknown tools awaiting user
+      // confirmation.
+      const contentBlocks  = finalResponse.content ?? [];
       const textBlocks     = contentBlocks.filter((b) => b.type === 'text');
       const toolUseBlocks  = contentBlocks.filter((b) => b.type === 'tool_use');
 
       const replyText = textBlocks.map((b) => b.text).join('\n');
 
-      // Map each tool_use block into a frontend-shaped action. The
-      // `requiresConfirmation` flag is looked up from our own schema
-      // (not Claude's input) — Claude has no concept of "confirm
-      // first", that's our security model. Unknown tool name (Claude
-      // hallucinated a call) defaults to `true` so unauthorized
-      // server-side mutations stay impossible. ToolExecutor (step 3/6)
-      // will reject the call with an explicit error.
       const toolCalls = toolUseBlocks.map((b) => {
         const schemaEntry = TOOLS.find((t) => t.name === b.name);
         return {
@@ -384,20 +483,17 @@ export function createChatHandler(anthropic, supabase) {
         };
       });
 
-      // Dev observability — log tool_use occurrences (count + names
-      // only, no args) so we can trace Claude's tool decisions in
-      // production logs without leaking user data. Skipped on pure
-      // text replies to keep happy-path logs quiet.
-      if (toolCalls.length > 0) {
-        console.log(
-          '[chatHandler] tool_use:',
-          toolCalls.length,
-          'tools:',
-          toolCalls.map((t) => t.name).join(', '),
-          'stop_reason:',
-          response.stop_reason
-        );
-      }
+      // Dev observability — single summary line per request, covers
+      // the whole agent loop. No tool args (PII-safe).
+      console.log(
+        '[chatHandler] Agent loop completed in', iterations, 'iterations,',
+        toolExecutionCount, 'tool executions,',
+        'final stop_reason:', finalResponse.stop_reason,
+        toolCalls.length > 0
+          ? '— returning ' + toolCalls.length + ' toolCalls to client (' +
+            toolCalls.map((t) => t.name).join(', ') + ')'
+          : '',
+      );
 
       // Fire-and-forget — response latency must NOT depend on the
       // audit write (mirrors rateLimit.js FIX #1).
@@ -408,7 +504,7 @@ export function createChatHandler(anthropic, supabase) {
         action:        'chat',
         status:        'success',
         error_message: null,
-        tokens_used:   tokensUsed,
+        tokens_used:   totalTokens,
       }).catch(() => {});
 
       // Fire-and-forget quota increment — user already has their
@@ -420,8 +516,8 @@ export function createChatHandler(anthropic, supabase) {
       try {
         supabase.rpc('increment_ai_daily_usage', {
           p_license_id: req.license.id,
-          p_tokens_in:  response.usage?.input_tokens  ?? 0,
-          p_tokens_out: response.usage?.output_tokens ?? 0,
+          p_tokens_in:  totalInputTokens,
+          p_tokens_out: totalOutputTokens,
         }).then((result) => {
           if (result?.error) {
             console.warn('[chatHandler] quota RPC error:', result.error.message);
@@ -435,7 +531,7 @@ export function createChatHandler(anthropic, supabase) {
 
       return res.json({
         response:    replyText,
-        tokens_used: tokensUsed,
+        tokens_used: totalTokens,
         model:       MODEL,
         elapsed_ms,
         ...(toolCalls.length > 0 ? { toolCalls } : {}),
