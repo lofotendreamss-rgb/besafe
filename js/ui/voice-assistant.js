@@ -1,5 +1,7 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
+import { isReady, classifyError } from "../services/ai/chat.client.js";
+import { openChat, submitMessageWithText } from "./smart-assistant.js";
 
 const LOCALE_MAP = {
   lt: "lt-LT", en: "en-GB", pl: "pl-PL", de: "de-DE", es: "es-ES",
@@ -307,13 +309,73 @@ export function startListening() {
   setButtonState("listening");
   toast(t("voice.status.listening", "Klausau..."), "success");
 
-  recognition.onresult = async (ev) => {
-    const last = ev.results[ev.results.length - 1];
-    const text = last[0].transcript;
+  recognition.onresult = async (event) => {
+    const transcript = event.results[0][0].transcript;
+
+    // Capability check #1 — license. Kokybės principas: jei negalim
+    // kokybiškai pateikti, neapsimetam, kad veikia. Aiški žinutė
+    // vartotojui vietoj tylaus failo.
+    if (!isReady()) {
+      toast(t("voice.licenseRequired", "Reikia aktyvavimo"), "error");
+      setButtonState("idle");
+      isListening = false;
+      return;
+    }
+
+    // Capability check #2 — internetas. /api/chat reikalauja online
+    // (skirtingai nei Phase 1 lokalios komandos, kurios veikia offline).
+    // Patvirtinam balsu IR vizualiai, kad vartotojas tikrai suprato.
+    if (!navigator.onLine) {
+      const msg = t("voice.offlineRequired", "Voice asistentui reikia interneto");
+      toast(msg, "error");
+      speak(msg);
+      setButtonState("idle");
+      isListening = false;
+      return;
+    }
+
+    // Capability check #3 — ne tuščia transkripcija. Niekur silent
+    // failure: jei STT nieko neišgirdo, sakom aiškiai, ne tyliai
+    // pridedam tuščią bubble'ą į istoriją.
+    if (!transcript || !transcript.trim()) {
+      toast(t("voice.noSpeech", "Nesupratau, pabandykite dar kartą"), "error");
+      setButtonState("idle");
+      isListening = false;
+      return;
+    }
+
     setButtonState("processing");
-    await executeCommand(text);
-    setButtonState("idle");
-    isListening = false;
+
+    try {
+      // Atidarom chat panel'ą — vartotojas mato transcript'ą kaip
+      // user bubble'ą prieš atsakymą. openChat() yra idempotent'inis:
+      // jei jau atidaryta, tik focus'ą grąžina.
+      openChat();
+
+      // requestAnimationFrame, kad chat panel'as DOM'e būtų
+      // render'intas prieš pridedant bubble'ą — submitMessageWithText
+      // viduje kviečia addBubble, kuriam reikia messagesEl.
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+
+      // Siunčiam į Claude per shared pipeline (chat.client.js).
+      // Voice + tekstas dalinasi vieną pokalbio istoriją.
+      const response = await submitMessageWithText(transcript);
+
+      // TTS — Claude atsakymas balsu. Phase 1 native speak() naudoja
+      // OS-level engine (Windows SAPI / macOS Speech / Linux speech-
+      // dispatcher), tad veikia ir Electron'e (skirtingai nei STT).
+      // Empty response → submitMessageWithText jau buvo atvaizdavęs
+      // klaidą bubble'iu, čia tiesiog tylim.
+      if (response && typeof response === "string" && response.trim()) {
+        speak(response);
+      }
+    } catch (err) {
+      console.warn("[Voice] Claude pipeline failed:", err);
+      toast(classifyError(err), "error");
+    } finally {
+      setButtonState("idle");
+      isListening = false;
+    }
   };
 
   recognition.onerror = (ev) => {
