@@ -36,7 +36,13 @@
 
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { startListening as voiceStartListening } from "./voice-assistant.js";
-import { buildFinanceContext } from "../services/ai/finance.context.js";
+import {
+  sendChatMessage,
+  classifyError,
+  appendTurn,
+  clearHistory,
+  isReady,
+} from "../services/ai/chat.client.js";
 import { showLicenseModal } from "./license-modal.js";
 
 // ============================================================
@@ -207,100 +213,13 @@ function toast(message, kind = "success") {
 }
 
 // ============================================================
-// localStorage reads — wrapped because private-browsing Safari
-// throws on access, and because a corrupt string shouldn't break
-// the chat surface either.
-// ============================================================
-
-function readLicenseKey() {
-  try { return localStorage.getItem("besafe_license_key") || null; }
-  catch { return null; }
-}
-
-function readDeviceFingerprint() {
-  try { return localStorage.getItem("besafe_device_fp") || null; }
-  catch { return null; }
-}
-
-// ============================================================
-// /api/chat client — returns parsed JSON on 2xx, throws with a
-// stable `.code` + optional `.status`/`.retryAfter` on error so
-// classifyError() can map to user-facing text.
-// ============================================================
-
-async function sendChatMessage(text) {
-  const licenseKey = readLicenseKey();
-  if (!licenseKey) {
-    const err = new Error("no_license");
-    err.code = "no_license";
-    throw err;
-  }
-  const deviceFp = readDeviceFingerprint();
-  const headers = {
-    "Content-Type":  "application/json",
-    "X-License-Key": licenseKey,
-  };
-  if (deviceFp) headers["X-Device-Fingerprint"] = deviceFp;
-  // Mirror the UI language to the server so its finance system
-  // prompt knows which language to default to when the user's
-  // message alone isn't enough to detect it. getLang() has its own
-  // try/catch + "en" fallback — always returns a 2-char code.
-  const lang = getLang();
-  if (lang) headers["X-Language"] = lang;
-
-  // Gather the user's finance snapshot locally BEFORE sending. This
-  // is wrapped in try/catch as belt-and-braces — buildFinanceContext
-  // already has its own internal guard, but a hostile localStorage
-  // env (e.g. Safari private browsing) shouldn't block sending a
-  // message. Falls back to null, which the server tolerates (silently
-  // ignores when not an object or above the 50 KB cap).
-  let financeContext = null;
-  try {
-    financeContext = buildFinanceContext();
-  } catch (err) {
-    console.warn("[SmartAssistant] finance context build failed:", err);
-    financeContext = null;
-  }
-
-  // Build history = all tracked turns EXCEPT the current one. The last
-  // entry in conversationHistory is the user message we're about to
-  // send — already transmitted via the `message` field, so including it
-  // in `history` would duplicate it in Claude's view.
-  const history = conversationHistory.slice(0, -1);
-
-  let resp;
-  try {
-    resp = await fetch("/api/chat", {
-      method:  "POST",
-      headers,
-      body:    JSON.stringify({
-        message: text,
-        ...(history.length > 0 ? { history } : {}),
-        ...(financeContext ? { financeContext } : {}),
-      }),
-    });
-  } catch (netErr) {
-    const err = new Error("network");
-    err.code = "network";
-    throw err;
-  }
-
-  if (!resp.ok) {
-    // Try to parse error body — don't let parse failure change error class.
-    let body = {};
-    try { body = await resp.json(); } catch {}
-    const err = new Error(body?.error || ("http_" + resp.status));
-    err.status     = resp.status;
-    err.code       = body?.error || ("http_" + resp.status);
-    err.retryAfter = resp.headers.get("Retry-After") || null;
-    throw err;
-  }
-
-  return await resp.json();
-}
-
-// ============================================================
 // Chat panel — DOM, state, handlers
+//
+// API client (sendChatMessage, classifyError, conversation history,
+// license/fingerprint reads) lives in js/services/ai/chat.client.js
+// and is consumed via the imports at the top of this file. This
+// keeps the UI sluoksnis purely presentational and lets voice-
+// assistant share the same client without a cyclic dependency.
 // ============================================================
 
 let chatPanel = null;
@@ -308,12 +227,6 @@ let messagesEl = null;
 let inputEl = null;
 let sendBtn = null;
 let isSending = false;
-
-// Sliding window of recent chat turns sent to the server as context.
-// User + assistant messages only — errors are UI-only and never sent.
-// Capped at MAX_HISTORY_TURNS*2 entries (user+assistant pairs).
-const MAX_HISTORY_TURNS = 3;  // = 6 messages total (3 user + 3 assistant)
-let conversationHistory = [];
 
 function buildChatPanel() {
   const wrap = document.createElement("div");
@@ -382,14 +295,9 @@ function addBubble(role, text) {
 
   // Track user + assistant turns for context memory. Errors are UI-only
   // and never sent to Claude — replaying them would just confuse the model.
-  if (role === "user" || role === "assistant") {
-    conversationHistory.push({ role, content: String(text || "") });
-    // Keep only the last N turns (user+assistant pairs).
-    const maxEntries = MAX_HISTORY_TURNS * 2;
-    if (conversationHistory.length > maxEntries) {
-      conversationHistory = conversationHistory.slice(-maxEntries);
-    }
-  }
+  // appendTurn handles role validation, empty-content rejection, and the
+  // sliding window cap (see js/services/ai/chat.client.js).
+  appendTurn(role, String(text || ""));
 
   return bubble;
 }
@@ -471,81 +379,14 @@ async function submitMessage() {
   }
 }
 
-function classifyError(err) {
-  const code = err?.code || err?.status;
-
-  if (code === "no_license" || err?.status === 401) {
-    return t("assistant.error.unauthorized", "Reikia galiojančios licencijos.");
-  }
-
-  // Trial users hit this when they try to use AI. They have a valid
-  // license, but AI is a paid-plan-only feature. Show upgrade CTA
-  // instead of the generic "try later" which would be misleading.
-  if (code === "trial_no_ai" || err?.status === 402) {
-    return t(
-      "assistant.error.trialNoAi",
-      "AI asistentas — tik mokamiems planams. Atnaujinti planą jūsų paskyroje."
-    );
-  }
-
-  // Subscription ended (cancelled / expired / payment_failed). User has
-  // a real license — it's just inactive. Show a specific "renew" message
-  // rather than the generic "unauthorized" that would be technically true
-  // but misleading ("I paid before, why is it unauthorized now?").
-  if (code === "subscription_ended") {
-    return t(
-      "assistant.error.subscriptionEnded",
-      "Prenumerata atšaukta. Atnaujink planą kad galėtum vėl naudotis AI."
-    );
-  }
-
-  // Daily quota exhausted — distinct from burst rate limit. User needs
-  // to wait until midnight UTC or upgrade their plan. Retry-After
-  // contains seconds until reset, but we express it as "rytoj" for UX.
-  if (code === "daily_limit_reached") {
-    return t(
-      "assistant.error.dailyLimitReached",
-      "Pasiekėte dienos žinučių limitą. Bandykite rytoj arba atnaujinkite planą."
-    );
-  }
-
-  // Burst rate limit — 20 req/min guard. User just needs to slow down.
-  if (err?.status === 429) {
-    const retry = err.retryAfter ? " (" + err.retryAfter + "s)" : "";
-    return t("assistant.error.rateLimited", "Per daug užklausų. Bandykite vėliau") + retry + ".";
-  }
-
-  if (code === "message_required" || code === "message_empty") {
-    return t("assistant.error.messageRequired", "Įveskite žinutę.");
-  }
-  if (code === "message_too_long") {
-    return t("assistant.error.messageTooLong", "Žinutė per ilga (max 2000 simb.).");
-  }
-  if (err?.status === 504 || code === "timeout") {
-    return t("assistant.error.timeout", "Asistentas neatsakė laiku. Bandykite dar kartą.");
-  }
-  if (code === "network") {
-    return t("assistant.error.network", "Nėra interneto ryšio.");
-  }
-
-  // Anthropic upstream errors (502/503) — distinct from a misconfigured
-  // server. Tell the user it's temporary and they should retry soon.
-  if (code === "upstream_error" || code === "service_unavailable" ||
-      err?.status === 502 || err?.status === 503) {
-    return t(
-      "assistant.error.serviceBusy",
-      "Asistentas laikinai užimtas. Bandykite po minutės."
-    );
-  }
-
-  return t("assistant.error.generic", "Asistentas šiuo metu nepasiekiamas. Bandykite vėliau.");
-}
-
 function openChat() {
-  // No license saved — show activation modal. After successful activation,
-  // reopen the chat panel automatically (onSuccess callback re-enters
-  // openChat which will now find the key in localStorage and proceed).
-  if (!readLicenseKey()) {
+  // Capability gate — chat surface is hidden behind isReady() so we
+  // never pretend the feature works when it doesn't. Today isReady()
+  // checks license presence; tomorrow it can grow (network, trial
+  // usage, etc.) without touching this call site. After successful
+  // activation, the onSuccess callback re-enters openChat which will
+  // now pass isReady() and proceed.
+  if (!isReady()) {
     showLicenseModal(() => {
       openChat();
     });
@@ -579,7 +420,7 @@ function closeChat() {
 // animation + input focus state don't flicker.
 function clearChat() {
   if (messagesEl) messagesEl.innerHTML = "";
-  conversationHistory = [];
+  clearHistory();
 }
 
 // ============================================================
