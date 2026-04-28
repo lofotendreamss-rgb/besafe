@@ -20,9 +20,16 @@ initial implementation.
 **Follow-up (2026-04-28):**
 - Restored `MAX_DEVICES` from temp value 10 back to **3** as the new product
   decision (phone + laptop + work computer for Personal plan).
-- Existing licenses with `devices_max=10` (set by the 2026-04-23 workaround
-  script) need a one-off SQL rollback to `devices_max=3`. Query drafted but
-  not yet executed — see ops notes / migration plan.
+- ✅ EXECUTED 2026-04-28: Variant A SQL rollback applied against Supabase.
+  - Dry-run (BEGIN/ROLLBACK): `UPDATE 15`, `personal_still_at_10 = 0`.
+  - Live (BEGIN/COMMIT):     `UPDATE 15`, `personal_still_at_10 = 0`.
+  - Post-commit verification: `personal_at_10 = 0`, `personal_at_3 = 15`,
+    `personal_total = 16` (the 15 rolled-back rows plus 1 that was
+    already at devices_max=3 before the workaround).
+  - 0 grandfathered licenses (no Personal license had >3 real devices
+    registered, so Variant A's safety filter did not exclude anyone).
+  - Migration is now fully consistent with commit 850764b
+    (server-side `MAX_DEVICES = 3`).
 
 ---
 
