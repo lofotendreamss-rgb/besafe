@@ -175,8 +175,17 @@ Formatting:
 // based on the user's message. The decision flow remains 100% in
 // Anthropic's hands — server/handler are dumb routers.
 // ============================================================
-import { tools as TOOLS } from './ai/tools.js';
-import { executeTool }    from './ai/toolExecutor.js';
+import { tools as TOOLS, getToolsForAnthropic } from './ai/tools.js';
+import { executeTool }                          from './ai/toolExecutor.js';
+
+// Computed once at module load — strips backend-only fields
+// (requiresConfirmation) before the schema reaches Anthropic.
+// Without this, every /api/chat request fails with 400
+// invalid_request_error: tools.N: additional properties not allowed
+// ('requiresConfirmation' was unexpected). Internal lookups
+// (getToolByName, agent loop's write/unknown break logic) keep using
+// the raw TOOLS array — only the cross-API boundary needs the strip.
+const ANTHROPIC_TOOLS = getToolsForAnthropic();
 
 // Cap on agent loop iterations. Each iteration = one Anthropic
 // round-trip plus N tool executions. 5 iterations covers realistic
@@ -373,7 +382,7 @@ export function createChatHandler(anthropic, supabase) {
             max_tokens: MAX_OUTPUT_TOKENS,
             system:     systemPrompt,
             messages:   messagesArray,
-            tools:      TOOLS,
+            tools:      ANTHROPIC_TOOLS,
           },
           { signal: controller.signal },
         );

@@ -317,4 +317,28 @@ export function getReadTools() {
   return tools.filter((t) => t.requiresConfirmation === false);
 }
 
+/**
+ * Returns tools array with backend-only fields stripped, ready for
+ * the Anthropic API.
+ *
+ * Anthropic API validation rejects tool schemas with extra properties:
+ *   "400 invalid_request_error: tools.0: additional properties not
+ *    allowed ('requiresConfirmation' was unexpected)"
+ *
+ * Our schema embeds `requiresConfirmation` for backend routing
+ * (write tools break the agent loop and surface to client for
+ * confirmation; read tools execute server-side via ToolExecutor).
+ * Anthropic only wants { name, description, input_schema } — anything
+ * else is rejected.
+ *
+ * Use this helper EVERYWHERE tools are passed over the API boundary.
+ * For internal lookup (ToolExecutor schema validation, requiresConfirmation
+ * flag check), keep using the raw `tools` array via getToolByName().
+ *
+ * @returns {Array<{name: string, description: string, input_schema: object}>}
+ */
+export function getToolsForAnthropic() {
+  return tools.map(({ requiresConfirmation, ...anthropicFields }) => anthropicFields);
+}
+
 export const TOOL_COUNT = tools.length;
