@@ -66,11 +66,8 @@ const PLANS = {
   },
 };
 
-// TEMP workaround for /api/verify-license device-counter bug (see BACKLOG.md
-// "Device tracking bug in /api/verify-license"). Bumped from 2 to 10 so early
-// Personal users don't get locked out after 2 activations. Restore to 2 after
-// the proper fingerprint-deduped devices-table flow ships.
-const MAX_DEVICES = 10;
+// Personal plan device limit: phone + laptop + work computer.
+const MAX_DEVICES = 3;
 const TRIAL_DAYS = 14;
 
 // ============================================================

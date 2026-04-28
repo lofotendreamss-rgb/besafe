@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS licenses (
   stripe_customer_id TEXT,
   stripe_subscription_id TEXT,
   devices JSONB DEFAULT '[]'::jsonb,
-  max_devices INTEGER DEFAULT 2,
+  max_devices INTEGER DEFAULT 3,
   trial_ends_at TIMESTAMPTZ,
   cancelled_at TIMESTAMPTZ,
   last_verified_at TIMESTAMPTZ,
