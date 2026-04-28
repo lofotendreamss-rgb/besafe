@@ -343,22 +343,48 @@ function scrollToBottom() {
   });
 }
 
+// Private wrapper called from the text input flow (Send button click,
+// Enter keydown). Reads the textarea, clears it, and delegates to the
+// exported submitMessageWithText so voice and text share one pipeline.
 async function submitMessage() {
-  if (isSending) return;
   const text = (inputEl?.value || "").trim();
   if (!text) return;
-
   inputEl.value = "";
-  isSending = true;
-  sendBtn.disabled = true;
+  return await submitMessageWithText(text);
+}
 
-  addBubble("user", text);
+// Exported entry point — accepts a text string directly (no DOM read)
+// and returns the assistant response so the caller can optionally feed
+// it to TTS. Voice channel calls this with the recognition transcript.
+//
+// Returns:
+//   • assistant response string on success
+//   • null if guarded out (already sending / empty) OR on error path
+//     (the error has already been surfaced via the error bubble +
+//     optional upgrade CTA — caller doesn't need to display it again).
+//
+// Defensive null checks on sendBtn/inputEl: text-input flow always
+// has them (chat panel is open before user can type), but voice
+// channel can race with chat panel mounting. openChat() guarantees
+// the panel exists before this is invoked, but a single rAF tick is
+// allowed for measure/layout — see voice-assistant.js onresult flow.
+export async function submitMessageWithText(text) {
+  if (isSending) return null;
+  const trimmed = (text || "").trim();
+  if (!trimmed) return null;
+
+  isSending = true;
+  if (sendBtn) sendBtn.disabled = true;
+
+  addBubble("user", trimmed);
   const typing = addTypingIndicator();
 
+  let assistantResponse = null;
   try {
-    const resp = await sendChatMessage(text);
+    const resp = await sendChatMessage(trimmed);
     typing?.remove();
-    addBubble("assistant", resp?.response || "");
+    assistantResponse = resp?.response || "";
+    addBubble("assistant", assistantResponse);
   } catch (err) {
     typing?.remove();
     addBubble("error", classifyError(err));
@@ -374,12 +400,18 @@ async function submitMessage() {
     }
   } finally {
     isSending = false;
-    sendBtn.disabled = false;
-    inputEl.focus();
+    if (sendBtn) sendBtn.disabled = false;
+    inputEl?.focus();
   }
+
+  return assistantResponse;
 }
 
-function openChat() {
+// Exported — voice channel needs to open the chat panel before
+// submitting a transcript so the user gets a visual confirmation
+// of what was heard. Idempotent: if the panel is already mounted
+// and open, just refocuses the input.
+export function openChat() {
   // Capability gate — chat surface is hidden behind isReady() so we
   // never pretend the feature works when it doesn't. Today isReady()
   // checks license presence; tomorrow it can grow (network, trial
