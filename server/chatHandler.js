@@ -188,24 +188,11 @@ import { executeTool }                          from './ai/toolExecutor.js';
 const ANTHROPIC_TOOLS = getToolsForAnthropic();
 
 // Cap on agent loop iterations. Each iteration = one Anthropic
-// round-trip plus N tool executions.
-//
-// Phase 3 step 3/6 introduced this cap when read tools were added
-// (queryTransactions / getBalance / getCategorySpending) — multi-
-// iteration flows like "show last month's spending broken down by
-// category" could need queryTransactions + getCategorySpending in
-// sequence, and the cap protected against runaway Claude burning
-// budget or holding the response slot for minutes.
-//
-// Phase 3 step 4/5 (2026-04-29) removed all read tools — local-first
-// architecture, finance data lives in browser localStorage, see
-// memory: local_first_finance_data. With only write/unknown tools
-// remaining in the schema, every tool_use triggers the "breaking
-// tools" branch in the agent loop and termination happens in
-// iteration 1. MAX_TOOL_ITERATIONS is currently dead defensive
-// safety — no code path can reach it. The cap stays so the agent
-// loop's structure remains correct if read tools are added back
-// (e.g. via a future client-side bridge or new server-side store).
+// round-trip plus N tool executions. 5 iterations covers realistic
+// multi-tool flows (e.g. "show last month's spending broken down by
+// category" might need queryTransactions + getCategorySpending)
+// without letting a runaway Claude burn budget or hold the response
+// slot for minutes. Phase 3 step 3/6.
 const MAX_TOOL_ITERATIONS = 5;
 
 // Extracts the full language name from the X-Language header.

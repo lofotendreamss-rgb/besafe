@@ -578,32 +578,76 @@ describe('chatHandler — success path', () => {
 });
 
 // ============================================================
-// GROUP 3.5: Agent loop (Phase 3 step 3/6, narrowed in step 4/5)
+// GROUP 3.5: Agent loop (Phase 3 step 3/6)
 //
-// Step 3/6 introduced the agent loop with three READ tools that
-// would iterate (tool_use → server execute → tool_result → Claude
-// synthesises). Step 4/5 (2026-04-29) removed those read tools —
-// BeSafe is local-first and Supabase has no transactions table
-// (memory: local_first_finance_data). With only write/unknown tools
-// remaining in the schema, every tool_use triggers the "breaking
-// tools" branch and the loop terminates in iteration 1.
-//
-// Consequences for this test group:
-// - T_AGENT1 (read flow → executeTool called) — REMOVED, no read
-//   tools to flow.
-// - T_AGENT2 (write tool break, executeTool NOT called) — kept;
-//   this is now the canonical agent loop assertion.
-// - T_AGENT3 (max iterations safety) — REMOVED. With no read tools,
-//   MAX_TOOL_ITERATIONS becomes a defensive cap that no test path
-//   can reach (write/unknown tools always break iter 1). The cap
-//   stays in code as future-proofing for when read tools return.
-//
-// If/when read tools come back (with a real data source — server-
-// side store, IndexedDB bridge, or similar), bring T_AGENT1 and
-// T_AGENT3 back too.
+// Loop drives Claude through multiple iterations when read tools
+// are involved: tool_use → server executes → tool_result → Claude
+// synthesises final answer. Write tools and unknown tools break
+// the loop and surface to the client.
 // ============================================================
 
 describe('chatHandler — agent loop', () => {
+  it('T_AGENT1: read tool → loop iterates, executeTool called, final text returned', async () => {
+    // Iteration 1: Claude requests getBalance (read tool, no confirmation).
+    // Iteration 2: server feeds tool_result back; Claude synthesises text.
+    const createSpy = vi.fn()
+      .mockResolvedValueOnce({
+        content: [
+          {
+            type:  'tool_use',
+            id:    'toolu_balance',
+            name:  'getBalance',
+            input: { period: 'current_month' },
+          },
+        ],
+        stop_reason: 'tool_use',
+        usage:       { input_tokens: 50, output_tokens: 10 },
+      })
+      .mockResolvedValueOnce({
+        content: [
+          { type: 'text', text: 'Šio mėnesio balansas: 250 €.' },
+        ],
+        stop_reason: 'end_turn',
+        usage:       { input_tokens: 80, output_tokens: 25 },
+      });
+
+    vi.mocked(executeTool).mockResolvedValueOnce({
+      success: true,
+      result:  {
+        period:        'current_month',
+        balance:       250,
+        total_income:  1000,
+        total_expenses: 750,
+      },
+    });
+
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const handler   = createChatHandler(anthropic, createSupabaseStub());
+    const res       = mockRes();
+
+    await handler(mockReq({ body: { message: 'koks mano balansas?' } }), res);
+
+    // Two Anthropic round-trips: tool request + final synthesis.
+    expect(createSpy).toHaveBeenCalledTimes(2);
+
+    // executeTool invoked exactly once with the schema-derived shape.
+    expect(vi.mocked(executeTool)).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(executeTool).mock.calls[0][0]).toMatchObject({
+      toolName:  'getBalance',
+      toolInput: { period: 'current_month' },
+      license:   expect.objectContaining({ id: VALID_LICENSE.id }),
+    });
+
+    // Final response is the text from iteration 2; no toolCalls
+    // surfaced to client (read tools were resolved server-side).
+    const body = res.json.mock.calls[0][0];
+    expect(body.response).toBe('Šio mėnesio balansas: 250 €.');
+    expect(body).not.toHaveProperty('toolCalls');
+
+    // Tokens accumulated across both iterations: (50+10) + (80+25) = 165.
+    expect(body.tokens_used).toBe(165);
+  });
+
   it('T_AGENT2: write tool → loop breaks at iter 1, executeTool NOT called, toolCalls returned', async () => {
     // addTransaction is requiresConfirmation:true → loop must break
     // before executing. Frontend will surface confirmation UI.
@@ -642,6 +686,53 @@ describe('chatHandler — agent loop', () => {
       name:                 'addTransaction',
       requiresConfirmation: true,
     });
+  });
+
+  it('T_AGENT3: max iterations safety → 500 tool_loop_exceeded + audit error', async () => {
+    // Pathological case: Claude perpetually requests another read
+    // tool. Loop must terminate after MAX_TOOL_ITERATIONS=5 with a
+    // 500 + audit row, not hang the request slot.
+    const createSpy = vi.fn().mockResolvedValue({
+      content: [
+        {
+          type:  'tool_use',
+          id:    'toolu_loop',
+          name:  'getBalance',
+          input: {},
+        },
+      ],
+      stop_reason: 'tool_use',
+      usage:       { input_tokens: 20, output_tokens: 5 },
+    });
+
+    const anthropic = createAnthropicStub({ create: createSpy });
+    const supabase  = createSupabaseStub();
+    const handler   = createChatHandler(anthropic, supabase);
+    const res       = mockRes();
+
+    await handler(mockReq(), res);
+
+    // Exactly 5 Anthropic calls (the cap).
+    expect(createSpy).toHaveBeenCalledTimes(5);
+
+    // executeTool ran 5 times too — once per iteration.
+    expect(vi.mocked(executeTool)).toHaveBeenCalledTimes(5);
+
+    // 500 with stable error code — no Anthropic details leaked.
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json.mock.calls[0][0]).toEqual({ error: 'tool_loop_exceeded' });
+
+    // Audit row written with status:error and the same code so quota
+    // tracking + abuse pattern detection see the loop blowout.
+    await flushPromises();
+    const auditCall = supabase._builders.auditBuilder.insert.mock.calls[0][0];
+    expect(auditCall).toMatchObject({
+      action:        'chat',
+      status:        'error',
+      error_message: 'tool_loop_exceeded',
+    });
+    // Tokens summed across all 5 iterations: 5 × (20+5) = 125.
+    expect(auditCall.tokens_used).toBe(125);
   });
 });
 
