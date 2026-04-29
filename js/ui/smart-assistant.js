@@ -57,9 +57,27 @@ function getLang() {
   catch { return "en"; }
 }
 
-function t(key, fallback) {
-  try { return createTranslator(getLang())(key, fallback); }
-  catch { return fallback; }
+// i18n's createTranslator returns a `(key, params)` function. The
+// previous 2-arg wrapper here passed `fallback` into the params slot
+// — fine for keys without {token} placeholders (the legacy use case),
+// but broke parameter interpolation as soon as Phase 3 step 4/5
+// added confirmation strings like "Pridėti {amount} € — {category}?".
+// Pass params correctly; only fall through to `fallback` when the
+// dictionary missed and i18n returned the literal key. Re-interpolate
+// params onto the fallback in that path so a missing key still
+// produces a usable message.
+function t(key, fallback, params = {}) {
+  try {
+    const result = createTranslator(getLang())(key, params);
+    if (result === key) {
+      return String(fallback).replace(/\{(\w+)\}/g, (_, token) =>
+        Object.prototype.hasOwnProperty.call(params, token)
+          ? String(params[token])
+          : `{${token}}`
+      );
+    }
+    return result;
+  } catch { return fallback; }
 }
 
 // ============================================================
@@ -504,7 +522,12 @@ export async function submitMessageWithText(text) {
     const resp = await sendChatMessage(trimmed);
     typing?.remove();
     assistantResponse = resp?.response || "";
-    addBubble("assistant", assistantResponse);
+    // Skip rendering an empty assistant bubble — happens when Claude
+    // returns tool_use only (no preface text). The user sees the
+    // confirmation dialog instead; the empty grey oval is just noise.
+    if (assistantResponse.trim()) {
+      addBubble("assistant", assistantResponse);
+    }
 
     // Surface tool-call confirmations to the user. Backend's agent
     // loop only forwards write-or-unknown tools here; read tools (if

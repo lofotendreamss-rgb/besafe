@@ -53,9 +53,26 @@ function getLang() {
   catch { return "en"; }
 }
 
-function t(key, fallback, params) {
-  try { return createTranslator(getLang())(key, fallback, params); }
-  catch { return fallback; }
+// i18n's createTranslator returns a `(key, params)` function — the
+// wrapper here used to pass `fallback` into the params slot, which
+// silently broke {token} interpolation (params became a string and
+// hasOwnProperty for tokens always returned false). Pass params
+// correctly; only fall through to `fallback` when the lookup
+// returned the literal key string (i.e. the dictionary missed
+// entirely). Apply the same {token} interpolation onto the fallback
+// in that path so a missing key still produces a usable message.
+function t(key, fallback, params = {}) {
+  try {
+    const result = createTranslator(getLang())(key, params);
+    if (result === key) {
+      return String(fallback).replace(/\{(\w+)\}/g, (_, token) =>
+        Object.prototype.hasOwnProperty.call(params, token)
+          ? String(params[token])
+          : `{${token}}`
+      );
+    }
+    return result;
+  } catch { return fallback; }
 }
 
 function escapeHtml(s) {
