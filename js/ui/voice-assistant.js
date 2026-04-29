@@ -157,9 +157,13 @@ async function handleAddExpense(text) {
     toast(msg, "success");
     console.log("[Voice DEADCODE] would have spoken:", msg);
 
-    // Refresh home if available
+    // Refresh home if available — uses the same `transaction:created`
+    // channel the QuickActions form + smart-assistant use, so HomePage
+    // and TransactionsPage refresh consistently. (This block is Phase
+    // 1 dead code today; kept consistent so it stays correct if it
+    // ever resurfaces before step 6/6 cleanup deletes it entirely.)
     try {
-      window.dispatchEvent(new CustomEvent("besafe:transaction-created", { detail: payload }));
+      document.dispatchEvent(new CustomEvent("transaction:created", { detail: payload }));
     } catch {}
   } catch (err) {
     console.warn("[Voice] Add expense failed:", err);
