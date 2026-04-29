@@ -134,7 +134,7 @@ function ensureStyles() {
   style.id = "action-confirmation-styles";
   style.textContent = `
     .action-confirm{
-      position:fixed; inset:0; z-index:10003;
+      position:fixed; inset:0; z-index:99999;
       display:none;
       background:rgba(8,13,11,0.75); backdrop-filter:blur(8px);
       align-items:flex-end; justify-content:center;
