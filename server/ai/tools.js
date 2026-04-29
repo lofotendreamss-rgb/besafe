@@ -141,140 +141,17 @@ export const tools = [
     requiresConfirmation: true,
   },
 
-  // ============================================================
-  // 2) queryTransactions — SKAITYMO veiksmas (auto-execute, no confirm)
-  // ============================================================
-  {
-    name: "queryTransactions",
-    description:
-      "Search and list user's transactions filtered by date range, category, type, " +
-      "or amount range. Use when the user asks 'kiek išleidau', 'parodyk paskutines " +
-      "transakcijas', 'kokios buvo pajamos pernai', etc. Returns matching transactions " +
-      "with amounts and dates.",
-    input_schema: {
-      type: "object",
-      properties: {
-        from_date: {
-          type: "string",
-          format: "date",
-          description:
-            "Start date (YYYY-MM-DD). If user says 'šiandien', use today. " +
-            "'Šią savaitę' = current week's Monday. 'Šį mėnesį' = current month's 1st. " +
-            "Optional — if omitted, no lower bound.",
-        },
-        to_date: {
-          type: "string",
-          format: "date",
-          description:
-            "End date (YYYY-MM-DD). Optional — if omitted, today's date is used.",
-        },
-        category: {
-          type: "string",
-          description: "Filter by category name. Optional. Case-insensitive matching.",
-        },
-        type: {
-          type: "string",
-          enum: ["income", "expense", "both"],
-          description: "Transaction type filter. 'both' means no filter. Default 'both'.",
-        },
-        limit: {
-          type: "integer",
-          minimum: 1,
-          maximum: 100,
-          description: "Max number of results. Default 20.",
-        },
-      },
-      required: [],
-    },
-    requiresConfirmation: false,
-  },
-
-  // ============================================================
-  // 3) getBalance — SKAITYMO veiksmas (auto-execute, no confirm)
-  // ============================================================
-  {
-    name: "getBalance",
-    description:
-      "Get current account balance: total income minus total expenses, optionally " +
-      "filtered by date range. Use when user asks 'kiek turiu pinigų', 'koks mano " +
-      "balansas', 'kokia mano finansinė padėtis'.",
-    input_schema: {
-      type: "object",
-      properties: {
-        period: {
-          type: "string",
-          enum: ["all_time", "current_month", "current_week", "current_year", "custom"],
-          description:
-            "Time period for balance calculation. 'all_time' = everything from start. " +
-            "'current_month' = since 1st of this month. Default 'all_time'.",
-        },
-        from_date: {
-          type: "string",
-          format: "date",
-          description: "Custom start date (only if period='custom').",
-        },
-        to_date: {
-          type: "string",
-          format: "date",
-          description: "Custom end date (only if period='custom').",
-        },
-      },
-      required: [],
-    },
-    requiresConfirmation: false,
-  },
-
-  // ============================================================
-  // 4) getCategorySpending — SKAITYMO veiksmas (auto-execute, no confirm)
-  // ============================================================
-  {
-    name: "getCategorySpending",
-    description:
-      "Get spending breakdown by category for a given period. Use when user asks " +
-      "'kur išleidau daugiausiai', 'kiek išleidau maistui', 'pagal kategorijas šio " +
-      "mėnesio išlaidos'.",
-    input_schema: {
-      type: "object",
-      properties: {
-        period: {
-          type: "string",
-          enum: [
-            "current_month",
-            "current_week",
-            "current_year",
-            "last_30_days",
-            "last_90_days",
-            "custom",
-          ],
-          description: "Time period. Default 'current_month'.",
-        },
-        from_date: {
-          type: "string",
-          format: "date",
-          description: "Custom start date (only if period='custom').",
-        },
-        to_date: {
-          type: "string",
-          format: "date",
-          description: "Custom end date (only if period='custom').",
-        },
-        category: {
-          type: "string",
-          description:
-            "If specified, return spending for this category only. Otherwise return " +
-            "all categories.",
-        },
-        sort_by: {
-          type: "string",
-          enum: ["amount_desc", "amount_asc", "name_asc"],
-          description:
-            "Sort order. Default 'amount_desc' (highest spending first).",
-        },
-      },
-      required: [],
-    },
-    requiresConfirmation: false,
-  },
+  // Phase 3 step 4/5 (2026-04-29): three READ tools removed —
+  // queryTransactions, getBalance, getCategorySpending. They tried
+  // to query Supabase.transactions which doesn't exist (BeSafe is
+  // local-first; finance data lives in browser localStorage and is
+  // delivered to Claude via the <user_finance_context> system prompt
+  // block). Read tools were dead code with an apgaulingas API
+  // surface — Claude was being offered tools that couldn't work.
+  // Removing them aligns with the developer's "kuo mažiau
+  // nesusipratimo" principle. See memory: local_first_finance_data.
+  // Future write tools (deleteTransaction, addCategory, addPlace,
+  // ...) will be added here in Phase 3 step 1b/6.
 ];
 
 // ============================================================

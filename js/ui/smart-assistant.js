@@ -44,6 +44,8 @@ import {
   isReady,
 } from "../services/ai/chat.client.js";
 import { showLicenseModal } from "./license-modal.js";
+import { showActionConfirmation } from "./action-confirmation.js";
+import { createTransaction as localDbCreateTransaction } from "../services/data/local.db.js";
 
 // ============================================================
 // i18n — mirror the voice-assistant helpers so translator keys
@@ -55,9 +57,27 @@ function getLang() {
   catch { return "en"; }
 }
 
-function t(key, fallback) {
-  try { return createTranslator(getLang())(key, fallback); }
-  catch { return fallback; }
+// i18n's createTranslator returns a `(key, params)` function. The
+// previous 2-arg wrapper here passed `fallback` into the params slot
+// — fine for keys without {token} placeholders (the legacy use case),
+// but broke parameter interpolation as soon as Phase 3 step 4/5
+// added confirmation strings like "Pridėti {amount} € — {category}?".
+// Pass params correctly; only fall through to `fallback` when the
+// dictionary missed and i18n returned the literal key. Re-interpolate
+// params onto the fallback in that path so a missing key still
+// produces a usable message.
+function t(key, fallback, params = {}) {
+  try {
+    const result = createTranslator(getLang())(key, params);
+    if (result === key) {
+      return String(fallback).replace(/\{(\w+)\}/g, (_, token) =>
+        Object.prototype.hasOwnProperty.call(params, token)
+          ? String(params[token])
+          : `{${token}}`
+      );
+    }
+    return result;
+  } catch { return fallback; }
 }
 
 // ============================================================
@@ -343,6 +363,124 @@ function scrollToBottom() {
   });
 }
 
+// ============================================================
+// Tool-call confirmation flow (Phase 3 step 4/5)
+//
+// Backend's chatHandler agent loop returns response.toolCalls only
+// for write-or-unknown tools (read tools were removed in step 4/5;
+// see memory: local_first_finance_data). Each toolCall represents
+// an action Claude wants to perform on the user's behalf — we ask
+// the user before doing anything.
+//
+// Mutations happen ENTIRELY client-side in localStorage via
+// js/services/data/local.db.js. The server never writes finance data.
+// ============================================================
+
+// Maps a toolCall.input shape to the local.db.createTransaction
+// payload shape and writes the row. The schema field
+// `description` (Anthropic-friendly name) maps to the local.db
+// field `note` (legacy frontend name from voice-assistant.js Phase 1).
+//
+// Throws on localStorage write failure — caller wraps in try/catch
+// to surface an error bubble.
+function commitAddTransaction(input) {
+  const today = new Date().toISOString().slice(0, 10);
+  const payload = {
+    type:     input.type,                          // "income" | "expense"
+    amount:   Number(input.amount),
+    category: String(input.category || ""),
+    note:     typeof input.description === "string" ? input.description : "",
+    date:     typeof input.date === "string" && input.date ? input.date : today,
+  };
+  return localDbCreateTransaction(payload);
+}
+
+// Format amount with comma decimal separator (LT/EU convention) for
+// the success bubble. Mirrors the formatter in action-confirmation.js
+// — kept inline rather than imported since it's a 3-liner and we'd
+// rather not couple smart-assistant to action-confirmation internals.
+function formatAmountLocal(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return "0,00";
+  return num.toFixed(2).replace(".", ",");
+}
+
+async function handleConfirmedAction(toolCall) {
+  try {
+    if (toolCall?.name === "addTransaction") {
+      const created = commitAddTransaction(toolCall.input || {});
+
+      const successText = t(
+        "assistant.confirm.success",
+        "✅ Pridėta {amount} € — {category}",
+        {
+          amount:   formatAmountLocal(toolCall.input?.amount),
+          category: String(toolCall.input?.category || ""),
+        }
+      );
+      addBubble("assistant", successText);
+
+      // Notify other UI surfaces (HomePage transactions list,
+      // dashboards) that a new transaction landed. Mirrors the
+      // event voice-assistant.js Phase 1 used to dispatch.
+      try {
+        window.dispatchEvent(new CustomEvent("besafe:transaction-created", {
+          detail: created,
+        }));
+      } catch {}
+      return;
+    }
+
+    // Unknown tool name reached the confirmation UI — defensive,
+    // shouldn't happen because chatHandler's agent loop already
+    // surfaced unknown tools with requiresConfirmation:true and the
+    // user explicitly chose to confirm. Show a localized error
+    // bubble rather than silently doing nothing.
+    addBubble("error", t(
+      "assistant.confirm.unknownTool",
+      "Veiksmas nepalaikomas: {name}",
+      { name: String(toolCall?.name || "") }
+    ));
+  } catch (err) {
+    console.warn("[SmartAssistant] confirmed action failed:", err);
+    addBubble("error", t(
+      "assistant.confirm.error",
+      "Nepavyko išsaugoti. Pabandykite per formą."
+    ));
+  }
+}
+
+function handleCancelledAction(_toolCall) {
+  addBubble("assistant", t(
+    "assistant.confirm.cancelled",
+    "Atšaukta — nieko nepakeičiau."
+  ));
+}
+
+// Sequentially walk toolCalls — one dialog at a time. The next
+// confirmation dialog only mounts after the previous resolves
+// (confirm OR cancel). This avoids stacked dialogs and keeps the
+// "one prompt visible" UX. Multiple toolCalls per turn is rare in
+// practice (Claude tends to split into multiple turns), but we
+// handle it correctly to avoid surprises.
+async function processToolCallsSequentially(toolCalls) {
+  for (const toolCall of toolCalls) {
+    await new Promise((resolve) => {
+      showActionConfirmation({
+        toolCall,
+        onConfirm: async (tc) => {
+          await handleConfirmedAction(tc);
+          resolve();
+        },
+        onCancel: (tc) => {
+          handleCancelledAction(tc);
+          resolve();
+        },
+      });
+    });
+  }
+}
+
 // Private wrapper called from the text input flow (Send button click,
 // Enter keydown). Reads the textarea, clears it, and delegates to the
 // exported submitMessageWithText so voice and text share one pipeline.
@@ -384,7 +522,23 @@ export async function submitMessageWithText(text) {
     const resp = await sendChatMessage(trimmed);
     typing?.remove();
     assistantResponse = resp?.response || "";
-    addBubble("assistant", assistantResponse);
+    // Skip rendering an empty assistant bubble — happens when Claude
+    // returns tool_use only (no preface text). The user sees the
+    // confirmation dialog instead; the empty grey oval is just noise.
+    if (assistantResponse.trim()) {
+      addBubble("assistant", assistantResponse);
+    }
+
+    // Surface tool-call confirmations to the user. Backend's agent
+    // loop only forwards write-or-unknown tools here; read tools (if
+    // any are reintroduced later) are resolved server-side and don't
+    // appear in toolCalls. Awaiting keeps sendBtn/inputEl disabled
+    // until the user has finished responding to all dialogs — a
+    // race-free experience even on slow taps.
+    const incomingToolCalls = resp?.toolCalls;
+    if (Array.isArray(incomingToolCalls) && incomingToolCalls.length > 0) {
+      await processToolCallsSequentially(incomingToolCalls);
+    }
   } catch (err) {
     typing?.remove();
     addBubble("error", classifyError(err));
