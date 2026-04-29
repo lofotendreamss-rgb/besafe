@@ -421,10 +421,17 @@ async function handleConfirmedAction(toolCall) {
       addBubble("assistant", successText);
 
       // Notify other UI surfaces (HomePage transactions list,
-      // dashboards) that a new transaction landed. Mirrors the
-      // event voice-assistant.js Phase 1 used to dispatch.
+      // dashboards) that a new transaction landed. Uses the SAME
+      // channel + name the QuickActions form already dispatches:
+      // `transaction:created` on `document`. HomePage and
+      // TransactionsPage already listen there and call their
+      // refreshIfActive() handlers — no per-page wiring needed.
+      // (Phase 3 step 4/5 originally dispatched
+      // `besafe:transaction-created` on `window`, which no page
+      // listened to; the bug was caught while smoke-testing the
+      // assistant write flow.)
       try {
-        window.dispatchEvent(new CustomEvent("besafe:transaction-created", {
+        document.dispatchEvent(new CustomEvent("transaction:created", {
           detail: created,
         }));
       } catch {}
