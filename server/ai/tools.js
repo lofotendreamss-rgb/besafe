@@ -94,8 +94,13 @@ export const tools = [
       "Add a new financial transaction (income or expense) to the user's records. " +
       "Use when the user asks to record a purchase, payment, received income, or any " +
       "monetary movement. Examples in Lithuanian: 'pridėk 25 eurus už pietus', " +
-      "'gavau 1000 eurų algos'. The transaction will not be saved until the user " +
-      "explicitly confirms.",
+      "'gavau 1000 eurų algos'. " +
+      "Confirmation flow: when this tool is called, the BeSafe frontend automatically " +
+      "shows a confirmation dialog with [Atšaukti] / [Patvirtinti] buttons. Calling " +
+      "this tool is the ONLY way to record a transaction — text-based confirmations " +
+      "(e.g. 'sakyk taip jei teisinga') do NOT save anything. If you describe a " +
+      "transaction in text without calling this tool, the user will see your message " +
+      "but no transaction will be created.",
     input_schema: {
       type: "object",
       properties: {
