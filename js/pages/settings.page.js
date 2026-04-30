@@ -112,7 +112,11 @@ export class SettingsPage {
     const lang = getCurrentLanguage();
     const current = getUserCurrency();
 
-    const title    = this.t("app.settings", "Settings");
+    // Page title is rendered by the app shell's outer #page-title h1
+    // via NavigationController.updatePageHeader → getPageTitle("settings")
+    // → t("app.settings"). We deliberately do NOT render an inner h1
+    // here, mirroring HomePage / TransactionsPage / etc. which all rely
+    // on the outer title to avoid two visible h1s on a single page.
     const label    = this.t("settings.currency.label", "Default currency");
     const help     = this.t(
       "settings.currency.help",
@@ -128,10 +132,6 @@ export class SettingsPage {
 
     return `
       <div class="settings-page__container">
-        <header class="settings-page__header">
-          <h1 class="settings-page__title">${this.escapeHtml(title)}</h1>
-        </header>
-
         <section class="settings-page__section" aria-labelledby="settings-currency-label">
           <label
             id="settings-currency-label"
