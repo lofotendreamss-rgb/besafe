@@ -231,6 +231,7 @@ export class NavigationController {
       advisor: "app.advisor",
       reports: "app.reports",
       categories: "app.categories",
+      settings: "app.settings",
     };
 
     if (pageName === "places") {

@@ -3,6 +3,7 @@ import { ApiService } from "../services/data/api.service.js";
 import { TransactionService } from "../services/finance/transaction.service.js";
 import { FinancialEngine } from "../services/finance/financialEngine.js";
 import { createAIAdvisor } from "../services/ai/besafe.advisor.js";
+import { runCurrencyMigration } from "../services/finance/migration.js";
 
 let booted = false;
 
@@ -64,6 +65,19 @@ export async function bootSystem() {
     registry.register("ai", aiAdvisor);
     registry.register("advisor", aiAdvisor);
     registry.register("eventBus", null);
+
+    // Run idempotent data migrations after services are registered
+    // but before the app reads any transaction data. Wrapped in try/catch
+    // so a migration bug never blocks boot — partial data is recoverable;
+    // a failed boot leaves the user with an unusable app.
+    try {
+      runCurrencyMigration();
+    } catch (migrationError) {
+      console.warn(
+        "[Boot] Currency migration failed (non-fatal, continuing):",
+        migrationError?.message || migrationError
+      );
+    }
 
     booted = true;
 

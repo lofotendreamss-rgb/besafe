@@ -26,6 +26,7 @@ class App {
     this.reportsPage = null;
     this.placesPage = null;
     this.categoriesPage = null;
+    this.settingsPage = null;
 
     this.boundGlobalClick = this.handleGlobalClick.bind(this);
 
@@ -298,6 +299,7 @@ class App {
       reportsModule,
       placesModule,
       categoriesModule,
+      settingsModule,
       onboardingModule,
     ] = await Promise.all([
       import("../pages/home.page.js"),
@@ -306,6 +308,7 @@ class App {
       import("../pages/reports.page.js"),
       import("../pages/places.page.js"),
       import("../pages/categories.page.js"),
+      import("../pages/settings.page.js"),
       import("../pages/onboarding.page.js"),
     ]);
 
@@ -315,6 +318,7 @@ class App {
     const { ReportsPage } = reportsModule;
     const { PlacesPage } = placesModule;
     const { initCategoriesPage } = categoriesModule;
+    const { SettingsPage } = settingsModule;
     const { initOnboardingPage, isOnboardingDone } = onboardingModule;
 
     if (typeof HomePage !== "function") {
@@ -339,6 +343,10 @@ class App {
 
     if (typeof initCategoriesPage !== "function") {
       throw new Error("initCategoriesPage export is invalid");
+    }
+
+    if (typeof SettingsPage !== "function") {
+      throw new Error("SettingsPage export is invalid");
     }
 
     const transactionService = registry.get("transactions");
@@ -398,6 +406,9 @@ class App {
         });
 
         this.navigation.registerPage("categories", this.categoriesPage);
+
+        this.settingsPage = new SettingsPage();
+        this.navigation.registerPage("settings", this.settingsPage);
 
         this.onboardingPage = initOnboardingPage({ navigation: this.navigation });
         this.navigation.registerPage("onboarding", this.onboardingPage);

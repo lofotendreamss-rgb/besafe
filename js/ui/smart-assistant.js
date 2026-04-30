@@ -45,7 +45,7 @@ import {
 } from "../services/ai/chat.client.js";
 import { showLicenseModal } from "./license-modal.js";
 import { showActionConfirmation } from "./action-confirmation.js";
-import { createTransaction as localDbCreateTransaction } from "../services/data/local.db.js";
+import { registry } from "../core/service.registry.js";
 
 // ============================================================
 // i18n — mirror the voice-assistant helpers so translator keys
@@ -376,23 +376,71 @@ function scrollToBottom() {
 // js/services/data/local.db.js. The server never writes finance data.
 // ============================================================
 
-// Maps a toolCall.input shape to the local.db.createTransaction
-// payload shape and writes the row. The schema field
-// `description` (Anthropic-friendly name) maps to the local.db
-// field `note` (legacy frontend name from voice-assistant.js Phase 1).
+// Maps a toolCall.input shape to a transactionService.createTransaction
+// payload and writes the row through the same service the QuickActions
+// form uses. The schema field `description` (Anthropic-friendly name)
+// maps to the service field `note` (legacy frontend name from
+// voice-assistant.js Phase 1).
 //
-// Throws on localStorage write failure — caller wraps in try/catch
-// to surface an error bubble.
-function commitAddTransaction(input) {
+// Phase 4 Sesija 0b: routes through registry-resolved transactionService
+// instead of bypassing directly to local.db. This unifies the AI write
+// path with the QuickActions form path so that:
+//   • currency defaults pick up user preference (Phase 4 Sesija 0b
+//     transaction.service.normalizeCurrency → getUserCurrency())
+//   • caches stay consistent (service.updateTransactionCacheAfterCreate
+//     fires for AI writes too, so reports/dashboards reflect new data)
+//   • normalization rules are applied uniformly (date, amount, etc.)
+//
+// The AI tool schema provides a category NAME ("Maistas") but the
+// service requires a categoryId. We resolve here:
+//   1. Exact case-insensitive name match within the requested type
+//      (income / expense)
+//   2. Fallback: first user category of the matching type
+//   3. If neither exists (first-run user with no categories of that
+//      type) the service rejects with a localized error that bubbles
+//      up to the confirmation dialog via the existing try/catch in
+//      handleConfirmedAction.
+//
+// Throws on storage / validation failure — caller wraps in try/catch.
+async function commitAddTransaction(input) {
   const today = new Date().toISOString().slice(0, 10);
+
+  const service = registry.get("transactions");
+  if (!service) {
+    throw new Error("Transaction service not available.");
+  }
+
+  const inputName = String(input.category || "").trim();
+  const inputType = input.type;
+  let resolvedCategory = null;
+  try {
+    const categories = (await service.getCategories()) || [];
+    resolvedCategory =
+      categories.find(
+        (c) =>
+          c?.type === inputType &&
+          String(c?.name || "").trim().toLowerCase() ===
+            inputName.toLowerCase()
+      ) ||
+      categories.find((c) => c?.type === inputType) ||
+      null;
+  } catch (_err) {
+    // getCategories failed — leave resolvedCategory null; service
+    // will produce the user-facing error.
+  }
+
   const payload = {
-    type:     input.type,                          // "income" | "expense"
-    amount:   Number(input.amount),
-    category: String(input.category || ""),
-    note:     typeof input.description === "string" ? input.description : "",
-    date:     typeof input.date === "string" && input.date ? input.date : today,
+    type:       input.type,                                          // "income" | "expense"
+    amount:     Number(input.amount),
+    category:   resolvedCategory ? resolvedCategory.name : inputName,
+    categoryId: resolvedCategory ? resolvedCategory.id : null,
+    note:       typeof input.description === "string" ? input.description : "",
+    date:       typeof input.date === "string" && input.date ? input.date : today,
+    // currency intentionally omitted — transaction.service.normalizeCurrency
+    // defaults to getUserCurrency() when payload has no currency.
   };
-  return localDbCreateTransaction(payload);
+
+  return service.createTransaction(payload);
 }
 
 // Format amount with comma decimal separator (LT/EU convention) for
@@ -408,7 +456,7 @@ function formatAmountLocal(value) {
 async function handleConfirmedAction(toolCall) {
   try {
     if (toolCall?.name === "addTransaction") {
-      const created = commitAddTransaction(toolCall.input || {});
+      const created = await commitAddTransaction(toolCall.input || {});
 
       const successText = t(
         "assistant.confirm.success",
