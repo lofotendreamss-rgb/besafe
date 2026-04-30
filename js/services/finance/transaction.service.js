@@ -1,3 +1,5 @@
+import { getUserCurrency } from "./currency.js";
+
 export class TransactionService {
   constructor({ apiService } = {}) {
     this.apiService = apiService || null;
@@ -119,7 +121,12 @@ export class TransactionService {
 
   normalizeCurrency(currency) {
     const value = this.normalizeText(currency).toUpperCase();
-    return value || "EUR";
+    // Default fallback delegates to user's current currency preference
+    // (Phase 4 Sesija 0b). getUserCurrency() reads localStorage and
+    // itself falls back to "EUR" if no preference is set or storage
+    // is unavailable — preserving the previous hardcoded default
+    // behavior for first-run / private-browsing edge cases.
+    return value || getUserCurrency();
   }
 
   normalizeLocale(locale) {
