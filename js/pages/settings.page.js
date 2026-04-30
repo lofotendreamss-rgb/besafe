@@ -154,7 +154,7 @@ export class SettingsPage {
           <button
             type="button"
             id="settings-save-btn"
-            class="button-primary settings-page__save-btn"
+            class="settings-page__save-btn"
           >${this.escapeHtml(saveText)}</button>
 
           <span
