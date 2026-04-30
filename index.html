@@ -321,6 +321,14 @@
         ></section>
 
         <section
+          id="page-settings"
+          class="page-slot page-slot--settings"
+          hidden
+          data-dynamic="true"
+          aria-label="Settings page"
+        ></section>
+
+        <section
           id="page-onboarding"
           class="page-slot page-slot--onboarding"
           hidden
@@ -397,6 +405,16 @@
             data-ai-slot
             aria-hidden="true"
           ></div>
+
+          <button
+            id="nav-settings"
+            data-nav="settings"
+            type="button"
+            class="shortcut-btn button-secondary"
+            aria-label="Open Settings page"
+          >
+            Settings
+          </button>
 
           <button
             id="nav-language"
@@ -495,6 +513,7 @@
         const navReports = document.getElementById("nav-reports");
         const navPlaces = document.getElementById("nav-places");
         const navCategories = document.getElementById("nav-categories");
+        const navSettings = document.getElementById("nav-settings");
         const navLanguage = document.getElementById("nav-language");
 
         const appLanguageSwitch = document.getElementById("app-language-switch");
@@ -607,6 +626,14 @@
           navCategories.setAttribute(
             "aria-label",
             t("navigation.open.categories", "Open Categories page")
+          );
+        }
+
+        if (navSettings) {
+          navSettings.textContent = t("app.settings", "Settings");
+          navSettings.setAttribute(
+            "aria-label",
+            t("navigation.open.settings", "Open Settings page")
           );
         }
 
