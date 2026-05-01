@@ -2,6 +2,7 @@
 // BeSafe Balance Card (Improved)
 
 import { registry } from "../../core/service.registry.js";
+import { getCurrencySymbol, getUserCurrency } from "../../services/finance/currency.js";
 
 export async function renderBalanceCard(stats){
 
@@ -44,6 +45,7 @@ if(!stats) return;
 const balance = Number(stats.balance) || 0;
 const today = Number(stats.todaySpending) || 0;
 const remaining = Number(stats.dailyRemaining) || 0;
+const sym = getCurrencySymbol(getUserCurrency());
 
 /* COLOR LOGIC */
 
@@ -65,7 +67,7 @@ const html = `
 <div class="balance-label">Balance</div>
 
 <div class="balance-value" style="color:${balanceColor}">
-€ ${balance.toFixed(2)}
+${sym} ${balance.toFixed(2)}
 </div>
 
 </div>
@@ -77,7 +79,7 @@ const html = `
 <span class="stat-label">Today spent</span>
 
 <span class="stat-value">
-€ ${today.toFixed(2)}
+${sym} ${today.toFixed(2)}
 </span>
 
 </div>
@@ -87,7 +89,7 @@ const html = `
 <span class="stat-label">Daily remaining</span>
 
 <span class="stat-value">
-€ ${remaining.toFixed(2)}
+${sym} ${remaining.toFixed(2)}
 </span>
 
 </div>

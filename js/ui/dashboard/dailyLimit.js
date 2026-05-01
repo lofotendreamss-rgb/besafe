@@ -2,6 +2,7 @@
 // BeSafe Daily Limit Widget (Improved)
 
 import { registry } from "../../core/service.registry.js";
+import { getCurrencySymbol, getUserCurrency } from "../../services/finance/currency.js";
 
 async function renderDailyLimit(stats){
 
@@ -43,6 +44,7 @@ if(!stats) return;
 
 const limit = Number(stats.dailyLimit) || 0;
 const remaining = Number(stats.dailyRemaining) || 0;
+const sym = getCurrencySymbol(getUserCurrency());
 
 /* PROGRESS */
 
@@ -70,12 +72,12 @@ const html = `
 
 <div class="daily-limit-row">
 <span class="limit-label">Limit</span>
-<span class="limit-value">€ ${limit.toFixed(2)}</span>
+<span class="limit-value">${sym} ${limit.toFixed(2)}</span>
 </div>
 
 <div class="daily-limit-row">
 <span class="limit-label">Remaining</span>
-<span class="limit-value">€ ${remaining.toFixed(2)}</span>
+<span class="limit-value">${sym} ${remaining.toFixed(2)}</span>
 </div>
 
 <div style="margin-top:10px;">

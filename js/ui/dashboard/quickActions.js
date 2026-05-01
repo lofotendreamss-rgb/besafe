@@ -1,5 +1,6 @@
 import { createTranslator, getCurrentLanguage } from "../../core/i18n.js";
 import { registry } from "../../core/service.registry.js";
+import { getCurrencySymbol, getUserCurrency } from "../../services/finance/currency.js";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -1712,7 +1713,7 @@ export class QuickActions {
 
   renderScannerPreviewStep() {
     const r = this.scannerOcrResult || {};
-    const amount  = r.amount  ? `${r.amount} €` : this.t("quickActions.receiptScanner.notDetected", "Nerasta");
+    const amount  = r.amount  ? `${r.amount} ${getCurrencySymbol(getUserCurrency())}` : this.t("quickActions.receiptScanner.notDetected", "Nerasta");
     const date    = r.date    || this.t("quickActions.receiptScanner.notDetected", "Nerasta");
     const store   = r.store   || this.t("quickActions.receiptScanner.notDetected", "Nerasta");
 

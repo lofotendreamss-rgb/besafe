@@ -2,6 +2,7 @@
 // BeSafe Budget Progress (Improved)
 
 import { registry } from "../../core/service.registry.js";
+import { getCurrencySymbol, getUserCurrency } from "../../services/finance/currency.js";
 
 async function renderBudgetProgress(stats){
 
@@ -43,6 +44,7 @@ if(!stats) return;
 
 const spent = Number(stats.monthlySpending) || 0;
 const budget = Number(stats.monthlyBudget) || 1;
+const sym = getCurrencySymbol(getUserCurrency());
 
 const percent = Math.min(
 100,
@@ -76,7 +78,7 @@ style="width:${percent}%; background:${color}; height:10px;"></div>
 
 <div class="budget-progress-info">
 
-<span>${spent.toFixed(2)} € / ${budget.toFixed(2)} €</span>
+<span>${spent.toFixed(2)} ${sym} / ${budget.toFixed(2)} ${sym}</span>
 
 <span>${percent}%</span>
 

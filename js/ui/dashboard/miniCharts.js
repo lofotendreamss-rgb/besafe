@@ -2,6 +2,7 @@
 // BeSafe Charts (Weekly + Forecast)
 
 import { registry } from "../../core/service.registry.js";
+import { getCurrencySymbol, getUserCurrency } from "../../services/finance/currency.js";
 
 async function renderMiniCharts(stats){
 
@@ -75,7 +76,7 @@ const weeklyHTML = `
     ${bars}
   </div>
   <div style="margin-top:10px; font-size:12px; color:#666;">
-    Total: € ${total.toFixed(2)}
+    Total: ${getCurrencySymbol(getUserCurrency())} ${total.toFixed(2)}
   </div>
 </div>
 `;

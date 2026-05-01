@@ -1,5 +1,6 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
+import { getCurrencySymbol, getUserCurrency } from "../services/finance/currency.js";
 
 export function initAdvisorPage(dependencies = {}) {
   const transactionService =
@@ -439,12 +440,12 @@ export function initAdvisorPage(dependencies = {}) {
       try {
         return new Intl.NumberFormat(this.getCurrentLocale(), {
           style: "currency",
-          currency: "EUR",
+          currency: getUserCurrency(),
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }).format(amount);
       } catch (_error) {
-        return `${amount.toFixed(2)}€`;
+        return `${amount.toFixed(2)}${getCurrencySymbol(getUserCurrency())}`;
       }
     },
 

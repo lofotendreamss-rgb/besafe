@@ -3,6 +3,8 @@
    Calm, data-based, no-pressure guidance
 ===================== */
 
+import { getCurrencySymbol, getUserCurrency } from "../finance/currency.js";
+
 export function createAIAdvisor(dependencies = {}) {
   const {
     transactionService = null,
@@ -43,7 +45,7 @@ export function createAIAdvisor(dependencies = {}) {
   }
 
   function formatMoney(value) {
-    return `${roundMoney(value).toFixed(2)}€`;
+    return `${roundMoney(value).toFixed(2)}${getCurrencySymbol(getUserCurrency())}`;
   }
 
   function normalizeCategory(value) {

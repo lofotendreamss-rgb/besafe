@@ -1,6 +1,7 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
 import { generateReportPDF, generateSavedDocumentPDF } from "../utils/pdf-generator.js";
+import { getCurrencySymbol, getUserCurrency } from "../services/finance/currency.js";
 
 function getUserPlan() {
   try {
@@ -1536,16 +1537,16 @@ export class ReportsPage {
       `Tipas: ${doc.type || "—"}`,
       `Sukurta: ${date}`,
       "",
-      `${this.t("advisor.workspace.calculator.summaryBase", "Full amount") + ": "}${baseAmount} EUR`,
-      `${this.t("advisor.workspace.calculator.summaryPercentage", "Percentage") + ": "}${pctAmount} EUR`,
-      `${this.t("advisor.workspace.calculator.summaryVat", "VAT") + ": "}${vatAmountVal} EUR`,
-      `${this.t("advisor.workspace.calculator.summaryTotal", "Final amount") + ": "}${total} EUR`,
+      `${this.t("advisor.workspace.calculator.summaryBase", "Full amount") + ": "}${baseAmount} ${getCurrencySymbol(getUserCurrency())}`,
+      `${this.t("advisor.workspace.calculator.summaryPercentage", "Percentage") + ": "}${pctAmount} ${getCurrencySymbol(getUserCurrency())}`,
+      `${this.t("advisor.workspace.calculator.summaryVat", "VAT") + ": "}${vatAmountVal} ${getCurrencySymbol(getUserCurrency())}`,
+      `${this.t("advisor.workspace.calculator.summaryTotal", "Final amount") + ": "}${total} ${getCurrencySymbol(getUserCurrency())}`,
     ];
 
     if (doc.categories && doc.categories.length) {
       lines.push("", "Kategorijos:");
       for (const c of doc.categories) {
-        lines.push(`  ${c.name}: ${Number(c.total).toFixed(2)} EUR`);
+        lines.push(`  ${c.name}: ${Number(c.total).toFixed(2)} ${getCurrencySymbol(getUserCurrency())}`);
       }
     }
 
@@ -1639,17 +1640,18 @@ export class ReportsPage {
                     ? this.formatDate(doc.createdAt, locale)
                     : "";
 
+                  const userCcy = getUserCurrency();
                   const baseLabel = doc.baseAmount != null
-                    ? this.t("advisor.workspace.calculator.summaryBase", "Full amount") + ": " + this.formatAmount(doc.baseAmount, "EUR", locale)
+                    ? this.t("advisor.workspace.calculator.summaryBase", "Full amount") + ": " + this.formatAmount(doc.baseAmount, userCcy, locale)
                     : "";
                   const pctLabel = doc.percentageAmount != null && doc.percentageAmount !== 0
-                    ? this.t("advisor.workspace.calculator.summaryPercentage", "Percentage") + ": " + this.formatAmount(doc.percentageAmount, "EUR", locale)
+                    ? this.t("advisor.workspace.calculator.summaryPercentage", "Percentage") + ": " + this.formatAmount(doc.percentageAmount, userCcy, locale)
                     : "";
                   const vatLabel = doc.vatAmount != null && doc.vatAmount !== 0
-                    ? this.t("advisor.workspace.calculator.summaryVat", "VAT") + ": " + this.formatAmount(doc.vatAmount, "EUR", locale)
+                    ? this.t("advisor.workspace.calculator.summaryVat", "VAT") + ": " + this.formatAmount(doc.vatAmount, userCcy, locale)
                     : "";
                   const totalLabel = doc.total != null
-                    ? this.t("advisor.workspace.calculator.summaryTotal", "Final amount") + ": " + this.formatAmount(doc.total, "EUR", locale)
+                    ? this.t("advisor.workspace.calculator.summaryTotal", "Final amount") + ": " + this.formatAmount(doc.total, userCcy, locale)
                     : "";
 
                   return `
