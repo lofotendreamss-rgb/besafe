@@ -525,6 +525,10 @@ export class ApiService {
       normalized.createdAt = this.normalizeOptionalText(payload.createdAt);
     }
 
+    if (this.hasOwn(payload, "mode")) {
+      normalized.mode = this.normalizeText(payload.mode).toLowerCase();
+    }
+
     return Object.fromEntries(
       Object.entries(normalized).filter(([, value]) => value !== undefined)
     );
@@ -547,6 +551,10 @@ export class ApiService {
 
     if (this.hasOwn(payload, "type")) {
       normalized.type = this.normalizeType(payload.type);
+    }
+
+    if (this.hasOwn(payload, "mode")) {
+      normalized.mode = this.normalizeText(payload.mode).toLowerCase();
     }
 
     return normalized;
@@ -611,6 +619,10 @@ export class ApiService {
       normalized.receipt = null;
     }
 
+    if (this.hasOwn(payload, "mode")) {
+      normalized.mode = this.normalizeText(payload.mode).toLowerCase();
+    }
+
     return normalized;
   }
 
@@ -659,6 +671,10 @@ export class ApiService {
 
     if (this.hasOwn(payload, "placeId")) {
       normalized.placeId = this.normalizeOptionalId(payload.placeId);
+    }
+
+    if (this.hasOwn(payload, "mode")) {
+      normalized.mode = this.normalizeText(payload.mode).toLowerCase();
     }
 
     if (
@@ -751,6 +767,10 @@ export class ApiService {
       meta: this.normalizeMeta(payload.meta),
     };
 
+    if (this.hasOwn(payload, "mode")) {
+      normalized.mode = this.normalizeText(payload.mode).toLowerCase();
+    }
+
     return normalized;
   }
 
@@ -809,6 +829,10 @@ export class ApiService {
 
     if (this.hasOwn(payload, "meta")) {
       normalized.meta = this.normalizeMeta(payload.meta);
+    }
+
+    if (this.hasOwn(payload, "mode")) {
+      normalized.mode = this.normalizeText(payload.mode).toLowerCase();
     }
 
     return normalized;
