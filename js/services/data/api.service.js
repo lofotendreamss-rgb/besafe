@@ -965,7 +965,7 @@ export class ApiService {
   async deleteCategory(categoryId) {
     const safeId = this.normalizeId(categoryId);
     if (this.isElectron) return window.electronAPI.deleteCategory(safeId);
-
+    if (this.isWeb) { const db = await this._getLocalDb(); return db.deleteCategory(safeId); }
     return this.request(`/api/categories/${encodeURIComponent(safeId)}`, {
       method: "DELETE",
     });
