@@ -3,7 +3,7 @@ import { ApiService } from "../services/data/api.service.js";
 import { TransactionService } from "../services/finance/transaction.service.js";
 import { FinancialEngine } from "../services/finance/financialEngine.js";
 import { createAIAdvisor } from "../services/ai/besafe.advisor.js";
-import { runCurrencyMigration } from "../services/finance/migration.js";
+import { runCurrencyMigration, runModeMigration } from "../services/finance/migration.js";
 
 let booted = false;
 
@@ -75,6 +75,15 @@ export async function bootSystem() {
     } catch (migrationError) {
       console.warn(
         "[Boot] Currency migration failed (non-fatal, continuing):",
+        migrationError?.message || migrationError
+      );
+    }
+
+    try {
+      runModeMigration();
+    } catch (migrationError) {
+      console.warn(
+        "[Boot] Mode migration failed (non-fatal, continuing):",
         migrationError?.message || migrationError
       );
     }

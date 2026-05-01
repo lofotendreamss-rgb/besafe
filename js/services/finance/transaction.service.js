@@ -1,4 +1,5 @@
 import { getUserCurrency } from "./currency.js";
+import { getUserPlan, isValidPlan } from "./user-plan.js";
 
 export class TransactionService {
   constructor({ apiService } = {}) {
@@ -127,6 +128,17 @@ export class TransactionService {
     // is unavailable — preserving the previous hardcoded default
     // behavior for first-run / private-browsing edge cases.
     return value || getUserCurrency();
+  }
+
+  normalizeMode(mode) {
+    // Phase 4+ Mode Separation (Sesija A1, 2026-05-01). When a record
+    // is created without an explicit mode, default to the user's
+    // currently active plan (read from localStorage via getUserPlan).
+    // Existing records lacking mode are backfilled to "personal" by
+    // runModeMigration at boot. See besafe_mode_separation_principle.md.
+    const value = this.normalizeText(mode).toLowerCase();
+    if (isValidPlan(value)) return value;
+    return getUserPlan();
   }
 
   normalizeLocale(locale) {
@@ -338,6 +350,7 @@ export class TransactionService {
               .slice(2, 10)}`),
       name,
       type,
+      mode: this.normalizeMode(payload.mode),
       createdAt:
         this.normalizeText(payload.createdAt) || new Date().toISOString(),
     };
@@ -480,6 +493,7 @@ export class TransactionService {
     return {
       type,
       amount,
+      mode: this.normalizeMode(payload.mode),
       ...(category ? { category } : {}),
       ...(categoryId ? { categoryId } : {}),
       categoryDetail,
@@ -838,6 +852,7 @@ export class TransactionService {
     return {
       name,
       type,
+      mode: this.normalizeMode(payload.mode),
       brand,
       country,
       city,
@@ -1285,9 +1300,18 @@ export class TransactionService {
       throw new Error("API service not available");
     }
 
+    // Phase 4+ Mode Separation: stamp `mode` so saved calculations are
+    // bucketed by the user's active plan (Personal vs Business).
+    // No buildSavedCalculationPayload helper exists yet — inline the
+    // mode injection here to avoid a wider refactor in Sesija A1.
+    const payloadWithMode = {
+      ...payload,
+      mode: this.normalizeMode(payload?.mode),
+    };
+
     return await this.apiService.request("/api/saved-calculations", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payloadWithMode),
     });
   }
 

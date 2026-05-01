@@ -207,6 +207,15 @@ export function createSavedCalculation(payload) {
   return calc;
 }
 
+export function updateSavedCalculation(id, payload) {
+  const all = getSavedCalculations();
+  const idx = all.findIndex((c) => c.id === id);
+  if (idx === -1) throw new Error("Saved calculation not found");
+  all[idx] = { ...all[idx], ...payload, id, updatedAt: nowIso() };
+  writeCollection(KEYS.savedCalculations, all);
+  return all[idx];
+}
+
 export function deleteSavedCalculation(id) {
   const all = getSavedCalculations();
   const idx = all.findIndex((c) => c.id === id);
