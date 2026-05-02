@@ -428,14 +428,18 @@ button.is-busy,
   gap:8px;
 }
 
+/* UI styling iter 3 — Variant C — pill shape + gradient bg + triple shadow for "WAU klikabilumas". Žalias text accent rezervuotas Plan switcher pattern (semantic: green = identity/choice, neutral = action) — Antano UX feedback per Plan switcher reference */
 .app-nav .shortcut-btn,
 .app-nav--shell .shortcut-btn{
   min-height:56px;
-  padding:8px 6px;
-  border-radius:14px;
-  border:1px solid transparent;
-  background:transparent;
-  box-shadow:none;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(127,209,173,0.12);
+  background:linear-gradient(180deg, rgba(22,32,35,0.70) 0%, rgba(14,22,24,0.80) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.025),
+    0 2px 6px rgba(0,0,0,0.18),
+    0 0 0 1px rgba(127,209,173,0.06);
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -444,7 +448,7 @@ button.is-busy,
   font-size:11px;
   font-weight:700;
   line-height:1.1;
-  color:var(--muted);
+  color:var(--text-soft);
   text-align:center;
 }
 
@@ -1013,13 +1017,18 @@ button.is-busy,
   line-height:1.2;
 }
 
+/* UI styling iter 3 — Variant C — pill shape + gradient bg + triple shadow for "WAU klikabilumas". Žalias text accent rezervuotas Plan switcher pattern (semantic: green = identity/choice, neutral = action) — Antano UX feedback per Plan switcher reference */
 .quick-action-btn{
-  border:1px solid rgba(114,176,152,0.28);
-  background:linear-gradient(180deg,rgba(18,26,29,0.94) 0%, rgba(11,18,20,0.98) 100%);
-  box-shadow:0 14px 28px rgba(8,28,22,0.24);
+  border:1px solid rgba(127,209,173,0.36);
+  background:linear-gradient(180deg,rgba(28,40,42,0.98) 0%, rgba(15,24,26,0.99) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 4px 10px rgba(0,0,0,0.28),
+    0 0 0 1px rgba(127,209,173,0.10);
   color:var(--text);
   min-height:60px;
-  padding:16px 18px;
+  padding:16px 20px;
+  border-radius:999px;
   overflow:hidden;
 }
 
@@ -2913,10 +2922,15 @@ select.quick-action-form__input option{
   gap:14px;
 }
 
+/* UI styling iter 3 — Variant C — pill shape + matching shadow for mobile responsive — Antano UX feedback per Plan switcher reference */
 .quick-action-btn{
   min-height:66px;
-  border-color:rgba(110,148,136,0.24);
-  box-shadow:0 12px 24px rgba(0,0,0,0.14);
+  border-color:rgba(127,209,173,0.32);
+  border-radius:999px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 3px 8px rgba(0,0,0,0.18),
+    0 0 0 1px rgba(127,209,173,0.08);
 }
 
 .quick-action-btn:hover{
