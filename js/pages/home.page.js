@@ -443,13 +443,14 @@ export class HomePage {
             return; // rendered separately above
           }
 
-          // Map status to i18n keys
+          // Map status to i18n keys (i18n-cleanup 2026-05-02 — Variant C).
           const statusMap = {
             "not_enough_data": "not_enough_data",
             "early_data": "early_data",
             "attention": "attention",
             "stable": "stable",
             "balanced": "balanced",
+            "unclear_category": "unclear_category",
           };
 
           if (statusMap[status]) {
@@ -457,12 +458,10 @@ export class HomePage {
             obs = this.t("advisor.status." + key + ".obs", obs);
             sug = this.t("advisor.status." + key + ".sug", sug);
             exp = this.t("advisor.status." + key + ".exp", exp);
-          } else if (status === "unclear_category" || status === "not_enough_data") {
-            obs = this.t("advisor.status.category.obs", obs);
-            exp = this.t("advisor.status.category.exp", exp);
           } else if (status === "category_visible") {
-            // Category with dynamic name — keep observation as-is, translate explanation
-            exp = this.t("advisor.status.stable.exp", exp);
+            // obs + sug are dynamic English with category name (placeholder
+            // refactor — backlog #21). Translate exp only.
+            exp = this.t("advisor.status.category_visible.exp", exp);
           }
 
           html += `
@@ -487,6 +486,12 @@ export class HomePage {
           if (alertStatus === "not_enough_data" || alertStatus === "early_data" || alertStatus === "attention" || alertStatus === "stable" || alertStatus === "balanced") {
             alertObs = this.t("advisor.status." + alertStatus + ".obs", alertObs);
             alertSug = this.t("advisor.status." + alertStatus + ".sug", alertSug);
+          } else if (alertStatus === "forecast_risk") {
+            // i18n-cleanup 2026-05-02 — Variant C. Forecast risk alerts get
+            // their own keys (semantically different from "attention" — future
+            // tense vs current state).
+            alertObs = this.t("advisor.status.forecast_risk.obs", alertObs);
+            alertSug = this.t("advisor.status.forecast_risk.sug", alertSug);
           }
 
           html += `
