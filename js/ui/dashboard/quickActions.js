@@ -90,6 +90,22 @@ export class QuickActions {
     this.boundChangeHandler = this.handleChange.bind(this);
     this.boundInputHandler = this.handleInput.bind(this);
     this.boundCategoryCreatedHandler = this.handleCategoryCreated.bind(this);
+
+    // A3a (2026-05-02): react to mode switches by clearing stale dropdown
+    // data. Next ensurePlacesLoaded / loadCategoriesIfNeeded call refetches
+    // via mode-filtered service.getPlaces() / service.getCategories(). If
+    // the panel is mounted, re-render so an open form picks up the change.
+    this._boundUserPlanChanged = (event) => {
+      const newPlan = event.detail?.plan;
+      if (!newPlan) return;
+      this.setPlan(newPlan);
+      this.availablePlaces = [];
+      this.availableCategories = [];
+      if (this.root) {
+        this.renderGuidance();
+      }
+    };
+    document.addEventListener("user-plan:changed", this._boundUserPlanChanged);
   }
 
   setPlan(plan) {
@@ -564,15 +580,11 @@ export class QuickActions {
     this.isLoadingPlaces = true;
 
     try {
-      let places = [];
-
-      if (typeof service.getPlacesCache === "function") {
-        places = service.getPlacesCache();
-      }
-
-      if (!places || !places.length) {
-        places = await service.getPlaces();
-      }
+      // A3a fix (2026-05-02): drop cache-first path. service.getPlaces() is
+      // now mode-filtered (A2 scope gap continuation). Hitting raw cache via
+      // getPlacesCache() bypassed that filter and returned mixed
+      // Personal+Business entries to QuickActions dropdowns.
+      const places = await service.getPlaces();
 
       this.availablePlaces = Array.isArray(places)
         ? places
@@ -813,15 +825,11 @@ export class QuickActions {
     this.isLoadingCategories = true;
 
     try {
-      let categories = [];
-
-      if (typeof service.getCategoriesCache === "function") {
-        categories = service.getCategoriesCache();
-      }
-
-      if (!categories || !categories.length) {
-        categories = await service.getCategories();
-      }
+      // A3a fix (2026-05-02): drop cache-first path. service.getCategories()
+      // is now mode-filtered (A2 scope gap continuation). Hitting raw cache
+      // via getCategoriesCache() bypassed that filter and returned mixed
+      // Personal+Business entries to QuickActions dropdowns.
+      const categories = await service.getCategories();
 
       this.availableCategories = Array.isArray(categories)
         ? categories.filter((category) => category?.id && category?.name)

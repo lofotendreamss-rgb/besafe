@@ -1,16 +1,11 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { renderHomeDashboard } from "../ui/dashboard/home.dashboard.js";
 import { QuickActions } from "../ui/dashboard/quickActions.js";
+import { getUserPlan, setUserPlan } from "../services/finance/user-plan.js";
+import { getLicensePlan } from "../core/license.checker.js";
+import { showUpgradePrompt, closeUpgradePrompt } from "../ui/upgrade-prompt.js";
 
 const HOME_INTRO_SESSION_KEY = "besafe:home-intro-played";
-
-function getUserPlan() {
-  try {
-    return localStorage.getItem("besafe:user-plan") || "personal";
-  } catch (_e) {
-    return "personal";
-  }
-}
 
 export class HomePage {
   constructor({ financialEngine, transactionService } = {}) {
@@ -556,9 +551,23 @@ export class HomePage {
 
     if (nextPlan === this.userPlan) return;
 
-    try {
-      localStorage.setItem("besafe:user-plan", nextPlan);
-    } catch (_error) {}
+    // A3 gating: Personal-licensed users (and free tier — defaulting
+    // to "personal") cannot toggle into Business mode without an upgrade.
+    if (nextPlan === "business" && getLicensePlan() === "personal") {
+      showUpgradePrompt({
+        onUpgrade: () => {
+          // TODO A4: integrate with actual upgrade flow.
+          closeUpgradePrompt();
+        },
+        onClose: () => closeUpgradePrompt(),
+      });
+      return;
+    }
+
+    // setUserPlan() persists + dispatches user-plan:changed for
+    // cross-page cache invalidation. Returns false on validation /
+    // storage failure — bail out without touching local state.
+    if (!setUserPlan(nextPlan)) return;
 
     this.setPlan(nextPlan);
     await this.refreshIfActive();

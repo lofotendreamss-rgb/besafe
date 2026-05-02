@@ -911,9 +911,21 @@ export class TransactionService {
     this.setTransactionsCache(nextTransactions);
   }
 
-  async getCategories() {
+  /**
+   * Fetch categories filtered by active plan mode.
+   *
+   * @param {string|null} [mode] — Active plan filter:
+   *   - undefined (default): filters by getUserPlan() — most common path
+   *   - "personal" or "business": explicit mode override
+   *   - null: returns ALL records (no filter) — for migration/backfill use cases
+   *
+   * Cache stays unfiltered (full set); filter applied at return so mode
+   * switches don't require cache invalidation. See A2 commit b4aea45 for
+   * the parallel pattern in getSummary(mode).
+   */
+  async getCategories(mode = getUserPlan()) {
     if (!this.apiService) {
-      return this.getCategoriesCache();
+      return filterByMode(this.getCategoriesCache(), mode);
     }
 
     let categories = [];
@@ -923,7 +935,7 @@ export class TransactionService {
     } else if (typeof this.apiService.listCategories === "function") {
       categories = await this.apiService.listCategories();
     } else {
-      return this.getCategoriesCache();
+      return filterByMode(this.getCategoriesCache(), mode);
     }
 
     const normalizedCategories = Array.isArray(categories)
@@ -934,7 +946,8 @@ export class TransactionService {
           ? categories.data
           : [];
 
-    return this.setCategoriesCache(normalizedCategories);
+    this.setCategoriesCache(normalizedCategories);
+    return filterByMode(normalizedCategories, mode);
   }
 
   async createCategory(payload = {}) {
@@ -1007,9 +1020,21 @@ export class TransactionService {
     return this.deleteCategory(categoryId);
   }
 
-  async getPlaces() {
+  /**
+   * Fetch places filtered by active plan mode.
+   *
+   * @param {string|null} [mode] — Active plan filter:
+   *   - undefined (default): filters by getUserPlan() — most common path
+   *   - "personal" or "business": explicit mode override
+   *   - null: returns ALL records (no filter) — for migration/backfill use cases
+   *
+   * Cache stays unfiltered (full set); filter applied at return so mode
+   * switches don't require cache invalidation. See A2 commit b4aea45 for
+   * the parallel pattern in getSummary(mode).
+   */
+  async getPlaces(mode = getUserPlan()) {
     if (!this.apiService) {
-      return this.getPlacesCache();
+      return filterByMode(this.getPlacesCache(), mode);
     }
 
     let places = [];
@@ -1019,7 +1044,7 @@ export class TransactionService {
     } else if (typeof this.apiService.listPlaces === "function") {
       places = await this.apiService.listPlaces();
     } else {
-      return this.getPlacesCache();
+      return filterByMode(this.getPlacesCache(), mode);
     }
 
     if (!Array.isArray(places)) {
@@ -1031,7 +1056,8 @@ export class TransactionService {
       id: this.normalizeOptionalId(place?.id),
     }));
 
-    return this.setPlacesCache(normalizedPlaces);
+    this.setPlacesCache(normalizedPlaces);
+    return filterByMode(normalizedPlaces, mode);
   }
 
   async createPlace(payload = {}) {
@@ -1194,16 +1220,29 @@ export class TransactionService {
     return this.deleteTransaction(transactionId);
   }
 
-  async getTransactions() {
+  /**
+   * Fetch transactions filtered by active plan mode.
+   *
+   * @param {string|null} [mode] — Active plan filter:
+   *   - undefined (default): filters by getUserPlan() — most common path
+   *   - "personal" or "business": explicit mode override
+   *   - null: returns ALL records (no filter) — for migration/backfill use cases
+   *
+   * Cache stays unfiltered (full set); filter applied at return so mode
+   * switches don't require cache invalidation. See A2 commit b4aea45 for
+   * the parallel pattern in getSummary(mode).
+   */
+  async getTransactions(mode = getUserPlan()) {
     if (
       this.apiService &&
       typeof this.apiService.getTransactions === "function"
     ) {
       const transactions = await this.apiService.getTransactions();
-      return this.setTransactionsCache(transactions);
+      this.setTransactionsCache(transactions);
+      return filterByMode(transactions, mode);
     }
 
-    return this.getAllTransactions();
+    return filterByMode(this.getAllTransactions(), mode);
   }
 
   async getAll() {

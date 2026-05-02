@@ -7,6 +7,7 @@ import {
   setCurrentLanguage,
   getSupportedLanguages,
 } from "../core/i18n.js";
+import { getUserPlan } from "../services/finance/user-plan.js";
 
 // License checker — auto-runs on import, checks every 24h
 import "../core/license.checker.js";
@@ -53,11 +54,7 @@ class App {
   }
 
   getCurrentPlan() {
-    try {
-      return localStorage.getItem("besafe:user-plan") || "personal";
-    } catch (_error) {
-      return "personal";
-    }
+    return getUserPlan();
   }
 
   async init() {

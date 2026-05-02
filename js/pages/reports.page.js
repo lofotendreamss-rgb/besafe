@@ -2,14 +2,7 @@ import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
 import { generateReportPDF, generateSavedDocumentPDF } from "../utils/pdf-generator.js";
 import { getCurrencySymbol, getUserCurrency } from "../services/finance/currency.js";
-
-function getUserPlan() {
-  try {
-    return localStorage.getItem("besafe:user-plan") || "personal";
-  } catch (_error) {
-    return "personal";
-  }
-}
+import { getUserPlan } from "../services/finance/user-plan.js";
 
 function isBusinessPlan() {
   return getUserPlan() === "business";
@@ -30,6 +23,16 @@ export class ReportsPage {
     this.container = null;
 
     this.handleClick = this.handleClick.bind(this);
+
+    // A3 cross-page cache invalidation. setUserPlan() in user-plan.js
+    // dispatches `user-plan:changed` after a successful write. Refresh
+    // when active so the new mode's data renders without navigation.
+    this._boundUserPlanChanged = () => {
+      if (this.container) {
+        this.refresh();
+      }
+    };
+    document.addEventListener("user-plan:changed", this._boundUserPlanChanged);
   }
 
   getTranslator() {

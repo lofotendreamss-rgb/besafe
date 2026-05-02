@@ -29,6 +29,17 @@ export function initCategoriesPage(dependencies = {}) {
         });
       }
 
+      if (!this._userPlanListenerAdded) {
+        this._userPlanListenerAdded = true;
+
+        document.addEventListener("user-plan:changed", async (event) => {
+          const newPlan = event.detail?.plan;
+          if (!newPlan) return;
+          this.setPlan(newPlan);
+          await this.onAfterEnter();
+        });
+      }
+
       this.state = this.createInitialState();
       return true;
     },

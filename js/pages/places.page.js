@@ -33,6 +33,19 @@ export class PlacesPage {
     this.handleClick = this.handleClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     console.log("[PlacesPage] constructor loaded");
+
+    // A3 cross-page cache invalidation. setUserPlan() in user-plan.js
+    // dispatches `user-plan:changed`. When the page is active, refresh
+    // so the new mode's data renders without navigation.
+    this._boundUserPlanChanged = (event) => {
+      const newPlan = event.detail?.plan;
+      if (!newPlan) return;
+      this.setPlan(newPlan);
+      if (this.getPageRoot()) {
+        this.refresh();
+      }
+    };
+    document.addEventListener("user-plan:changed", this._boundUserPlanChanged);
   }
 
   setPlan(plan) {

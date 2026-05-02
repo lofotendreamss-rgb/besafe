@@ -136,6 +136,14 @@ export async function checkLicenseStatus() {
         break;
     }
 
+    // Cache license plan separately from status. plan distinguishes
+    // Personal-licensed vs Business-licensed users (used by Mode
+    // Separation A3 — handlePlanSwitchClick gates Personal users from
+    // toggling into Business mode without an upgrade).
+    if (data.plan === "personal" || data.plan === "business") {
+      localStorage.setItem("besafe_license_plan", data.plan);
+    }
+
     localStorage.setItem("besafe_license_last_check", Date.now().toString());
   } catch (err) {
     console.error("[License] Verification failed:", err.message);
@@ -247,6 +255,22 @@ function showDeviceLimitError(maxDevices, currentDevices) {
 
 export function isReadOnly() {
   return _licenseStatus === "read_only" || _licenseStatus === "expired";
+}
+
+/**
+ * Read the user's license tier (what they're entitled to).
+ * Distinguishes from getUserPlan() which is the active UI mode.
+ * Defaults to "personal" for free tier / unlicensed / fetch errors —
+ * the conservative bucket that triggers the upgrade modal in A3 gating.
+ *
+ * @returns {"personal"|"business"}
+ */
+export function getLicensePlan() {
+  try {
+    const stored = localStorage.getItem("besafe_license_plan");
+    if (stored === "business" || stored === "personal") return stored;
+  } catch {}
+  return "personal";
 }
 
 function setReadOnlyMode(enabled) {
