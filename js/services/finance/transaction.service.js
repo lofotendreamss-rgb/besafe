@@ -1,5 +1,6 @@
 import { getUserCurrency } from "./currency.js";
 import { getUserPlan, isValidPlan } from "./user-plan.js";
+import { filterByMode } from "../data/local.db.js";
 
 export class TransactionService {
   constructor({ apiService } = {}) {
@@ -1286,13 +1287,20 @@ export class TransactionService {
     };
   }
 
-  async getSavedCalculations() {
+  async getSavedCalculations(modeArg) {
     if (!this.apiService || typeof this.apiService.request !== "function") {
       return [];
     }
 
+    // Phase 4+ Mode Separation (Sesija A2): scope to active plan
+    // mode unless caller explicitly passes a mode arg (pass null
+    // for unfiltered admin/debug paths). Q5 of mode separation
+    // principle — Saved Calculations are mode-bucketed too.
+    const mode = arguments.length > 0 ? modeArg : getUserPlan();
+
     const items = await this.apiService.request("/api/saved-calculations");
-    return Array.isArray(items) ? items : [];
+    if (!Array.isArray(items)) return [];
+    return filterByMode(items, mode);
   }
 
   async createSavedCalculation(payload = {}) {

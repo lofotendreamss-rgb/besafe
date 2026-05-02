@@ -1,3 +1,6 @@
+import { filterByMode } from "../data/local.db.js";
+import { getUserPlan } from "./user-plan.js";
+
 export class FinancialEngine {
   constructor({ transactionService } = {}) {
     this.transactionService = transactionService;
@@ -541,20 +544,32 @@ export class FinancialEngine {
   async getReportSummary(period = "currentMonth", options = {}) {
     this.ensureTransactionService();
 
+    // Phase 4+ Mode Separation (Sesija A2): scope to active plan
+    // mode unless caller explicitly passes options.mode (including
+    // null/undefined for unfiltered, e.g., admin/debug paths).
+    const mode = options.hasOwnProperty("mode") ? options.mode : getUserPlan();
+
     const rawTransactions = await this.transactionService.getTransactions();
-    const safeTransactions = Array.isArray(rawTransactions)
-      ? rawTransactions.map((transaction) => this.normalizeTransaction(transaction))
+    const filteredTransactions = filterByMode(rawTransactions, mode);
+    const safeTransactions = Array.isArray(filteredTransactions)
+      ? filteredTransactions.map((transaction) => this.normalizeTransaction(transaction))
       : [];
 
     return this.buildReportSummary(safeTransactions, period, options);
   }
 
-  async getSummary() {
+  async getSummary(modeArg) {
     this.ensureTransactionService();
 
+    // Phase 4+ Mode Separation (Sesija A2): scope to active plan
+    // mode unless caller explicitly passes a mode arg. Pass null
+    // explicitly for unfiltered (admin/debug only).
+    const mode = arguments.length > 0 ? modeArg : getUserPlan();
+
     const rawTransactions = await this.transactionService.getTransactions();
-    const safeTransactions = Array.isArray(rawTransactions)
-      ? rawTransactions.map((transaction) => this.normalizeTransaction(transaction))
+    const filteredTransactions = filterByMode(rawTransactions, mode);
+    const safeTransactions = Array.isArray(filteredTransactions)
+      ? filteredTransactions.map((transaction) => this.normalizeTransaction(transaction))
       : [];
 
     return this.buildSummaryFromTransactions(safeTransactions);

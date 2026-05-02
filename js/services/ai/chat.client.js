@@ -83,6 +83,7 @@
 
 import { createTranslator, getCurrentLanguage } from "../../core/i18n.js";
 import { buildFinanceContext } from "./finance.context.js";
+import { getUserPlan } from "../finance/user-plan.js";
 
 // ============================================================
 // i18n helpers — modulio private. Ta pati semantika kaip
@@ -260,7 +261,9 @@ export async function sendChatMessage(text) {
   // arba viršija 50 KB cap'ą).
   let financeContext = null;
   try {
-    financeContext = buildFinanceContext();
+    // Phase 4+ Mode Separation (Sesija A2): scope finance context
+    // to active plan mode so AI never sees cross-mode data.
+    financeContext = buildFinanceContext({ mode: getUserPlan() });
   } catch (err) {
     console.warn("[ChatClient] finance context build failed:", err);
     financeContext = null;

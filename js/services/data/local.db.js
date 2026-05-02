@@ -54,6 +54,33 @@ function writeCollection(key, data) {
   }
 }
 
+/**
+ * Filter a records array by `mode` field. Phase 4+ Mode Separation
+ * (Sesija A2, 2026-05-01). Used by aggregator / context-builder
+ * functions to scope their output to the user's active plan
+ * (Personal vs Business).
+ *
+ * Contract:
+ *   • mode = null/undefined → no filter, returns array as-is.
+ *     Used by runModeMigration which must see ALL records to
+ *     backfill the field. Callers that want filtering MUST pass
+ *     a mode argument explicitly.
+ *   • mode = "personal" | "business" → returns records whose
+ *     `mode` field matches. Records without mode are excluded
+ *     (they should have been backfilled by runModeMigration at
+ *     boot, so missing mode is anomalous).
+ *   • Non-array input → empty array (defensive).
+ *
+ * @param {Array} records
+ * @param {string|null|undefined} mode
+ * @returns {Array}
+ */
+export function filterByMode(records, mode) {
+  if (mode == null) return Array.isArray(records) ? records : [];
+  if (!Array.isArray(records)) return [];
+  return records.filter((r) => r?.mode === mode);
+}
+
 // ============================================================
 // Transactions
 // ============================================================
@@ -229,8 +256,15 @@ export function deleteSavedCalculation(id) {
 // Summary
 // ============================================================
 
-export function getSummary() {
-  const transactions = getTransactions();
+/**
+ * Phase 4+ Mode Separation (Sesija A2): accepts optional `mode` arg
+ * to scope the summary to Personal or Business records. When mode
+ * is null/undefined, returns aggregate over ALL records (legacy
+ * behavior — used by callers that haven't been mode-aware yet,
+ * e.g., direct apiService.getSummary callers without a mode hint).
+ */
+export function getSummary(mode) {
+  const transactions = filterByMode(getTransactions(), mode);
   const income = transactions
     .filter((t) => t.type === "income")
     .reduce((s, t) => s + Number(t.amount || 0), 0);

@@ -24,7 +24,9 @@ import {
   getTransactions,
   getCategories,
   getPlaces,
+  filterByMode,
 } from "../data/local.db.js";
+import { getUserPlan } from "../finance/user-plan.js";
 
 // ============================================================
 // Constants
@@ -235,14 +237,20 @@ export function buildFinanceContext(options = {}) {
     ? options.currency
     : DEFAULT_CURRENCY;
 
+  // Phase 4+ Mode Separation (Sesija A2): scope to active plan mode
+  // unless caller explicitly passes options.mode (including null for
+  // unfiltered, used by admin/debug paths). Q4 of mode separation
+  // principle — AI sees only active mode's data, never cross-mode.
+  const mode = options && options.hasOwnProperty("mode") ? options.mode : getUserPlan();
+
   try {
     const rawTx   = getTransactions();
     const rawCat  = getCategories();
     const rawPl   = getPlaces();
 
-    const transactions = Array.isArray(rawTx)  ? rawTx  : [];
-    const categories   = Array.isArray(rawCat) ? rawCat : [];
-    const places       = Array.isArray(rawPl)  ? rawPl  : [];
+    const transactions = filterByMode(Array.isArray(rawTx)  ? rawTx  : [], mode);
+    const categories   = filterByMode(Array.isArray(rawCat) ? rawCat : [], mode);
+    const places       = filterByMode(Array.isArray(rawPl)  ? rawPl  : [], mode);
 
     // O(1) lookups by id.
     const customById = new Map(
