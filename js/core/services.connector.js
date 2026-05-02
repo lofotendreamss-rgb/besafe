@@ -174,28 +174,18 @@ export async function getFinancialInsights() {
 }
 
 /**
- * Get spending alerts from FinanceAutopilot data.
- * Returns category spending breakdown.
+ * Get spending alerts. Currently only forecast risk — situation /
+ * spending insights are already returned by getFinancialInsights()
+ * via advisor.getInsights(), so re-pushing them here would render
+ * duplicate cards on Home (Bug #1, A4 smoke 2026-05-02).
  */
 export async function getSpendingAlerts() {
   const alerts = [];
 
   try {
-    // Use the advisor to get spending insights
     const advisor = registry.getOptional("advisor");
-    if (advisor) {
-      const spending = await advisor.getSpendingInsights();
-      if (spending && spending.status !== "not_enough_data") {
-        alerts.push({
-          type: spending.status,
-          observation: spending.observation || "",
-          suggestion: spending.suggestion || "",
-          tone: spending.tone || "neutral"
-        });
-      }
-    }
 
-    // Add prediction risk if available
+    // Forecast risk — genuinely unique to alerts; not covered by getInsights().
     if (advisor) {
       const predictions = await advisor.getPredictions();
       if (predictions && predictions.risk) {

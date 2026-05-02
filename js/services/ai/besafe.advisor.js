@@ -447,16 +447,16 @@ export function createAIAdvisor(dependencies = {}) {
     const situation = buildSituationGuidance(summary);
     const category = buildCategoryGuidance(summary);
 
-    return [
-      {
-        type: situation.status,
-        text: situation
-      },
-      {
-        type: category.status,
-        text: category
-      }
-    ];
+    const items = [{ type: situation.status, text: situation }];
+
+    // Skip category when situation already covers "not_enough_data" — the
+    // shared status would render duplicate cards after Home translation
+    // (Bug #1 Layer 2, A4 smoke 2026-05-02).
+    if (situation.status !== "not_enough_data" || category.status !== "not_enough_data") {
+      items.push({ type: category.status, text: category });
+    }
+
+    return items;
   }
 
   /* =====================
