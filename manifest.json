@@ -1,15 +1,15 @@
 {
   "id": "/",
-  "name": "BeSafe - Privatus biudžeto asistentas",
+  "name": "BeSafe — Your data. Always.",
   "short_name": "BeSafe",
-  "description": "Saugokite čekius, sekite išlaidas ir gaukite priminimus apie garantijas",
-  "lang": "lt",
+  "description": "Personal finance management. Your data stays on your device — no servers, no tracking.",
+  "lang": "en",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f8f9fa",
-  "theme_color": "#007aff",
+  "background_color": "#080d0b",
+  "theme_color": "#2ecc8a",
 
   "categories": [
     "finance",
