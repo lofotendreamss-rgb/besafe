@@ -297,7 +297,6 @@ class App {
       placesModule,
       categoriesModule,
       settingsModule,
-      onboardingModule,
     ] = await Promise.all([
       import("../pages/home.page.js"),
       import("../pages/transactions.page.js"),
@@ -306,7 +305,6 @@ class App {
       import("../pages/places.page.js"),
       import("../pages/categories.page.js"),
       import("../pages/settings.page.js"),
-      import("../pages/onboarding.page.js"),
     ]);
 
     const { HomePage } = homeModule;
@@ -316,7 +314,6 @@ class App {
     const { PlacesPage } = placesModule;
     const { initCategoriesPage } = categoriesModule;
     const { SettingsPage } = settingsModule;
-    const { initOnboardingPage, isOnboardingDone } = onboardingModule;
 
     if (typeof HomePage !== "function") {
       throw new Error("HomePage export is invalid");
@@ -406,16 +403,9 @@ class App {
 
         this.settingsPage = new SettingsPage();
         this.navigation.registerPage("settings", this.settingsPage);
-
-        this.onboardingPage = initOnboardingPage({ navigation: this.navigation });
-        this.navigation.registerPage("onboarding", this.onboardingPage);
-        this._isOnboardingDone = isOnboardingDone;
       }
 
       getPreferredStartPage() {
-        if (typeof this._isOnboardingDone === "function" && !this._isOnboardingDone()) {
-          return "onboarding";
-        }
         if (
           this.navigation &&
           typeof this.navigation.getPreferredStartPage === "function"
@@ -613,24 +603,14 @@ window.__besafe = {
   triggerAIInsightRender
 };
 
-function loadOnboardingGuide() {
-  import('../ui/onboarding-guide.js').then(m => {
-    if (typeof m.showOnboardingGuide === 'function') {
-      setTimeout(() => m.showOnboardingGuide(), 2000);
-    }
-  }).catch(() => {});
-}
-
 if (document.readyState === "loading") {
   document.addEventListener(
     "DOMContentLoaded",
     () => {
       app.init();
-      loadOnboardingGuide();
     },
     { once: true }
   );
 } else {
   app.init();
-  loadOnboardingGuide();
 }

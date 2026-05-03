@@ -219,11 +219,10 @@
               var selectedBtn = document.querySelector(".splash__lang-btn.is-selected");
               var selectedLang = selectedBtn ? selectedBtn.getAttribute("data-lang") : defaultLang;
 
-              // Išsaugoti kalbą ir onboarding statusą
+              // Išsaugoti kalbą
               try {
                 localStorage.setItem("besafe_lang", selectedLang);
                 localStorage.setItem("besafe:language", selectedLang);
-                localStorage.setItem("besafe_onboarding_done", "true");
               } catch(e) {}
 
               // Fade out
@@ -328,13 +327,6 @@
           aria-label="Settings page"
         ></section>
 
-        <section
-          id="page-onboarding"
-          class="page-slot page-slot--onboarding"
-          hidden
-          data-dynamic="true"
-          aria-label="Onboarding page"
-        ></section>
       </div>
 
       <nav id="app-nav" class="section app-nav app-nav--shell" aria-label="Primary navigation">
@@ -886,7 +878,6 @@
         // Save license key
         try {
           localStorage.setItem("besafe_license_key", key);
-          localStorage.setItem("besafe_onboarding_done", "true");
         } catch(e) {}
 
         // Show notification
