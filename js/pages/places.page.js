@@ -395,50 +395,6 @@ export class PlacesPage {
       .join("");
   }
 
-  renderPlanSummary() {
-    const isBusiness = this.isBusinessPlan();
-
-    const eyebrow = isBusiness
-      ? this.t("places.plan.businessEyebrow", "Business structure")
-      : this.t("places.plan.personalEyebrow", "Simple places");
-
-    const title = isBusiness
-      ? this.t("places.plan.businessTitle", "Places become part of your work structure")
-      : this.t("places.plan.personalTitle", "Your places");
-
-    const subtitle = isBusiness
-      ? this.t(
-          "places.plan.businessText",
-          "In Business mode, places help you connect financial records to real sources and prepare clearer comparisons later."
-        )
-      : this.t(
-          "places.plan.personalText",
-          "Personal mode keeps places simple: add only the real places you use so records stay clearer without extra structure work."
-        );
-
-    return `
-      <section class="section section--card" aria-label="${this.escapeHtml(
-        title
-      )}">
-        <div class="home-section-header home-section-header--compact">
-          <p class="home-section-header__eyebrow">
-            ${this.escapeHtml(eyebrow)}
-          </p>
-
-         <h3 class="home-section-header__title">
-           ${this.escapeHtml(
-             this.t("places.empty.title", "Add your first place")
-           )}
-         </h3>
-
-          <p class="home-section-header__subtitle">
-            ${this.escapeHtml(subtitle)}
-          </p>
-        </div>
-      </section>
-    `;
-  }
-
   renderCreateForm() {
     if (!this.isCreateOpen) {
       return "";
@@ -856,7 +812,6 @@ export class PlacesPage {
 
   renderContent() {
     return `
-      ${!this.currentPlaces.length ? this.renderPlanSummary() : ""}
       ${this.isCreateOpen ? this.renderCreateForm() : ""}
       ${!this.isCreateOpen ? this.renderSuccessSummary() : ""}
       ${this.currentPlaces.length ? this.renderPlacesList() : this.renderEmptyState()}

@@ -1247,10 +1247,11 @@ export class QuickActions {
     if (existing) existing.remove();
 
     const titleLabel = this.t("quickActions.common.createPlaceLabel", "Sukurti vietą");
-    const namePlaceholder = this.t("quickActions.common.placeNamePlaceholder", "Vietos pavadinimas");
-    const saveLabel = this.t("categories.actions.save", "Išsaugoti");
+    const nameLabel = this.t("places.form.nameLabel", "Vietos pavadinimas");
+    const namePlaceholder = this.t("places.form.namePlaceholder", "Įrašykite vietos pavadinimą");
+    const saveLabel = this.t("places.actions.save", "Išsaugoti vietą");
     const cancelLabel = this.t("quickActions.common.cancelLabel", "Atšaukti");
-    const typeLabelText = this.t("categories.form.typeLabel", "Tipas");
+    const typeLabelText = this.t("places.form.typeLabel", "Vietos tipas");
 
     const types = [
       ["store",     this.t("places.types.store",     "Parduotuvė")],
@@ -1301,7 +1302,7 @@ export class QuickActions {
 
         <div class="quick-action-form">
           <label class="quick-action-form__field">
-            <span class="quick-action-form__label">${escapeHtml(namePlaceholder)}</span>
+            <span class="quick-action-form__label">${escapeHtml(nameLabel)}</span>
             <input
               class="quick-action-form__input"
               type="text"
