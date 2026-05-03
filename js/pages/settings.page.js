@@ -124,6 +124,13 @@ export class SettingsPage {
     );
     const saveText = this.t("settings.save.button", "Save changes");
 
+    const privacyLabel    = this.t("legal.privacy", "Privacy");
+    const termsLabel      = this.t("legal.terms", "Terms");
+    const langDisclaimer  = this.t(
+      "legal.langDisclaimer",
+      "Currently available in English only"
+    );
+
     const options = SUPPORTED_CURRENCIES.map((c) => {
       const name = getCurrencyName(c.code, lang);
       const selected = c.code === current ? " selected" : "";
@@ -164,6 +171,15 @@ export class SettingsPage {
             aria-live="polite"
           ></span>
         </div>
+
+        <section class="settings-page__section settings-page__section--legal" aria-label="${this.escapeHtml(privacyLabel)} / ${this.escapeHtml(termsLabel)}">
+          <div class="settings-page__legal-links">
+            <a href="/privacy.html" class="settings-page__legal-link">${this.escapeHtml(privacyLabel)}</a>
+            <span class="settings-page__legal-separator" aria-hidden="true">·</span>
+            <a href="/terms.html" class="settings-page__legal-link">${this.escapeHtml(termsLabel)}</a>
+          </div>
+          <p class="settings-page__legal-disclaimer">${this.escapeHtml(langDisclaimer)}</p>
+        </section>
       </div>
     `;
   }

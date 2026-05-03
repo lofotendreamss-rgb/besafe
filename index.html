@@ -430,6 +430,13 @@
     </section>
   </main>
 
+  <footer class="legal-footer" role="contentinfo">
+    <a id="legal-footer-privacy" href="/privacy.html" class="legal-footer__link">Privacy</a>
+    <span class="legal-footer__separator" aria-hidden="true">·</span>
+    <a id="legal-footer-terms" href="/terms.html" class="legal-footer__link">Terms</a>
+    <span id="legal-footer-disclaimer" class="legal-footer__lang-note">Currently available in English only</span>
+  </footer>
+
   <script type="module">
     import {
       createTranslator,
@@ -680,6 +687,23 @@
           langLt.setAttribute(
             "aria-label",
             t("language.option.lt.aria", "Choose Lithuanian language")
+          );
+        }
+
+        const legalPrivacy = document.getElementById("legal-footer-privacy");
+        const legalTerms = document.getElementById("legal-footer-terms");
+        const legalDisclaimer = document.getElementById("legal-footer-disclaimer");
+
+        if (legalPrivacy) {
+          legalPrivacy.textContent = t("legal.privacy", "Privacy");
+        }
+        if (legalTerms) {
+          legalTerms.textContent = t("legal.terms", "Terms");
+        }
+        if (legalDisclaimer) {
+          legalDisclaimer.textContent = t(
+            "legal.langDisclaimer",
+            "Currently available in English only"
           );
         }
       }
