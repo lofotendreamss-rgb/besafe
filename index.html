@@ -847,13 +847,11 @@
   </script>
 
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/service-worker.js")
-          .then(reg => console.log("[SW] Registered:", reg.scope))
-          .catch(err => console.warn("[SW] Registration failed:", err));
-      });
-    }
+    // Service worker registration removed — service-worker.OFF.js
+    // exists on disk but its asset list references deprecated files
+    // (js/store.selector.js, js/stores.manager.js, js/app/receipt_ocr.js,
+    // js/language.js, js/notification.center.js with wrong path). Reactivation
+    // requires asset list rewrite. See backlog #31 + audit BLOCKER #5.6.
 
     // Listen for besafe:// protocol activation
     if (window.electronAPI && typeof window.electronAPI.onLicenseActivate === "function") {
