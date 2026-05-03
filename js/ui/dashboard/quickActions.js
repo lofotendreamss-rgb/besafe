@@ -1134,7 +1134,7 @@ export class QuickActions {
 
     modal.innerHTML = `
       <div
-        style="position:absolute;inset:0;"
+        style="position:absolute;inset:0;background:rgba(3,8,10,0.58);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);"
         data-inline-category-modal-backdrop
       ></div>
       <div
@@ -1277,7 +1277,7 @@ export class QuickActions {
 
     modal.innerHTML = `
       <div
-        style="position:absolute;inset:0;"
+        style="position:absolute;inset:0;background:rgba(3,8,10,0.58);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);"
         data-inline-place-modal-backdrop
       ></div>
       <div
