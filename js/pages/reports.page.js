@@ -1516,7 +1516,7 @@ export class ReportsPage {
     if (!doc) return;
 
     const locale = getCurrentLanguage() || "en";
-    generateSavedDocumentPDF(doc, locale);
+    generateSavedDocumentPDF(doc, locale, this.t.bind(this));
   }
 
   async exportSavedDocument(documentId) {
@@ -1604,6 +1604,7 @@ export class ReportsPage {
       transactions,
       locale,
       currency,
+      t: this.t.bind(this),
     });
   }
 
@@ -1613,7 +1614,7 @@ export class ReportsPage {
     if (!doc) return;
 
     const locale = getCurrentLanguage() || "en";
-    generateSavedDocumentPDF(doc, locale);
+    generateSavedDocumentPDF(doc, locale, this.t.bind(this));
   }
 
   renderSavedDocumentsSection() {
