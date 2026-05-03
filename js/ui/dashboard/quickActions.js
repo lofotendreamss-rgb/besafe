@@ -1509,6 +1509,11 @@ export class QuickActions {
         <span class="quick-action-form__label">${escapeHtml(
           this.copy.common.place
         )}</span>
+        <p class="quick-action-form__hint" style="margin:2px 0 6px">
+          ${escapeHtml(action === "income"
+            ? this.t("quickActions.form.placeFilterHintIncome", "Showing only income places.")
+            : this.t("quickActions.form.placeFilterHintExpense", "Showing only expense places."))}
+        </p>
         <select
           class="quick-action-form__input"
           name="placeId"
@@ -1584,6 +1589,11 @@ export class QuickActions {
         <span class="quick-action-form__label">${escapeHtml(
           this.copy.common.category
         )}</span>
+        <p class="quick-action-form__hint" style="margin:2px 0 6px">
+          ${escapeHtml(action === "income"
+            ? this.t("quickActions.form.categoryFilterHintIncome", "Showing only income categories.")
+            : this.t("quickActions.form.categoryFilterHintExpense", "Showing only expense categories."))}
+        </p>
         ${hasCategories ? `
           <div class="quick-actions-categories" data-category-options>
             ${this.renderCategories(action, selected)}
