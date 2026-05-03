@@ -823,7 +823,6 @@ pt:{
 
 function setLang(lang){
   if(!T[lang])lang="en";
-  if(window.gtag)gtag('event','language_change',{language:lang});
   currentLang=lang;
   localStorage.setItem("besafe_website_lang",lang);
   document.documentElement.lang=lang;
