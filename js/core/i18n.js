@@ -194,6 +194,7 @@ const dictionaries = {
     "home.places.topSignal": "Top expense place this period: {name}.",
     "home.places.topSignal.business": "Top expense place this period: {name}. You can use this as a calm starting point for a closer work review.",
     
+    "home.business.title": "Review your financial activity in more detail.",
     "home.business.context.aria": "Business context",
     "home.business.context.eyebrow": "Business context",
 
@@ -1083,6 +1084,7 @@ const dictionaries = {
     "home.places.topSignal": "Didžiausia išlaidų vieta šiuo laikotarpiu: {name}.",
     "home.places.topSignal.business": "Didžiausia išlaidų vieta šiuo laikotarpiu: {name}. Tai gali būti ramus atskaitos taškas tolimesnei peržiūrai.",
     
+    "home.business.title": "Peržiūrėkite savo finansinę veiklą detaliau.",
     "home.business.context.aria": "Verslo kontekstas",
     "home.business.context.eyebrow": "Verslo kontekstas",
 
@@ -2116,6 +2118,7 @@ const dictionaries = {
     "home.places.subtitle.business": "Twoja aktywność jest powiązana z miejscami, takimi jak sklepy, banki lub usługi. Możesz je przeglądać w raportach lub wykorzystywać w obliczeniach.",
     "home.places.topSignal": "Główne miejsce wydatków w tym okresie: {name}.",
     "home.places.topSignal.business": "Główne miejsce wydatków w tym okresie: {name}. Możesz to wykorzystać jako spokojny punkt wyjścia do bliższego przeglądu pracy.",
+    "home.business.title": "Przejrzyj swoją aktywność finansową bardziej szczegółowo.",
     "home.business.context.aria": "Kontekst biznesowy",
     "home.business.context.eyebrow": "Kontekst biznesowy",
     "home.business.context.title.positive": "Twój obecny przepływ daje Ci przestrzeń, by spokojnie przejrzeć kolejny krok w pracy.",
@@ -2745,6 +2748,7 @@ const dictionaries = {
     "home.places.subtitle.business": "Ihre Aktivität ist mit Orten wie Geschäften, Banken oder Dienstleistungen verbunden. Sie können diese in Berichten einsehen oder in Berechnungen verwenden.",
     "home.places.topSignal": "Hauptausgabenort in diesem Zeitraum: {name}.",
     "home.places.topSignal.business": "Hauptausgabenort in diesem Zeitraum: {name}. Sie können dies als ruhigen Ausgangspunkt für eine genauere Arbeitsüberprüfung nutzen.",
+    "home.business.title": "Überprüfen Sie Ihre finanzielle Aktivität im Detail.",
     "home.business.context.aria": "Geschäftskontext",
     "home.business.context.eyebrow": "Geschäftskontext",
     "home.business.context.title.positive": "Ihr aktueller Fluss gibt Ihnen Raum, den nächsten Arbeitsschritt ruhig zu überprüfen.",
@@ -3374,6 +3378,7 @@ const dictionaries = {
     "home.places.subtitle.business": "Tu actividad está conectada con lugares como tiendas, bancos o servicios. Puedes revisarlos en informes o usarlos en cálculos.",
     "home.places.topSignal": "Principal lugar de gastos en este período: {name}.",
     "home.places.topSignal.business": "Principal lugar de gastos en este período: {name}. Puedes usar esto como punto de partida tranquilo para una revisión más detallada del trabajo.",
+    "home.business.title": "Revisa tu actividad financiera con más detalle.",
     "home.business.context.aria": "Contexto empresarial",
     "home.business.context.eyebrow": "Contexto empresarial",
     "home.business.context.title.positive": "Tu flujo actual te da espacio para revisar el siguiente paso de trabajo con calma.",
@@ -4003,6 +4008,7 @@ const dictionaries = {
     "home.places.subtitle.business": "Ваша активность связана с местами, такими как магазины, банки или услуги. Вы можете просмотреть их в отчётах или использовать в расчётах.",
     "home.places.topSignal": "Основное место расходов за этот период: {name}.",
     "home.places.topSignal.business": "Основное место расходов за этот период: {name}. Вы можете использовать это как спокойную отправную точку для более детального рабочего обзора.",
+    "home.business.title": "Просмотрите свою финансовую деятельность подробнее.",
     "home.business.context.aria": "Бизнес-контекст",
     "home.business.context.eyebrow": "Бизнес-контекст",
     "home.business.context.title.positive": "Ваш текущий поток даёт вам возможность спокойно рассмотреть следующий рабочий шаг.",
@@ -4462,6 +4468,7 @@ const dictionaries = {
     "home.places.subtitle.business": "Aktiviteten din er knyttet til steder som butikker, banker eller tjenester. Du kan gjennomgå dem i rapporter eller bruke dem i beregninger.",
     "home.places.topSignal": "Topp utgiftssted denne perioden: {name}.",
     "home.places.topSignal.business": "Topp utgiftssted denne perioden: {name}. Du kan bruke dette som et rolig utgangspunkt for en nærmere arbeidsgjennomgang.",
+    "home.business.title": "Gå gjennom din økonomiske aktivitet mer detaljert.",
     "home.business.context.aria": "Bedriftskontekst",
     "home.business.context.eyebrow": "Bedriftskontekst",
     "home.business.context.title.positive": "Din nåværende flyt gir deg rom til å gjennomgå neste arbeidssteg rolig.",
@@ -5095,6 +5102,7 @@ const dictionaries = {
     "home.places.subtitle.business": "Din aktivitet är kopplad till platser som butiker, banker eller tjänster. Du kan granska dem i rapporter eller använda dem i beräkningar.",
     "home.places.topSignal": "Topp utgiftsplats denna period: {name}.",
     "home.places.topSignal.business": "Topp utgiftsplats denna period: {name}. Du kan använda detta som en lugn utgångspunkt för en närmare arbetsgranskning.",
+    "home.business.title": "Granska din ekonomiska aktivitet mer detaljerat.",
     "home.business.context.aria": "Företagskontext",
     "home.business.context.eyebrow": "Företagskontext",
     "home.business.context.title.positive": "Ditt nuvarande flöde ger dig utrymme att lugnt granska nästa arbetssteg.",
@@ -5728,6 +5736,7 @@ const dictionaries = {
     "home.places.subtitle.business": "あなたの活動は、店舗、銀行、サービスなどの場所に関連しています。レポートで確認したり、計算に使用したりできます。",
     "home.places.topSignal": "この期間のトップ支出場所：{name}。",
     "home.places.topSignal.business": "この期間のトップ支出場所：{name}。これを落ち着いた出発点として、より詳細な業務レビューに活用できます。",
+    "home.business.title": "財務活動をより詳しく確認してください。",
     "home.business.context.aria": "ビジネスコンテキスト",
     "home.business.context.eyebrow": "ビジネスコンテキスト",
     "home.business.context.title.positive": "現在のフローは、次の業務ステップを落ち着いて検討する余裕を与えてくれます。",
@@ -6361,6 +6370,7 @@ const dictionaries = {
     "home.places.subtitle.business": "您的活动与商店、银行或服务等场所相关联。您可以在报告中查看或在计算中使用它们。",
     "home.places.topSignal": "本期最大支出场所：{name}。",
     "home.places.topSignal.business": "本期最大支出场所：{name}。您可以将此作为更详细工作审查的平和起点。",
+    "home.business.title": "请更详细地查看您的财务活动。",
     "home.business.context.aria": "商务上下文",
     "home.business.context.eyebrow": "商务上下文",
     "home.business.context.title.positive": "您当前的财务流让您有余地从容地审视下一个工作步骤。",
@@ -7015,6 +7025,7 @@ const dictionaries = {
     "home.places.topSignal": "Principal lieu de dépenses cette période : {name}.",
     "home.places.topSignal.business": "Principal lieu de dépenses cette période : {name}. Vous pouvez utiliser ceci comme point de départ serein pour un examen plus approfondi.",
 
+    "home.business.title": "Examinez votre activité financière plus en détail.",
     "home.business.context.aria": "Contexte business",
     "home.business.context.eyebrow": "Contexte business",
 
@@ -7872,6 +7883,7 @@ const dictionaries = {
     "home.places.topSignal": "Principale luogo di spesa in questo periodo: {name}.",
     "home.places.topSignal.business": "Principale luogo di spesa in questo periodo: {name}. Può usarlo come punto di partenza sereno per un esame più approfondito.",
 
+    "home.business.title": "Esamini la Sua attività finanziaria più in dettaglio.",
     "home.business.context.aria": "Contesto business",
     "home.business.context.eyebrow": "Contesto business",
 
@@ -8729,6 +8741,7 @@ const dictionaries = {
     "home.places.topSignal": "Головне місце витрат цього періоду: {name}.",
     "home.places.topSignal.business": "Головне місце витрат цього періоду: {name}. Ви можете використати це як спокійну відправну точку для детальнішого огляду.",
 
+    "home.business.title": "Перегляньте свою фінансову діяльність докладніше.",
     "home.business.context.aria": "Бізнес-контекст",
     "home.business.context.eyebrow": "Бізнес-контекст",
 
@@ -9595,6 +9608,7 @@ const dictionaries = {
     "home.places.topSignal": "Principal local de despesas neste período: {name}.",
     "home.places.topSignal.business": "Principal local de despesas neste período: {name}. Você pode usar isso como um ponto de partida tranquilo para uma revisão mais detalhada.",
 
+    "home.business.title": "Revise sua atividade financeira em mais detalhes.",
     "home.business.context.aria": "Contexto empresarial",
     "home.business.context.eyebrow": "Contexto empresarial",
 
