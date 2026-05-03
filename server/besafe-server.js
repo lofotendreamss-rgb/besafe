@@ -255,8 +255,21 @@ app.get("/app", (req, res) => {
 
 app.get("/app/*", (req, res) => {
   const filePath = path.join(appPath, req.params[0]);
+
+  // If the request looks like a static asset (has a known
+  // extension), do NOT fall back to index.html. Return 404 so the
+  // browser sees a real 404 instead of HTML masquerading as a JS
+  // module. SPA fallback is preserved for extension-less paths
+  // (client-side routes). #35 root cause fix.
+  const isAsset = /\.(js|mjs|css|json|map|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|otf|webp|webm|mp3|mp4|wasm)$/i.test(req.path);
+
   res.sendFile(filePath, (err) => {
-    if (err) res.sendFile(path.join(appPath, "index.html"));
+    if (!err) return;
+    if (isAsset) {
+      res.status(404).type("text/plain").send("Not Found");
+    } else {
+      res.sendFile(path.join(appPath, "index.html"));
+    }
   });
 });
 
