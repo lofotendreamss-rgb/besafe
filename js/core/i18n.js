@@ -267,9 +267,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "The situation looks stable right now.",
     "advisor.status.balanced.obs": "Income and expenses are currently very close.",
     "advisor.status.balanced.sug": "Review the latest expenses to keep the picture clear.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "A main expense category is not visible yet.",
-    "advisor.status.category.exp": "Keep recording entries accurately. A clearer category pattern should appear with more real data.",
     "advisor.status.unclear_category.obs": "A main expense category is not visible yet.",
     "advisor.status.unclear_category.exp": "The available data does not clearly show one dominant expense direction right now.",
     "advisor.status.unclear_category.sug": "Keep recording entries accurately. A clearer category pattern should appear with more real data.",
@@ -1182,9 +1179,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "Situacija šiuo metu atrodo stabili.",
     "advisor.status.balanced.obs": "Pajamos ir išlaidos šiuo metu yra labai artimos.",
     "advisor.status.balanced.sug": "Peržiūrėkite naujausias išlaidas, kad vaizdas liktų aiškus.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "Pagrindinė išlaidų kategorija dar nematoma.",
-    "advisor.status.category.exp": "Toliau tiksliai fiksuokite įrašus. Aiškesnis kategorijų modelis turėtų atsirasti su daugiau realių duomenų.",
     "advisor.status.unclear_category.obs": "Pagrindinė išlaidų kategorija dar nematoma.",
     "advisor.status.unclear_category.exp": "Turimi duomenys kol kas aiškiai nerodo vienos dominuojančios išlaidų krypties.",
     "advisor.status.unclear_category.sug": "Toliau tiksliai fiksuokite įrašus. Aiškesnis kategorijų modelis turėtų atsirasti su daugiau realių duomenų.",
@@ -2216,9 +2210,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "Sytuacja wygląda obecnie stabilnie.",
     "advisor.status.balanced.obs": "Przychody i wydatki są obecnie bardzo zbliżone.",
     "advisor.status.balanced.sug": "Przejrzyj ostatnie wydatki, aby obraz pozostał jasny.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "Główna kategoria wydatków nie jest jeszcze widoczna.",
-    "advisor.status.category.exp": "Kontynuuj dokładne zapisywanie wpisów. Wyraźniejszy wzorzec kategorii powinien pojawić się z większą ilością danych.",
     "advisor.status.unclear_category.obs": "Główna kategoria wydatków nie jest jeszcze widoczna.",
     "advisor.status.unclear_category.exp": "Dostępne dane nie wskazują jeszcze wyraźnie jednego dominującego kierunku wydatków.",
     "advisor.status.unclear_category.sug": "Kontynuuj dokładne zapisywanie wpisów. Wyraźniejszy wzorzec kategorii powinien pojawić się z większą ilością danych.",
@@ -2872,9 +2863,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "Die Situation sieht derzeit stabil aus.",
     "advisor.status.balanced.obs": "Einnahmen und Ausgaben liegen derzeit sehr nah beieinander.",
     "advisor.status.balanced.sug": "Überprüfen Sie die neuesten Ausgaben, um das Bild klar zu halten.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "Eine Hauptausgabenkategorie ist noch nicht erkennbar.",
-    "advisor.status.category.exp": "Erfassen Sie weiterhin Einträge genau. Ein klareres Kategoriemuster sollte mit mehr Daten erscheinen.",
     "advisor.status.unclear_category.obs": "Eine Hauptausgabenkategorie ist noch nicht sichtbar.",
     "advisor.status.unclear_category.exp": "Die verfügbaren Daten zeigen derzeit keine eindeutig dominierende Ausgabenrichtung.",
     "advisor.status.unclear_category.sug": "Erfassen Sie weiterhin Einträge genau. Ein klareres Kategoriemuster sollte mit mehr Daten erscheinen.",
@@ -3528,9 +3516,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "La situación parece estable en este momento.",
     "advisor.status.balanced.obs": "Los ingresos y los gastos están actualmente muy cerca.",
     "advisor.status.balanced.sug": "Revise los gastos más recientes para mantener el panorama claro.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "La categoría principal de gastos aún no es visible.",
-    "advisor.status.category.exp": "Siga registrando entradas con precisión. Un patrón de categorías más claro debería aparecer con más datos.",
     "advisor.status.unclear_category.obs": "Aún no se ve una categoría principal de gastos.",
     "advisor.status.unclear_category.exp": "Los datos disponibles aún no muestran claramente una dirección de gasto dominante.",
     "advisor.status.unclear_category.sug": "Sigue registrando entradas con precisión. Un patrón de categorías más claro debería aparecer con más datos reales.",
@@ -4184,9 +4169,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "Ситуация сейчас выглядит стабильно.",
     "advisor.status.balanced.obs": "Доходы и расходы в настоящее время очень близки.",
     "advisor.status.balanced.sug": "Просмотрите последние расходы, чтобы картина оставалась ясной.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "Основная категория расходов пока не видна.",
-    "advisor.status.category.exp": "Продолжайте точно записывать данные. Более чёткая картина категорий должна появиться с большим количеством данных.",
     "advisor.status.unclear_category.obs": "Основная категория расходов пока не видна.",
     "advisor.status.unclear_category.exp": "Имеющиеся данные пока не показывают одного доминирующего направления расходов.",
     "advisor.status.unclear_category.sug": "Продолжайте точно записывать данные. Более чёткая картина категорий должна появиться с большим количеством данных.",
@@ -4682,9 +4664,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "Situasjonen ser stabil ut akkurat nå.",
     "advisor.status.balanced.obs": "Inntekter og utgifter ligger for tiden veldig nær hverandre.",
     "advisor.status.balanced.sug": "Se gjennom de siste utgiftene for å holde bildet klart.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "En hovedutgiftskategori er ikke synlig ennå.",
-    "advisor.status.category.exp": "Fortsett å registrere poster nøyaktig. Et klarere kategorimønster bør dukke opp med mer data.",
     "advisor.status.unclear_category.obs": "En hovedkategori for utgifter er ennå ikke synlig.",
     "advisor.status.unclear_category.exp": "Tilgjengelige data viser ennå ikke tydelig én dominerende utgiftsretning.",
     "advisor.status.unclear_category.sug": "Fortsett å registrere poster nøyaktig. Et klarere kategorimønster bør dukke opp med mer reell data.",
@@ -5342,9 +5321,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "Situationen ser stabil ut just nu.",
     "advisor.status.balanced.obs": "Inkomster och utgifter ligger för närvarande mycket nära varandra.",
     "advisor.status.balanced.sug": "Granska de senaste utgifterna för att hålla bilden tydlig.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "En huvudsaklig utgiftskategori är inte synlig ännu.",
-    "advisor.status.category.exp": "Fortsätt att registrera poster noggrant. Ett tydligare kategorimönster bör framträda med mer data.",
     "advisor.status.unclear_category.obs": "En huvudkategori för utgifter syns inte ännu.",
     "advisor.status.unclear_category.exp": "Tillgängliga data visar ännu inte tydligt en dominerande utgiftsriktning.",
     "advisor.status.unclear_category.sug": "Fortsätt att registrera poster noggrant. Ett tydligare kategorimönster bör framträda med mer verklig data.",
@@ -6002,9 +5978,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "現在の状況は安定しています。",
     "advisor.status.balanced.obs": "現在、収入と支出はほぼ同じです。",
     "advisor.status.balanced.sug": "最新の支出を確認して、状況を明確に保ちましょう。",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "主な支出カテゴリはまだ見えていません。",
-    "advisor.status.category.exp": "正確に項目を記録し続けてください。より多くのデータでカテゴリパターンが明確になるはずです。",
     "advisor.status.unclear_category.obs": "主要な支出カテゴリーはまだ表示されていません。",
     "advisor.status.unclear_category.exp": "現在のデータでは、一つの主要な支出傾向がまだ明確には見えません。",
     "advisor.status.unclear_category.sug": "引き続き正確に項目を記録してください。より多くの実データでカテゴリパターンが明確になるはずです。",
@@ -6662,9 +6635,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "目前情况看起来稳定。",
     "advisor.status.balanced.obs": "目前收入和支出非常接近。",
     "advisor.status.balanced.sug": "查看最新的支出以保持清晰的状况。",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "主要支出类别尚不可见。",
-    "advisor.status.category.exp": "继续准确记录条目。随着更多数据的积累，更清晰的类别模式应该会出现。",
     "advisor.status.unclear_category.obs": "尚未显示主要支出类别。",
     "advisor.status.unclear_category.exp": "现有数据目前尚未清晰显示出一个主导的支出方向。",
     "advisor.status.unclear_category.sug": "继续准确记录条目。随着更多真实数据的积累，更清晰的类别模式应该会出现。",
@@ -7356,9 +7326,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "La situation semble stable pour le moment.",
     "advisor.status.balanced.obs": "Les revenus et les dépenses sont actuellement très proches.",
     "advisor.status.balanced.sug": "Examinez les dépenses les plus récentes pour garder une image claire.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "La catégorie principale de dépenses n'est pas encore visible.",
-    "advisor.status.category.exp": "Continuez à enregistrer les entrées avec précision. Un modèle de catégories plus clair devrait apparaître avec plus de données.",
     "advisor.status.unclear_category.obs": "Une catégorie principale de dépenses n'est pas encore visible.",
     "advisor.status.unclear_category.exp": "Les données disponibles ne montrent pas encore clairement une direction de dépense dominante.",
     "advisor.status.unclear_category.sug": "Continuez à enregistrer les entrées avec précision. Un modèle de catégories plus clair devrait apparaître avec plus de données réelles.",
@@ -8240,9 +8207,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "La situazione appare stabile in questo momento.",
     "advisor.status.balanced.obs": "Entrate e spese sono attualmente molto vicine.",
     "advisor.status.balanced.sug": "Esamina le spese più recenti per mantenere il quadro chiaro.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "La categoria principale di spesa non è ancora visibile.",
-    "advisor.status.category.exp": "Continua a registrare le voci con precisione. Un modello di categoria più chiaro dovrebbe emergere con più dati.",
     "advisor.status.unclear_category.obs": "Una categoria principale di spese non è ancora visibile.",
     "advisor.status.unclear_category.exp": "I dati disponibili non mostrano ancora chiaramente una direzione di spesa dominante.",
     "advisor.status.unclear_category.sug": "Continua a registrare le voci con precisione. Un modello di categoria più chiaro dovrebbe emergere con più dati reali.",
@@ -9124,9 +9088,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "Ситуація наразі виглядає стабільно.",
     "advisor.status.balanced.obs": "Доходи та витрати наразі дуже близькі.",
     "advisor.status.balanced.sug": "Перегляньте останні витрати, щоб картина залишалася ясною.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "Основна категорія витрат поки що не видна.",
-    "advisor.status.category.exp": "Продовжуйте точно записувати дані. Чіткіший шаблон категорій повинен з'явитися з більшою кількістю даних.",
     "advisor.status.unclear_category.obs": "Основна категорія витрат поки не видна.",
     "advisor.status.unclear_category.exp": "Наявні дані поки чітко не показують одного домінуючого напрямку витрат.",
     "advisor.status.unclear_category.sug": "Продовжуйте точно записувати дані. Чіткіший шаблон категорій повинен з'явитися з більшою кількістю реальних даних.",
@@ -10017,9 +9978,6 @@ const dictionaries = {
     "advisor.status.stable.sug": "A situação parece estável agora.",
     "advisor.status.balanced.obs": "Receitas e despesas estão muito próximas atualmente.",
     "advisor.status.balanced.sug": "Revise as últimas despesas para manter o panorama claro.",
-    // DEPRECATED 2026-05-02 — replaced by unclear_category.* (Variant C, i18n-cleanup session). Pašalinti atskirai 'i18n housekeeping' sesijai po grep audit'o, kad patvirtinti, kad nešaukiami iš jokio kelio.
-    "advisor.status.category.obs": "Uma categoria principal de despesas ainda não é visível.",
-    "advisor.status.category.exp": "Continue registrando entradas com precisão. Um padrão de categorias mais claro deve aparecer com mais dados reais.",
     "advisor.status.unclear_category.obs": "Uma categoria principal de despesas ainda não está visível.",
     "advisor.status.unclear_category.exp": "Os dados disponíveis ainda não mostram claramente uma direção de despesa dominante.",
     "advisor.status.unclear_category.sug": "Continue registrando entradas com precisão. Um padrão de categorias mais claro deve aparecer com mais dados reais.",
