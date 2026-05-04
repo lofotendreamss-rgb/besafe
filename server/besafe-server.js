@@ -1392,6 +1392,9 @@ app.post("/api/create-portal", async (req, res) => {
 // HEALTH & INFO
 // ============================================================
 
+// Liveness probe (no external deps). For full readiness check, use /api/health.
+app.get("/health", (_req, res) => res.json({ ok: true, ts: Date.now() }));
+
 app.get("/api/health", async (req, res) => {
   const checks = { server: "ok", stripe: "unknown", supabase: "unknown", email: "unknown" };
 
