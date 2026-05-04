@@ -46,7 +46,7 @@
  * — naudojamas Step 7 wiring'e, ne čia.)
  */
 
-import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
+import { createTranslator, getCurrentLanguage, setLanguage } from "../core/i18n.js";
 import {
   SUPPORTED_CURRENCIES,
   getCurrencyName,
@@ -59,9 +59,29 @@ import {
 // kad būtų nemalonu.
 const STATUS_CLEAR_DELAY_MS = 4000;
 
+// Language picker options (autoglyph labels — kalba savo kalba).
+// Mirrors splash screen language buttons in index.html.
+const LANGUAGE_OPTIONS = [
+  { code: "de", label: "Deutsch" },
+  { code: "en", label: "English" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "it", label: "Italiano" },
+  { code: "ja", label: "日本語" },
+  { code: "lt", label: "Lietuvių" },
+  { code: "no", label: "Norsk" },
+  { code: "pl", label: "Polski" },
+  { code: "pt", label: "Português" },
+  { code: "ru", label: "Русский" },
+  { code: "sv", label: "Svenska" },
+  { code: "uk", label: "Українська" },
+  { code: "zh", label: "中文" },
+];
+
 export class SettingsPage {
   constructor() {
     this.handleSaveClick = this.handleSaveClick.bind(this);
+    this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.statusClearTimer = null;
   }
 
@@ -157,6 +177,8 @@ export class SettingsPage {
           </p>
         </section>
 
+        ${this.renderLanguageSection()}
+
         <div class="settings-page__actions">
           <button
             type="button"
@@ -184,23 +206,116 @@ export class SettingsPage {
     `;
   }
 
+  renderLanguageSection() {
+    const currentLang = getCurrentLanguage();
+    const label = this.t("settings.language.label", "Language");
+    const help = this.t(
+      "settings.language.help",
+      "Changes apply immediately. Affects all interface text."
+    );
+
+    const options = LANGUAGE_OPTIONS.map((opt) => {
+      const selected = opt.code === currentLang ? " selected" : "";
+      return `<option value="${this.escapeHtml(opt.code)}"${selected}>${this.escapeHtml(opt.label)}</option>`;
+    }).join("");
+
+    return `
+      <section class="settings-page__section" aria-labelledby="settings-language-label">
+        <label
+          id="settings-language-label"
+          for="settings-language-picker"
+          class="settings-page__label"
+        >${this.escapeHtml(label)}</label>
+
+        <select
+          id="settings-language-picker"
+          class="settings-page__select"
+          aria-describedby="settings-language-help"
+        >${options}</select>
+
+        <p id="settings-language-help" class="settings-page__help">
+          ${this.escapeHtml(help)}
+        </p>
+      </section>
+    `;
+  }
+
   async onAfterEnter() {
-    const root = this.getPageRoot();
-    if (!root) return;
-    const saveBtn = root.querySelector("#settings-save-btn");
-    if (saveBtn) saveBtn.addEventListener("click", this.handleSaveClick);
+    this.wireListeners();
   }
 
   async onLeave() {
-    const root = this.getPageRoot();
-    if (root) {
-      const saveBtn = root.querySelector("#settings-save-btn");
-      if (saveBtn) saveBtn.removeEventListener("click", this.handleSaveClick);
-    }
+    this.unwireListeners();
     if (this.statusClearTimer !== null) {
       clearTimeout(this.statusClearTimer);
       this.statusClearTimer = null;
     }
+  }
+
+  wireListeners() {
+    const root = this.getPageRoot();
+    if (!root) return;
+    const saveBtn = root.querySelector("#settings-save-btn");
+    if (saveBtn) saveBtn.addEventListener("click", this.handleSaveClick);
+    const langSelect = root.querySelector("#settings-language-picker");
+    if (langSelect) langSelect.addEventListener("change", this.handleLanguageChange);
+  }
+
+  unwireListeners() {
+    const root = this.getPageRoot();
+    if (!root) return;
+    const saveBtn = root.querySelector("#settings-save-btn");
+    if (saveBtn) saveBtn.removeEventListener("click", this.handleSaveClick);
+    const langSelect = root.querySelector("#settings-language-picker");
+    if (langSelect) langSelect.removeEventListener("change", this.handleLanguageChange);
+  }
+
+  refreshSettingsContent() {
+    const root = this.getPageRoot();
+    if (!root) return;
+
+    // Preserve unsaved currency picker selection across the re-render.
+    const currentCurrency = root.querySelector("#settings-currency-picker")?.value;
+
+    this.unwireListeners();
+    root.innerHTML = this.render();
+
+    if (currentCurrency) {
+      const newCurrencySelect = root.querySelector("#settings-currency-picker");
+      if (newCurrencySelect) newCurrencySelect.value = currentCurrency;
+    }
+
+    this.wireListeners();
+  }
+
+  handleLanguageChange(event) {
+    const newLang = String(event?.target?.value || "").trim();
+    if (!newLang) return;
+
+    setLanguage(newLang);
+    this.refreshSettingsContent();
+
+    // Show subtle confirmation status (reuse existing status DOM after re-render).
+    const root = this.getPageRoot();
+    if (!root) return;
+    const status = root.querySelector("#settings-save-status");
+    if (!status) return;
+
+    status.textContent = this.t("settings.language.changed", "Language changed");
+    status.className = "settings-page__status settings-page__status--success";
+
+    if (this.statusClearTimer !== null) clearTimeout(this.statusClearTimer);
+    this.statusClearTimer = setTimeout(() => {
+      const stillActive = this.getPageRoot();
+      if (stillActive) {
+        const node = stillActive.querySelector("#settings-save-status");
+        if (node) {
+          node.textContent = "";
+          node.className = "settings-page__status";
+        }
+      }
+      this.statusClearTimer = null;
+    }, STATUS_CLEAR_DELAY_MS);
   }
 
   handleSaveClick(event) {
