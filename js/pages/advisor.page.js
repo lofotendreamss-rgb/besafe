@@ -1,5 +1,6 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
+import { safeJsonParse } from "../core/safe-json.js";
 import { getCurrencySymbol, getUserCurrency } from "../services/finance/currency.js";
 
 export function initAdvisorPage(dependencies = {}) {
@@ -1522,7 +1523,11 @@ export function initAdvisorPage(dependencies = {}) {
           if (name === null) return;
           const state = this.ensureState();
           const result = this.recalculateResult();
-          const reports = JSON.parse(localStorage.getItem('besafe:saved-reports') || '[]');
+          const reports = safeJsonParse(
+            localStorage.getItem('besafe:saved-reports'),
+            [],
+            "advisor:saved-reports:download"
+          );
           reports.unshift({
             id: 'report_' + Date.now(),
             name: name.trim() || 'Ataskaita',
@@ -1737,7 +1742,11 @@ export function initAdvisorPage(dependencies = {}) {
             selectedPlaceId: state.selectedPlaceId,
           });
 
-          const reports = JSON.parse(localStorage.getItem('besafe:saved-reports') || '[]');
+          const reports = safeJsonParse(
+            localStorage.getItem('besafe:saved-reports'),
+            [],
+            "advisor:saved-reports:save"
+          );
           reports.unshift({
             id: 'report_' + Date.now(),
             name: saveName.trim() || 'Ataskaita',

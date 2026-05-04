@@ -1,5 +1,6 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
+import { safeJsonParse } from "../core/safe-json.js";
 import { generateReportPDF, generateSavedDocumentPDF } from "../utils/pdf-generator.js";
 import { getCurrencySymbol, getUserCurrency } from "../services/finance/currency.js";
 import { getUserPlan } from "../services/finance/user-plan.js";
@@ -1477,15 +1478,14 @@ export class ReportsPage {
   }
 
   getSavedDocuments() {
-    try {
-      const stored = JSON.parse(localStorage.getItem("besafe:saved-reports") || "[]");
-      const documents = Array.isArray(stored) ? stored : [];
-      console.log("[ReportsPage] Loaded saved documents:", documents.length, documents.map((d) => d.id));
-      return documents;
-    } catch (_error) {
-      console.log("[ReportsPage] No saved documents found or parse error");
-      return [];
-    }
+    const stored = safeJsonParse(
+      localStorage.getItem("besafe:saved-reports"),
+      [],
+      "reports:saved-documents"
+    );
+    const documents = Array.isArray(stored) ? stored : [];
+    console.log("[ReportsPage] Loaded saved documents:", documents.length, documents.map((d) => d.id));
+    return documents;
   }
 
   deleteSavedDocument(documentId) {

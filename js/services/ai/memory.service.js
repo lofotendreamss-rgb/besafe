@@ -1,3 +1,5 @@
+import { safeJsonParse } from "../../core/safe-json.js";
+
 export class MemoryService {
   constructor() {
     this.memory = {
@@ -20,12 +22,10 @@ export class MemoryService {
 
   load() {
     const data = localStorage.getItem("besafe_memory");
-    if (data) {
-      try {
-        this.memory = JSON.parse(data);
-      } catch (e) {
-        console.warn("[Memory] failed to load");
-      }
+    if (data === null) return;
+    const parsed = safeJsonParse(data, null, "memory:load");
+    if (parsed !== null) {
+      this.memory = parsed;
     }
   }
 
