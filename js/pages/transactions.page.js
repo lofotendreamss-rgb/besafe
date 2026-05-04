@@ -1,4 +1,5 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
+import { parseLocalDate } from "../core/date.js";
 
 export class TransactionsPage {
   constructor({ transactionService } = {}) {
@@ -213,7 +214,7 @@ export class TransactionsPage {
       return this.t("common.unknownDate", "Date not specified");
     }
 
-    const date = new Date(dateValue);
+    const date = parseLocalDate(dateValue) || new Date(dateValue);
 
     if (Number.isNaN(date.getTime())) {
       return this.t("common.unknownDate", "Date not specified");

@@ -1,3 +1,5 @@
+import { todayLocal } from "../../core/date.js";
+
 export class ApiService {
   constructor({ baseUrl, timeoutMs } = {}) {
     const isLocal = typeof window !== "undefined" &&
@@ -252,7 +254,7 @@ export class ApiService {
 
   normalizeDate(value) {
     if (typeof value !== "string" || !value.trim()) {
-      return new Date().toISOString().slice(0, 10);
+      return todayLocal();
     }
 
     const trimmed = value.trim();

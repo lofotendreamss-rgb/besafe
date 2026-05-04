@@ -2,6 +2,7 @@ import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
 import { safeJsonParse } from "../core/safe-json.js";
 import { safeSetItem } from "../core/safe-storage.js";
+import { todayLocal, monthStartLocal } from "../core/date.js";
 import { getCurrencySymbol, getUserCurrency } from "../services/finance/currency.js";
 
 export function initAdvisorPage(dependencies = {}) {
@@ -14,20 +15,8 @@ export function initAdvisorPage(dependencies = {}) {
     return createTranslator(getCurrentLanguage());
   }
 
-  function getTodayDateValue() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function getMonthStartDateValue() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    return `${year}-${month}-01`;
-  }
+  const getTodayDateValue = todayLocal;
+  const getMonthStartDateValue = monthStartLocal;
 
   return {
     async onBeforeEnter() {

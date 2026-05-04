@@ -1,6 +1,7 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
 import { safeJsonParse } from "../core/safe-json.js";
+import { parseLocalDate } from "../core/date.js";
 import { generateReportPDF, generateSavedDocumentPDF } from "../utils/pdf-generator.js";
 import { getCurrencySymbol, getUserCurrency } from "../services/finance/currency.js";
 import { getUserPlan } from "../services/finance/user-plan.js";
@@ -196,7 +197,7 @@ export class ReportsPage {
       return "";
     }
 
-    const date = new Date(safeValue);
+    const date = parseLocalDate(safeValue) || new Date(safeValue);
     if (Number.isNaN(date.getTime())) {
       return safeValue;
     }

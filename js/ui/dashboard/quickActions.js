@@ -1,6 +1,7 @@
 import { createTranslator, getCurrentLanguage } from "../../core/i18n.js";
 import { registry } from "../../core/service.registry.js";
 import { getCurrencySymbol, getUserCurrency } from "../../services/finance/currency.js";
+import { todayLocal } from "../../core/date.js";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -1084,7 +1085,7 @@ export class QuickActions {
   }
 
   getTodayDateValue() {
-    return new Date().toISOString().slice(0, 10);
+    return todayLocal();
   }
 
   renderCategories(action, selected = "") {

@@ -46,6 +46,7 @@ import {
 import { showLicenseModal } from "./license-modal.js";
 import { showActionConfirmation } from "./action-confirmation.js";
 import { registry } from "../core/service.registry.js";
+import { todayLocal } from "../core/date.js";
 
 // ============================================================
 // i18n — mirror the voice-assistant helpers so translator keys
@@ -403,7 +404,7 @@ function scrollToBottom() {
 //
 // Throws on storage / validation failure — caller wraps in try/catch.
 async function commitAddTransaction(input) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayLocal();
 
   const service = registry.get("transactions");
   if (!service) {

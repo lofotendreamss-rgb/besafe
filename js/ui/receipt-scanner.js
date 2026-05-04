@@ -7,6 +7,8 @@
  * Flow:  Upload/Camera  ->  Processing  ->  Review & Edit  ->  Saved
  */
 
+import { todayLocal } from "../core/date.js";
+
 /* ------------------------------------------------------------------ */
 /*  API URL (same logic as system.boot.js)                            */
 /* ------------------------------------------------------------------ */
@@ -295,7 +297,7 @@ function esc(str) {
 }
 
 function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+  return todayLocal();
 }
 
 /* ------------------------------------------------------------------ */

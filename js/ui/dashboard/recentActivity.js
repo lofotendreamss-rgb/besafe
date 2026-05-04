@@ -1,4 +1,5 @@
 import TransactionService from "../../services/finance/transaction.service.js";
+import { parseLocalDate } from "../../core/date.js";
 
 class RecentActivity {
 
@@ -20,7 +21,7 @@ const rows = transactions.map(tx => {
 
 const sign = tx.type === "expense" ? "-" : "+";
 const color = tx.type === "expense" ? "#e74c3c" : "#27ae60";
-const date = new Date(tx.date).toLocaleDateString();
+const date = (parseLocalDate(tx.date) || new Date(tx.date)).toLocaleDateString();
 
 return `
 <div class="tx-row" data-id="${tx.id}">

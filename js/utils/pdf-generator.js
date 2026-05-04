@@ -5,6 +5,8 @@
  * styled with @media print CSS for clean "Save as PDF" output.
  */
 
+import { parseLocalDate } from "../core/date.js";
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -287,7 +289,8 @@ function formatAmountForPDF(amount, currency, locale) {
 
 function formatDateForPDF(value, locale) {
   if (!value) return "";
-  const date = new Date(value);
+  const date =
+    typeof value === "string" ? (parseLocalDate(value) || new Date(value)) : new Date(value);
   if (Number.isNaN(date.getTime())) return String(value);
 
   try {

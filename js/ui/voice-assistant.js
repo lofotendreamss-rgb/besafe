@@ -2,6 +2,7 @@ import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
 import { isReady, classifyError } from "../services/ai/chat.client.js";
 import { openChat, submitMessageWithText } from "./smart-assistant.js";
+import { todayLocal } from "../core/date.js";
 
 const LOCALE_MAP = {
   lt: "lt-LT", en: "en-GB", pl: "pl-PL", de: "de-DE", es: "es-ES",
@@ -142,7 +143,7 @@ async function handleAddExpense(text) {
     const payload = {
       type: "expense",
       amount: amount.toFixed(2),
-      date: new Date().toISOString().slice(0, 10),
+      date: todayLocal(),
       note: t("voice.note.prefix", "Balso įvestis") + ": " + text,
       categoryId: matched?.id || null,
       category: matched?.name || "",

@@ -1,3 +1,5 @@
+import { parseLocalDate } from "../../core/date.js";
+
 export function TransactionsView(transactions = []) {
   return `
     <div class="transactions-page">
@@ -36,5 +38,6 @@ function renderList(transactions) {
 }
 
 function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString();
+  const date = parseLocalDate(dateStr) || new Date(dateStr);
+  return date.toLocaleDateString();
 }
