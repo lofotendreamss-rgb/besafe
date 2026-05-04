@@ -569,6 +569,8 @@ const dictionaries = {
       "Start from Home to add the first income or expense entry.",
 
     "transactions.list.aria": "Transactions list",
+    "transactions.list.showMore": "Show 50 more",
+    "transactions.list.showingCount": "Showing {visible} of {total}",
 
     "transactions.action.export": "Download export",
     "transactions.action.delete": "Delete",
@@ -1493,6 +1495,8 @@ const dictionaries = {
       "Pradėkite nuo Home ir pridėkite pirmą pajamų arba išlaidų įrašą.",
 
     "transactions.list.aria": "Transakcijų sąrašas",
+    "transactions.list.showMore": "Rodyti dar 50",
+    "transactions.list.showingCount": "{visible} iš {total} įrašų",
 
     "transactions.action.export": "Atsisiųsti eksportą",
     "transactions.action.delete": "Ištrinti",
@@ -2373,6 +2377,8 @@ const dictionaries = {
     "transactions.guidance.noData": "Gdy pojawią się pierwsze wpisy, zobaczysz tu jasną listę transakcji.",
     "transactions.guidance.emptyHint": "Zacznij od strony głównej, aby dodać pierwszy wpis przychodu lub wydatku.",
     "transactions.list.aria": "Lista transakcji",
+    "transactions.list.showMore": "Pokaż kolejne 50",
+    "transactions.list.showingCount": "{visible} z {total} wpisów",
     "transactions.action.export": "Pobierz eksport",
     "transactions.actions.export": "Eksportuj",
     "transactions.actions.delete": "Usuń",
@@ -3036,6 +3042,8 @@ const dictionaries = {
     "transactions.guidance.noData": "Sobald die ersten Einträge erscheinen, sehen Sie hier eine klare Transaktionsliste.",
     "transactions.guidance.emptyHint": "Beginnen Sie auf der Startseite, um den ersten Einnahmen- oder Ausgabeneintrag hinzuzufügen.",
     "transactions.list.aria": "Transaktionsliste",
+    "transactions.list.showMore": "50 weitere anzeigen",
+    "transactions.list.showingCount": "{visible} von {total} Einträgen",
     "transactions.action.export": "Export herunterladen",
     "transactions.actions.export": "Exportieren",
     "transactions.actions.delete": "Löschen",
@@ -3699,6 +3707,8 @@ const dictionaries = {
     "transactions.guidance.noData": "En cuanto aparezcan las primeras entradas, verás una lista de transacciones clara aquí.",
     "transactions.guidance.emptyHint": "Comienza desde la página de inicio para agregar la primera entrada de ingreso o gasto.",
     "transactions.list.aria": "Lista de transacciones",
+    "transactions.list.showMore": "Mostrar 50 más",
+    "transactions.list.showingCount": "{visible} de {total} entradas",
     "transactions.action.export": "Descargar exportación",
     "transactions.actions.export": "Exportar",
     "transactions.actions.delete": "Eliminar",
@@ -4362,6 +4372,8 @@ const dictionaries = {
     "transactions.guidance.noData": "Как только появятся первые записи, вы увидите здесь ясный список транзакций.",
     "transactions.guidance.emptyHint": "Начните с главной страницы, чтобы добавить первую запись дохода или расхода.",
     "transactions.list.aria": "Список транзакций",
+    "transactions.list.showMore": "Показать ещё 50",
+    "transactions.list.showingCount": "{visible} из {total} записей",
     "transactions.action.export": "Скачать экспорт",
     "transactions.actions.export": "Экспортировать",
     "transactions.actions.delete": "Удалить",
@@ -4922,6 +4934,8 @@ const dictionaries = {
     "transactions.guidance.noData": "Så snart de første postene dukker opp, vil du se en tydelig transaksjonsliste her.",
     "transactions.guidance.emptyHint": "Start fra hjemmesiden for å legge til den første inntekts- eller utgiftsposten.",
     "transactions.list.aria": "Transaksjonsliste",
+    "transactions.list.showMore": "Vis 50 til",
+    "transactions.list.showingCount": "{visible} av {total} oppføringer",
     "transactions.action.export": "Last ned eksport",
     "transactions.action.delete": "Slett",
     "transactions.actions.export": "Eksporter",
@@ -5589,6 +5603,8 @@ const dictionaries = {
     "transactions.guidance.noData": "Så snart de första posterna dyker upp kommer du att se en tydlig transaktionslista här.",
     "transactions.guidance.emptyHint": "Börja från startsidan för att lägga till den första inkomst- eller utgiftsposten.",
     "transactions.list.aria": "Transaktionslista",
+    "transactions.list.showMore": "Visa 50 till",
+    "transactions.list.showingCount": "{visible} av {total} poster",
     "transactions.action.export": "Ladda ner export",
     "transactions.action.delete": "Ta bort",
     "transactions.actions.export": "Exportera",
@@ -6256,6 +6272,8 @@ const dictionaries = {
     "transactions.guidance.noData": "最初の項目が表示されると、ここに明確な取引リストが表示されます。",
     "transactions.guidance.emptyHint": "ホームから最初の収入または支出の項目を追加しましょう。",
     "transactions.list.aria": "取引リスト",
+    "transactions.list.showMore": "さらに50件表示",
+    "transactions.list.showingCount": "{total}件中{visible}件を表示",
     "transactions.action.export": "エクスポートをダウンロード",
     "transactions.action.delete": "削除",
     "transactions.actions.export": "エクスポート",
@@ -6923,6 +6941,8 @@ const dictionaries = {
     "transactions.guidance.noData": "当第一批条目出现时，您将在这里看到清晰的交易列表。",
     "transactions.guidance.emptyHint": "从主页开始添加第一笔收入或支出条目。",
     "transactions.list.aria": "交易列表",
+    "transactions.list.showMore": "再显示 50 条",
+    "transactions.list.showingCount": "显示 {total} 条中的 {visible} 条",
     "transactions.action.export": "下载导出",
     "transactions.action.delete": "删除",
     "transactions.actions.export": "导出",
@@ -7719,6 +7739,8 @@ const dictionaries = {
       "Commencez depuis l'accueil pour ajouter la première entrée de revenu ou dépense.",
 
     "transactions.list.aria": "Liste des transactions",
+    "transactions.list.showMore": "Afficher 50 de plus",
+    "transactions.list.showingCount": "{visible} sur {total} entrées",
 
     "transactions.action.export": "Télécharger l'export",
     "transactions.action.delete": "Supprimer",
@@ -8610,6 +8632,8 @@ const dictionaries = {
       "Inizi dalla Home per aggiungere la prima voce di entrata o uscita.",
 
     "transactions.list.aria": "Lista delle transazioni",
+    "transactions.list.showMore": "Mostra altri 50",
+    "transactions.list.showingCount": "{visible} di {total} voci",
 
     "transactions.action.export": "Scarica esportazione",
     "transactions.action.delete": "Elimina",
@@ -9501,6 +9525,8 @@ const dictionaries = {
       "Почніть з головної сторінки, щоб додати перший запис доходу або витрати.",
 
     "transactions.list.aria": "Список транзакцій",
+    "transactions.list.showMore": "Показати ще 50",
+    "transactions.list.showingCount": "{visible} з {total} записів",
 
     "transactions.action.export": "Завантажити експорт",
     "transactions.action.delete": "Видалити",
@@ -10410,6 +10436,8 @@ const dictionaries = {
       "Comece pelo Início para adicionar o primeiro registro de receita ou despesa.",
 
     "transactions.list.aria": "Lista de transações",
+    "transactions.list.showMore": "Mostrar mais 50",
+    "transactions.list.showingCount": "{visible} de {total} entradas",
 
     "transactions.action.export": "Baixar exportação",
     "transactions.action.delete": "Excluir",

@@ -28,6 +28,8 @@ export class TransactionsPage {
       search: "",
       category: "all",
     };
+
+    this.visibleCount = 50;
   }
 
   async onBeforeEnter() {
@@ -787,6 +789,39 @@ export class TransactionsPage {
     `;
   }
 
+  renderShowMoreButton(visibleCount, totalCount, hasMore) {
+    if (totalCount <= 0) return "";
+
+    const statusText = this.t(
+      "transactions.list.showingCount",
+      "Showing {visible} of {total}"
+    )
+      .replace("{visible}", String(visibleCount))
+      .replace("{total}", String(totalCount));
+
+    const showMoreLabel = this.t(
+      "transactions.list.showMore",
+      "Show 50 more"
+    );
+
+    return `
+      <div class="transactions-show-more">
+        <span class="transactions-show-more__status">${this.escapeHtml(
+          statusText
+        )}</span>
+        ${
+          hasMore
+            ? `<button
+                type="button"
+                class="button button--secondary button--small"
+                data-show-more
+              >${this.escapeHtml(showMoreLabel)}</button>`
+            : ""
+        }
+      </div>
+    `;
+  }
+
   rerenderTransactionsList() {
     const pageRoot = this.getPageRoot();
     if (!pageRoot) return;
@@ -794,15 +829,18 @@ export class TransactionsPage {
     if (!groupsContainer) return;
 
     const visibleTransactions = this.getVisibleTransactions();
-    const incomeTransactions = visibleTransactions.filter(
+    const slicedTransactions = visibleTransactions.slice(0, this.visibleCount);
+    const hasMore = visibleTransactions.length > slicedTransactions.length;
+
+    const incomeTransactions = slicedTransactions.filter(
       (tx) => tx?.type === "income"
     );
-    const expenseTransactions = visibleTransactions.filter(
+    const expenseTransactions = slicedTransactions.filter(
       (tx) => tx?.type === "expense"
     );
 
     let items;
-    if (visibleTransactions.length > 0) {
+    if (slicedTransactions.length > 0) {
       items = `
         ${this.renderTransactionGroup(
           this.t("home.transactions.income", "Income"),
@@ -812,6 +850,7 @@ export class TransactionsPage {
           this.t("home.transactions.expense", "Expenses"),
           expenseTransactions
         )}
+        ${this.renderShowMoreButton(slicedTransactions.length, visibleTransactions.length, hasMore)}
       `;
     } else if (
       (this.latestTransactions || []).length > 0 &&
@@ -1151,6 +1190,14 @@ export class TransactionsPage {
       return;
     }
 
+    const showMoreButton = event.target.closest("[data-show-more]");
+    if (showMoreButton) {
+      event.preventDefault();
+      this.visibleCount += 50;
+      this.rerenderTransactionsList();
+      return;
+    }
+
     const actionButton = event.target.closest("[data-transaction-action]");
     if (!actionButton || this.isActionBusy) return;
 
@@ -1196,16 +1243,18 @@ export class TransactionsPage {
 
       const visibleTransactions = this.getVisibleTransactions();
       const summary = this.buildSummary(visibleTransactions);
+      const slicedTransactions = visibleTransactions.slice(0, this.visibleCount);
+      const hasMore = visibleTransactions.length > slicedTransactions.length;
 
-      const incomeTransactions = visibleTransactions.filter(
+      const incomeTransactions = slicedTransactions.filter(
         (tx) => tx?.type === "income"
       );
-      const expenseTransactions = visibleTransactions.filter(
+      const expenseTransactions = slicedTransactions.filter(
         (tx) => tx?.type === "expense"
       );
 
       let items;
-      if (visibleTransactions.length > 0) {
+      if (slicedTransactions.length > 0) {
         items = `
           ${this.renderTransactionGroup(
             this.t("home.transactions.income", "Income"),
@@ -1215,6 +1264,7 @@ export class TransactionsPage {
             this.t("home.transactions.expense", "Expenses"),
             expenseTransactions
           )}
+          ${this.renderShowMoreButton(slicedTransactions.length, visibleTransactions.length, hasMore)}
         `;
       } else if (sortedTransactions.length > 0 && this.hasActiveFilters()) {
         items = this.renderNoMatchesState();
@@ -1322,6 +1372,7 @@ export class TransactionsPage {
   clearFilters() {
     this.filterState.search = "";
     this.filterState.category = "all";
+    this.visibleCount = 50;
 
     const pageRoot = this.getPageRoot();
     if (pageRoot) {
