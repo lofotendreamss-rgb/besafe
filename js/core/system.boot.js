@@ -90,11 +90,6 @@ export async function bootSystem() {
 
     booted = true;
 
-    console.log("[Boot] BeSafe system ready", {
-      apiBaseUrl: "http://127.0.0.1:3001",
-      services: getRegistrySnapshot(),
-    });
-
     return registry;
   } catch (error) {
     booted = false;

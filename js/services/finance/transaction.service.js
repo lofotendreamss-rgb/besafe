@@ -1062,7 +1062,6 @@ export class TransactionService {
 
   async createPlace(payload = {}) {
     const normalizedPayload = this.buildPlacePayload(payload);
-    console.log("[TransactionService][createPlace payload]", normalizedPayload);
 
     if (!this.apiService) {
       this.updatePlaceCacheAfterCreate(normalizedPayload);
@@ -1088,9 +1087,6 @@ export class TransactionService {
         createdPlace?.purpose || normalizedPayload.purpose || "expense"
       ).toLowerCase(),
     };
-
-    console.log("[TransactionService][createPlace response]", createdPlace);
-    console.log("[TransactionService][createPlace merged]", mergedCreatedPlace);
 
     this.updatePlaceCacheAfterCreate(mergedCreatedPlace);
     return mergedCreatedPlace;

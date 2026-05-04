@@ -58,8 +58,6 @@ class App {
   }
 
   async init() {
-    console.log("[App] Init start");
-
     try {
       await bootSystem();
       window.__services = registry;
@@ -80,19 +78,15 @@ class App {
     document.removeEventListener("click", this.boundGlobalClick);
     document.addEventListener("click", this.boundGlobalClick);
 
-    console.log("[App] bootSystem done. __besafe_splash_done:", window.__besafe_splash_done);
-
     // Ar vartotojas jau paspaudė „Pradėti" kol bootSystem krovėsi?
     if (window.__besafe_splash_done) {
       const lang = window.__besafe_splash_done;
       window.__besafe_splash_done = null;
-      console.log("[App] User already clicked Pradėti, calling startApp with:", lang);
       await this.startApp(lang);
       return;
     }
 
     // Klausomės ar vartotojas paspaus „Pradėti" ateityje
-    console.log("[App] Waiting for user to click Pradėti...");
     this.initSplashScreen();
     this.showLanguageScreen();
   }
@@ -465,7 +459,6 @@ class App {
   }
 
   async startApp(lang) {
-    console.log("[App] startApp called with:", lang, "starting:", this.starting, "started:", this.started);
     const normalizedLang = this.normalizeLanguage(lang);
     if (!normalizedLang) { console.error("[App] normalizeLanguage returned null for:", lang); return; }
     if (this.starting) { console.warn("[App] startApp skipped — already starting"); return; }
@@ -474,21 +467,16 @@ class App {
 
     try {
       const activeLang = this.syncLanguageState(normalizedLang);
-      console.log("[App] syncLanguageState:", activeLang);
 
       if (!activeLang) {
         throw new Error(`Unsupported language: ${lang}`);
       }
 
-      console.log("[App] switchToAppScreen...");
       this.switchToAppScreen();
 
-      console.log("[App] initCoreModules...");
       await this.initCoreModules();
-      console.log("[App] initCoreModules done, navigation:", !!this.navigation);
 
       const startPage = this.getPreferredStartPage();
-      console.log("[App] getPreferredStartPage:", startPage, "started:", this.started);
 
       if (this.started) {
         await this.rerenderActivePage();
@@ -497,7 +485,6 @@ class App {
       }
 
       this.started = true;
-      console.log("[App] startApp complete — app is running");
     } catch (error) {
       this.started = false;
       console.error("[App] startApp failed:", error);

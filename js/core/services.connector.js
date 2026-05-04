@@ -18,13 +18,10 @@ export async function initConnectedServices() {
   if (initialized) return;
   initialized = true;
 
-  console.log("[Connector] Connecting services...");
-
   // --- MemoryService (ES module) ---
   try {
     memoryService = new MemoryService();
     registry.register("memory", memoryService);
-    console.log("[Connector] MemoryService registered");
   } catch (error) {
     console.warn("[Connector] MemoryService failed:", error);
   }
@@ -36,8 +33,6 @@ export async function initConnectedServices() {
   // FinanceScore  -> window.financeScore   (auto-runs calculateScore)
   // FinanceAutopilot -> window.financeAutopilot (auto-runs analysis)
   // generateAIInsight -> window.generateAIInsight (callable function)
-
-  console.log("[Connector] Services connected");
 }
 
 /* =====================
@@ -66,7 +61,6 @@ export async function getFinancialScore() {
     const advisor = registry.getOptional("advisor");
     if (advisor && typeof advisor.getAdvisorSummary === "function") {
       const summary = await advisor.getAdvisorSummary();
-      console.log("[Connector] Advisor summary:", summary?.state);
       if (summary && summary.state) {
         const { income, expenses } = summary.state;
         if (income === 0 && expenses === 0) {

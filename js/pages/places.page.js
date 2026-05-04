@@ -25,7 +25,6 @@ export class PlacesPage {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    console.log("[PlacesPage] constructor loaded");
 
     // A3 cross-page cache invalidation. setUserPlan() in user-plan.js
     // dispatches `user-plan:changed`. When the page is active, refresh
@@ -97,10 +96,6 @@ export class PlacesPage {
       console.warn("[PlacesPage] Failed to get transactions service:", error);
       return null;
     }
-  }
-
-  logDebug(label, data = {}) {
-    console.log(`[PlacesPage][debug] ${label}`, data);
   }
 
   escapeHtml(value) {
@@ -979,9 +974,6 @@ export class PlacesPage {
       purpose:
         this.normalizeText(this.formDraft.purpose).toLowerCase() || "expense",
     };
-
-    console.log("[PlacesPage][handlePlaceSubmit values]", values);
-    console.log("[PlacesPage][handlePlaceSubmit payload]", payload);
 
     this.isSaving = true;
     this.lastSuccessAction = "";

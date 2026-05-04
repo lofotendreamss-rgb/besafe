@@ -117,7 +117,6 @@ async function handleAddExpense(text) {
   if (!amount || amount <= 0) {
     const msg = t("voice.error.noAmount", "Nepavyko atpažinti sumos. Pabandykite dar kartą.");
     toast(msg, "error");
-    console.log("[Voice DEADCODE] would have spoken:", msg);
     return;
   }
 
@@ -155,7 +154,6 @@ async function handleAddExpense(text) {
 
     const msg = t("voice.success.expenseAdded", "Pridėta {amount} € išlaida").replace("{amount}", amount.toFixed(2));
     toast(msg, "success");
-    console.log("[Voice DEADCODE] would have spoken:", msg);
 
     // Refresh home if available — uses the same `transaction:created`
     // channel the QuickActions form + smart-assistant use, so HomePage
@@ -169,7 +167,6 @@ async function handleAddExpense(text) {
     console.warn("[Voice] Add expense failed:", err);
     const msg = t("voice.error.saveFailed", "Nepavyko išsaugoti. Bandykite per formą.");
     toast(msg, "error");
-    console.log("[Voice DEADCODE] would have spoken:", msg);
   }
 }
 
@@ -186,11 +183,9 @@ async function handleShowBudget() {
       .replace("{income}", income.toFixed(2))
       .replace("{expenses}", expenses.toFixed(2));
     toast(msg, "success");
-    console.log("[Voice DEADCODE] would have spoken:", msg);
   } catch {
     const msg = t("voice.error.readFailed", "Nepavyko nuskaityti duomenų.");
     toast(msg, "error");
-    console.log("[Voice DEADCODE] would have spoken:", msg);
   }
 }
 
@@ -209,11 +204,9 @@ async function handleMonthlySpending() {
     const msg = t("voice.response.monthly", "Šį mėnesį išleidote {amount} €.")
       .replace("{amount}", monthExpenses.toFixed(2));
     toast(msg, "success");
-    console.log("[Voice DEADCODE] would have spoken:", msg);
   } catch {
     const msg = t("voice.error.readFailed", "Nepavyko nuskaityti duomenų.");
     toast(msg, "error");
-    console.log("[Voice DEADCODE] would have spoken:", msg);
   }
 }
 
@@ -222,7 +215,6 @@ function handleReport() {
     window.location.hash = "#/reports";
     const msg = t("voice.response.reportOpen", "Atidaroma ataskaita.");
     toast(msg, "success");
-    console.log("[Voice DEADCODE] would have spoken:", msg);
   } catch {}
 }
 
@@ -258,8 +250,7 @@ async function executeCommand(text) {
     default: {
       const msg = t("voice.error.unknown", "Nesupratau komandos. Pabandykite: „Pridėk 20 eurų maistui“.");
       toast(msg, "error");
-      console.log("[Voice DEADCODE] would have spoken:", msg);
-    }
+      }
   }
 }
 
@@ -425,14 +416,12 @@ function getMountTarget() {
 
 export function mountVoiceButton() {
   if (document.querySelector("[data-voice-btn]")) {
-    console.info("[Voice] Button already mounted");
     return;
   }
   if (!isSupported()) {
     console.warn("[Voice] SpeechRecognition NOT supported. Use Chrome or Edge. Firefox/Safari desktop = no support.");
     return;
   }
-  console.info("[Voice] Mounting button. Supported:", isSupported(), "Locale:", getLocale());
 
   const btn = document.createElement("button");
   btn.setAttribute("data-voice-btn", "");

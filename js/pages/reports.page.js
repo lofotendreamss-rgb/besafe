@@ -1484,7 +1484,6 @@ export class ReportsPage {
       "reports:saved-documents"
     );
     const documents = Array.isArray(stored) ? stored : [];
-    console.log("[ReportsPage] Loaded saved documents:", documents.length, documents.map((d) => d.id));
     return documents;
   }
 

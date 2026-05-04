@@ -151,9 +151,7 @@ if(older===0) return
 const ratio=recent/older
 
 if(ratio>1.4){
-
-console.log("AI trend: spending increasing")
-
+  // Trend signal preserved as condition; previously had a dev log here.
 }
 
 }

@@ -83,7 +83,6 @@ export async function checkLicenseStatus() {
     persistStatus("free");
     removeUpgradeBanner();
     setReadOnlyMode(false);
-    console.log("[License] No key found — free use mode");
     return _licenseStatus;
   }
 
@@ -357,7 +356,6 @@ function schedulePeriodicCheck() {
   if (_checkTimer) clearInterval(_checkTimer);
 
   _checkTimer = setInterval(() => {
-    console.log("[License] Periodic re-check (24h)");
     checkLicenseStatus();
   }, CHECK_INTERVAL_MS);
 }
