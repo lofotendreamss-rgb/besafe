@@ -1248,48 +1248,58 @@ export function initAdvisorPage(dependencies = {}) {
             <!-- Rezultatas kompaktiškai -->
             <div class="module-placeholder__item advisor-workspace-subitem" style="padding:16px;">
 
-              ${showNoData ? `
-                <span style="font-size:13px; color:var(--muted);" data-advisor-no-data-message>
+              <!-- Empty state — visible when showNoData=true -->
+              <div data-advisor-empty-state class="advisor-empty-state${showNoData ? "" : " is-hidden"}" style="text-align:center; padding:24px 16px;">
+                <div style="font-size:24px; margin-bottom:8px; opacity:0.6;" aria-hidden="true">🔍</div>
+                <div style="font-size:16px; font-weight:600; color:#9ae6c1; margin-bottom:8px;" data-advisor-no-data-label>
+                  ${this.escapeHtml(copy.calculator.noDataLabel)}
+                </div>
+                <div style="font-size:14px; color:var(--muted); line-height:1.5; max-width:400px; margin:0 auto;" data-advisor-no-data-message>
                   ${this.escapeHtml(copy.calculator.noDataText)}
-                </span>
-              ` : ""}
-
-              <!-- Galutinė suma — ryški -->
-              <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-                <strong style="font-size:13px; color:var(--muted);">${this.escapeHtml(copy.calculator.summaryTotal)}</strong>
-                <strong style="font-size:28px; letter-spacing:-0.02em; color:#9ae6c1;" data-advisor-result-amount data-advisor-summary-total>
-                  ${this.escapeHtml(this.formatMoney(result.total))}
-                </strong>
+                </div>
               </div>
 
-              <!-- Suvestinė eilutėmis -->
-              <div style="display:flex; flex-direction:column; gap:6px; border-top:1px solid rgba(110,148,136,0.14); padding-top:10px;">
+              <!-- Calculator output — visible when has data -->
+              <div data-advisor-calc-output class="${showNoData ? "is-hidden" : ""}">
 
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                  <span style="font-size:13px; color:var(--muted);">${this.escapeHtml(copy.calculator.summaryBase)}</span>
-                  <span style="font-size:13px; font-weight:700;" data-advisor-summary-base>${this.escapeHtml(this.formatMoney(result.baseAmount))}</span>
+                <!-- Galutinė suma — ryški -->
+                <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                  <strong style="font-size:13px; color:var(--muted);">${this.escapeHtml(copy.calculator.summaryTotal)}</strong>
+                  <strong style="font-size:28px; letter-spacing:-0.02em; color:#9ae6c1;" data-advisor-result-amount data-advisor-summary-total>
+                    ${this.escapeHtml(this.formatMoney(result.total))}
+                  </strong>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                  <span style="font-size:13px; color:var(--muted);">${this.escapeHtml(copy.calculator.summaryPercentage)}</span>
-                  <span style="font-size:13px; font-weight:700;" data-advisor-summary-percentage>${this.escapeHtml(this.formatMoney(result.percentageAmount))}</span>
+                <!-- Suvestinė eilutėmis -->
+                <div style="display:flex; flex-direction:column; gap:6px; border-top:1px solid rgba(110,148,136,0.14); padding-top:10px;">
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <span style="font-size:13px; color:var(--muted);">${this.escapeHtml(copy.calculator.summaryBase)}</span>
+                    <span style="font-size:13px; font-weight:700;" data-advisor-summary-base>${this.escapeHtml(this.formatMoney(result.baseAmount))}</span>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <span style="font-size:13px; color:var(--muted);">${this.escapeHtml(copy.calculator.summaryPercentage)}</span>
+                    <span style="font-size:13px; font-weight:700;" data-advisor-summary-percentage>${this.escapeHtml(this.formatMoney(result.percentageAmount))}</span>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <span style="font-size:13px; color:var(--muted);">${this.escapeHtml(copy.calculator.summaryVat)}</span>
+                    <span style="font-size:13px; font-weight:700;" data-advisor-summary-vat>${this.escapeHtml(this.formatMoney(result.vatAmount))}</span>
+                  </div>
+
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                  <span style="font-size:13px; color:var(--muted);">${this.escapeHtml(copy.calculator.summaryVat)}</span>
-                  <span style="font-size:13px; font-weight:700;" data-advisor-summary-vat>${this.escapeHtml(this.formatMoney(result.vatAmount))}</span>
+                <!-- Kontekstas -->
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(110,148,136,0.10);">
+                  <span style="font-size:12px; color:var(--muted);" data-advisor-calculation-context>
+                    ${this.escapeHtml(this.getCalculationContextText())}
+                  </span>
+                  <span style="font-size:12px; color:var(--muted); display:block; margin-top:2px;" data-advisor-selected-categories-detail>
+                    ${this.escapeHtml(this.getSelectedCategoriesDetailText())}
+                  </span>
                 </div>
 
-              </div>
-
-              <!-- Kontekstas -->
-              <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(110,148,136,0.10);">
-                <span style="font-size:12px; color:var(--muted);" data-advisor-calculation-context>
-                  ${this.escapeHtml(this.getCalculationContextText())}
-                </span>
-                <span style="font-size:12px; color:var(--muted); display:block; margin-top:2px;" data-advisor-selected-categories-detail>
-                  ${this.escapeHtml(this.getSelectedCategoriesDetailText())}
-                </span>
               </div>
 
             </div>
@@ -1406,10 +1416,10 @@ export function initAdvisorPage(dependencies = {}) {
       const categoriesDetailNode = root.querySelector(
         "[data-advisor-selected-categories-detail]"
       );
-      const noDataNode = root.querySelector("[data-advisor-no-data-message]");
-      const noDataWrapper = noDataNode?.closest(
-        ".advisor-workspace-subitem"
-      );
+      const emptyState = root.querySelector("[data-advisor-empty-state]");
+      const calcOutput = root.querySelector("[data-advisor-calc-output]");
+      const noDataLabel = root.querySelector("[data-advisor-no-data-label]");
+      const noDataMessage = root.querySelector("[data-advisor-no-data-message]");
       const summaryBase = root.querySelector("[data-advisor-summary-base]");
       const summaryPercentage = root.querySelector(
         "[data-advisor-summary-percentage]"
@@ -1429,12 +1439,20 @@ export function initAdvisorPage(dependencies = {}) {
         categoriesDetailNode.textContent = this.getSelectedCategoriesDetailText();
       }
 
-      if (noDataNode) {
-        noDataNode.textContent = copy.calculator.noDataText;
+      if (noDataLabel) {
+        noDataLabel.textContent = copy.calculator.noDataLabel;
       }
 
-      if (noDataNode) {
-        noDataNode.classList.toggle("is-hidden", !showNoData);
+      if (noDataMessage) {
+        noDataMessage.textContent = copy.calculator.noDataText;
+      }
+
+      if (emptyState) {
+        emptyState.classList.toggle("is-hidden", !showNoData);
+      }
+
+      if (calcOutput) {
+        calcOutput.classList.toggle("is-hidden", showNoData);
       }
 
       if (summaryBase) {
