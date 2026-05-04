@@ -23,8 +23,20 @@
   "devDependencies": {
     "vitest": "^4.1.0"
   },
-  "description": "",
+  "description": "BeSafe server — Express + Anthropic API + Stripe + Supabase",
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": {
+    "name": "BeSafe",
+    "url": "https://besafe.fyi"
+  },
+  "license": "ISC",
+  "homepage": "https://besafe.fyi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lofotendreamss-rgb/besafe",
+    "directory": "server"
+  },
+  "bugs": {
+    "url": "https://github.com/lofotendreamss-rgb/besafe/issues"
+  }
 }
