@@ -32,6 +32,10 @@ class App {
     this.boundGlobalClick = this.handleGlobalClick.bind(this);
 
     this.supportedLanguages = getSupportedLanguages();
+
+    // Global error boundary — wired synchronously in constructor (earliest
+    // possible, before any async work) so setup itself cannot fail silently.
+    this.setupGlobalErrorHandlers();
   }
 
   t(key, fallback, variables) {
@@ -538,6 +542,26 @@ class App {
     if (appScreen) {
       appScreen.hidden = false;
     }
+  }
+
+  setupGlobalErrorHandlers() {
+    window.addEventListener("error", (event) => {
+      console.error(
+        "[GlobalError]",
+        event.message,
+        "| source:", event.filename,
+        "| line:", event.lineno,
+        event.error
+      );
+    });
+
+    window.addEventListener("unhandledrejection", (event) => {
+      console.error(
+        "[UnhandledRejection]",
+        event.reason instanceof Error ? event.reason.message : event.reason,
+        event.reason
+      );
+    });
   }
 
   renderFatalError(message) {
