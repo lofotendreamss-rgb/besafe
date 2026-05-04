@@ -34,7 +34,7 @@ if(report){
 
 this.showReport(report)
 
-localStorage.setItem(this.lastReportKey,monthKey)
+try { localStorage.setItem(this.lastReportKey,monthKey) } catch(e) { console.warn("[ai-report:last-key]:",e.message) }
 
 }
 

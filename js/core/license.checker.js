@@ -4,6 +4,7 @@
 // ============================================================
 
 import { createTranslator, getCurrentLanguage } from "./i18n.js";
+import { safeSetItem } from "./safe-storage.js";
 
 function t(key, fallback) {
   try {
@@ -17,9 +18,25 @@ const API_URL = "https://besafe-oga3.onrender.com";
 const UPGRADE_URL = "/upgrade.html";
 const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
+// localStorage key constants — DRY, single source of truth
+const LICENSE_STATUS_KEY = "besafe_license_status";
+const LICENSE_PLAN_KEY = "besafe_license_plan";
+const LICENSE_LAST_CHECK_KEY = "besafe_license_last_check";
+const DEVICE_FP_KEY = "besafe_device_fp";
+
 // ---- State ----
 let _licenseStatus = null; // null | "active" | "trial" | "read_only" | "expired" | "device_limit" | "free"
 let _checkTimer = null;
+
+/**
+ * Update both in-memory _licenseStatus state and persisted
+ * besafe_license_status localStorage key. DRY helper for the 6
+ * status transitions inside checkLicenseStatus().
+ */
+function persistStatus(status) {
+  _licenseStatus = status;
+  safeSetItem(LICENSE_STATUS_KEY, status, "license:status");
+}
 
 // ============================================================
 // Device fingerprint
@@ -50,7 +67,7 @@ function generateDeviceFingerprint() {
   }
   const fp = "fp_" + Math.abs(hash).toString(36) + "_" + Date.now().toString(36);
 
-  localStorage.setItem("besafe_device_fp", fp);
+  safeSetItem(DEVICE_FP_KEY, fp, "license:device-fp");
   return fp;
 }
 
@@ -63,8 +80,7 @@ export async function checkLicenseStatus() {
 
   // No key saved — free user (not registered yet)
   if (!licenseKey) {
-    _licenseStatus = "free";
-    localStorage.setItem("besafe_license_status", "free");
+    persistStatus("free");
     removeUpgradeBanner();
     setReadOnlyMode(false);
     console.log("[License] No key found — free use mode");
@@ -91,36 +107,31 @@ export async function checkLicenseStatus() {
     switch (status) {
       case "active":
       case "trial":
-        _licenseStatus = "active";
-        localStorage.setItem("besafe_license_status", "active");
+        persistStatus("active");
         removeUpgradeBanner();
         setReadOnlyMode(false);
         break;
 
       case "read_only":
-        _licenseStatus = "read_only";
-        localStorage.setItem("besafe_license_status", "read_only");
+        persistStatus("read_only");
         showUpgradeBanner(t("banner.subscriptionEnded", "Subscription ended. Renew your plan to continue."));
         setReadOnlyMode(true);
         break;
 
       case "expired":
-        _licenseStatus = "expired";
-        localStorage.setItem("besafe_license_status", "expired");
+        persistStatus("expired");
         showUpgradeBanner(t("banner.trialEnded", "Your trial has ended. Upgrade to continue."));
         setReadOnlyMode(true);
         break;
 
       case "payment_required":
-        _licenseStatus = "read_only";
-        localStorage.setItem("besafe_license_status", "read_only");
+        persistStatus("read_only");
         showUpgradeBanner(t("banner.paymentFailed", "Payment failed. Update your payment method."));
         setReadOnlyMode(true);
         break;
 
       case "device_limit":
-        _licenseStatus = "device_limit";
-        localStorage.setItem("besafe_license_status", "device_limit");
+        persistStatus("device_limit");
         showDeviceLimitError(data.max_devices || 2, data.current_devices || 0);
         break;
 
@@ -141,10 +152,10 @@ export async function checkLicenseStatus() {
     // Separation A3 — handlePlanSwitchClick gates Personal users from
     // toggling into Business mode without an upgrade).
     if (data.plan === "personal" || data.plan === "business") {
-      localStorage.setItem("besafe_license_plan", data.plan);
+      safeSetItem(LICENSE_PLAN_KEY, data.plan, "license:plan");
     }
 
-    localStorage.setItem("besafe_license_last_check", Date.now().toString());
+    safeSetItem(LICENSE_LAST_CHECK_KEY, Date.now().toString(), "license:last-check");
   } catch (err) {
     console.error("[License] Verification failed:", err.message);
 
@@ -267,7 +278,7 @@ export function isReadOnly() {
  */
 export function getLicensePlan() {
   try {
-    const stored = localStorage.getItem("besafe_license_plan");
+    const stored = localStorage.getItem(LICENSE_PLAN_KEY);
     if (stored === "business" || stored === "personal") return stored;
   } catch {}
   return "personal";

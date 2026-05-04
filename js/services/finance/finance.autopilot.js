@@ -108,7 +108,7 @@ Try reducing this category.`
 
 )
 
-localStorage.setItem("besafe_last_alert",now)
+try { localStorage.setItem("besafe_last_alert",now) } catch(e) { console.warn("[autopilot:last-alert]:",e.message) }
 
 }
 
@@ -174,7 +174,7 @@ if(now.getDate()<28) return
 
 this.generateMonthlyReport(transactions)
 
-localStorage.setItem("besafe-last-report",monthKey)
+try { localStorage.setItem("besafe-last-report",monthKey) } catch(e) { console.warn("[autopilot:last-report]:",e.message) }
 
 }
 

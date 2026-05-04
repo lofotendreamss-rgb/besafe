@@ -1,4 +1,5 @@
 import { safeJsonParse } from "../../core/safe-json.js";
+import { safeSetItem } from "../../core/safe-storage.js";
 
 export class MemoryService {
   constructor() {
@@ -17,7 +18,7 @@ export class MemoryService {
   ===================== */
 
   save() {
-    localStorage.setItem("besafe_memory", JSON.stringify(this.memory));
+    safeSetItem("besafe_memory", JSON.stringify(this.memory), "memory:save");
   }
 
   load() {

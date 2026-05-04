@@ -1,6 +1,7 @@
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
 import { registry } from "../core/service.registry.js";
 import { safeJsonParse } from "../core/safe-json.js";
+import { safeSetItem } from "../core/safe-storage.js";
 import { getCurrencySymbol, getUserCurrency } from "../services/finance/currency.js";
 
 export function initAdvisorPage(dependencies = {}) {
@@ -1541,7 +1542,11 @@ export function initAdvisorPage(dependencies = {}) {
             total: result.total,
             createdAt: new Date().toISOString()
           });
-          localStorage.setItem('besafe:saved-reports', JSON.stringify(reports));
+          safeSetItem(
+            'besafe:saved-reports',
+            JSON.stringify(reports),
+            'advisor:saved-reports:download'
+          );
         }
       });
 
@@ -1760,7 +1765,11 @@ export function initAdvisorPage(dependencies = {}) {
             total: result.total,
             createdAt: new Date().toISOString()
           });
-          localStorage.setItem('besafe:saved-reports', JSON.stringify(reports));
+          safeSetItem(
+            'besafe:saved-reports',
+            JSON.stringify(reports),
+            'advisor:saved-reports:save'
+          );
 
           window.dispatchEvent(new Event("besafe:saved-calculation-created"));
 
