@@ -335,8 +335,19 @@
     "zip-stream": "^4.1.1"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "BeSafe",
+    "url": "https://besafe.fyi"
+  },
   "license": "ISC",
+  "homepage": "https://besafe.fyi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lofotendreamss-rgb/besafe"
+  },
+  "bugs": {
+    "url": "https://github.com/lofotendreamss-rgb/besafe/issues"
+  },
   "type": "commonjs",
   "browserslist": [
     "last 2 Chrome versions",
