@@ -415,6 +415,7 @@ export function initCategoriesPage(dependencies = {}) {
               <label class="advisor-workspace-field">
                 <input
                   type="text"
+                  maxlength="120"
                   value="${this.escapeHtml(state.nameValue)}"
                   placeholder="${this.escapeHtml(copy.form.namePlaceholder)}"
                   data-categories-name-input
