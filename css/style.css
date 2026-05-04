@@ -2078,6 +2078,51 @@ select.quick-action-form__input option{
   max-width:62ch;
 }
 
+.transactions-filter-bar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:12px;
+}
+.transactions-filter-bar__search,
+.transactions-filter-bar__category{
+  min-height:40px;
+  padding:0 12px;
+  border-radius:10px;
+  border:1px solid rgba(114,176,152,0.22);
+  background:rgba(15,23,25,0.98);
+  color:var(--text);
+  font-size:14px;
+  font-family:inherit;
+}
+.transactions-filter-bar__search{
+  flex:1 1 240px;
+  min-width:0;
+}
+.transactions-filter-bar__search::placeholder{
+  color:var(--muted);
+  opacity:0.7;
+}
+.transactions-filter-bar__category{
+  flex:0 0 auto;
+  min-width:160px;
+  cursor:pointer;
+}
+.transactions-filter-bar__search:focus,
+.transactions-filter-bar__category:focus{
+  outline:none;
+  border-color:rgba(154,230,193,0.5);
+}
+.transactions-empty--no-matches{
+  text-align:center;
+}
+.transactions-empty--no-matches .button{
+  margin-top:12px;
+}
+.transactions-guidance--hidden{
+  display:none;
+}
+
 .transactions-summary{
   display:grid;
   grid-template-columns:repeat(4, minmax(0, 1fr));

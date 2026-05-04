@@ -603,6 +603,16 @@ const dictionaries = {
     "transactions.error.renderHint":
       "We can calmly check the connection and try again.",
 
+    "transactions.filter.aria": "Filter transactions",
+    "transactions.filter.searchPlaceholder": "Search...",
+    "transactions.filter.searchAria": "Search transactions",
+    "transactions.filter.categoryAria": "Category",
+    "transactions.filter.allCategories": "All categories",
+    "transactions.filter.noMatches.title": "No matches",
+    "transactions.filter.noMatches.text":
+      "Try a different search term or category.",
+    "transactions.filter.clearFilters": "Clear filters",
+
     "transactions.empty.title": "There are no transactions yet",
     "transactions.empty.text":
       "When you add the first income or expense, it will appear in this list.",
@@ -1517,6 +1527,16 @@ const dictionaries = {
     "transactions.error.renderHint":
       "Galime ramiai patikrinti ryšį ir pabandyti dar kartą.",
 
+    "transactions.filter.aria": "Filtruoti transakcijas",
+    "transactions.filter.searchPlaceholder": "Ieškoti...",
+    "transactions.filter.searchAria": "Ieškoti transakcijų",
+    "transactions.filter.categoryAria": "Kategorija",
+    "transactions.filter.allCategories": "Visos kategorijos",
+    "transactions.filter.noMatches.title": "Nieko nerasta",
+    "transactions.filter.noMatches.text":
+      "Pabandykite kitą paieškos žodį arba kategoriją.",
+    "transactions.filter.clearFilters": "Išvalyti filtrus",
+
     "transactions.empty.title": "Kol kas nėra transakcijų",
     "transactions.empty.text":
       "Kai pridėsite pirmas pajamas arba išlaidas, jos atsiras šiame sąraše.",
@@ -2078,6 +2098,16 @@ const dictionaries = {
     "transactions.confirm.delete": "Czy na pewno chcesz usunąć tę transakcję?",
     "transactions.status.deleted": "Transakcja usunięta.",
     "transactions.status.deleteFailed": "Nie można teraz usunąć transakcji.",
+    "transactions.filter.aria": "Filtruj transakcje",
+    "transactions.filter.searchPlaceholder": "Szukaj...",
+    "transactions.filter.searchAria": "Szukaj transakcji",
+    "transactions.filter.categoryAria": "Kategoria",
+    "transactions.filter.allCategories": "Wszystkie kategorie",
+    "transactions.filter.noMatches.title": "Nic nie znaleziono",
+    "transactions.filter.noMatches.text":
+      "Spróbuj innego hasła lub kategorii.",
+    "transactions.filter.clearFilters": "Wyczyść filtry",
+
     "transactions.empty.title": "Nie ma jeszcze transakcji",
     "transactions.empty.text": "Gdy dodasz pierwszy przychód lub wydatek, pojawi się na tej liście.",
     "reports.header.eyebrow": "BeSafe Raporty",
@@ -2730,6 +2760,16 @@ const dictionaries = {
     "transactions.confirm.delete": "Möchten Sie diese Transaktion wirklich entfernen?",
     "transactions.status.deleted": "Transaktion entfernt.",
     "transactions.status.deleteFailed": "Die Transaktion konnte gerade nicht entfernt werden.",
+    "transactions.filter.aria": "Transaktionen filtern",
+    "transactions.filter.searchPlaceholder": "Suche...",
+    "transactions.filter.searchAria": "Transaktionen suchen",
+    "transactions.filter.categoryAria": "Kategorie",
+    "transactions.filter.allCategories": "Alle Kategorien",
+    "transactions.filter.noMatches.title": "Nichts gefunden",
+    "transactions.filter.noMatches.text":
+      "Versuche einen anderen Suchbegriff oder eine andere Kategorie.",
+    "transactions.filter.clearFilters": "Filter löschen",
+
     "transactions.empty.title": "Noch keine Transaktionen vorhanden",
     "transactions.empty.text": "Wenn Sie die erste Einnahme oder Ausgabe hinzufügen, erscheint sie in dieser Liste.",
     "reports.header.eyebrow": "BeSafe Berichte",
@@ -3383,6 +3423,16 @@ const dictionaries = {
     "transactions.confirm.delete": "¿Estás seguro de que quieres eliminar esta transacción?",
     "transactions.status.deleted": "Transacción eliminada.",
     "transactions.status.deleteFailed": "No se pudo eliminar la transacción ahora mismo.",
+    "transactions.filter.aria": "Filtrar transacciones",
+    "transactions.filter.searchPlaceholder": "Buscar...",
+    "transactions.filter.searchAria": "Buscar transacciones",
+    "transactions.filter.categoryAria": "Categoría",
+    "transactions.filter.allCategories": "Todas las categorías",
+    "transactions.filter.noMatches.title": "Sin resultados",
+    "transactions.filter.noMatches.text":
+      "Prueba otra búsqueda o categoría.",
+    "transactions.filter.clearFilters": "Borrar filtros",
+
     "transactions.empty.title": "Todavía no hay transacciones",
     "transactions.empty.text": "Cuando añadas el primer ingreso o gasto, aparecerá en esta lista.",
     "reports.header.eyebrow": "BeSafe Informes",
@@ -4036,6 +4086,16 @@ const dictionaries = {
     "transactions.confirm.delete": "Вы уверены, что хотите удалить эту транзакцию?",
     "transactions.status.deleted": "Транзакция удалена.",
     "transactions.status.deleteFailed": "Не удалось удалить транзакцию прямо сейчас.",
+    "transactions.filter.aria": "Фильтр транзакций",
+    "transactions.filter.searchPlaceholder": "Поиск...",
+    "transactions.filter.searchAria": "Поиск транзакций",
+    "transactions.filter.categoryAria": "Категория",
+    "transactions.filter.allCategories": "Все категории",
+    "transactions.filter.noMatches.title": "Ничего не найдено",
+    "transactions.filter.noMatches.text":
+      "Попробуйте другой запрос или категорию.",
+    "transactions.filter.clearFilters": "Очистить фильтры",
+
     "transactions.empty.title": "Транзакций ещё нет",
     "transactions.empty.text": "Когда вы добавите первый доход или расход, он появится в этом списке.",
     "reports.header.eyebrow": "BeSafe Отчёты",
@@ -4881,6 +4941,16 @@ const dictionaries = {
     "transactions.error.exportPrepare": "Kunne ikke forberede eksportfilen.",
     "transactions.error.renderTitle": "Transaksjoner kunne ikke vises akkurat nå",
     "transactions.error.renderHint": "Vi kan rolig sjekke tilkoblingen og prøve igjen.",
+    "transactions.filter.aria": "Filtrer transaksjoner",
+    "transactions.filter.searchPlaceholder": "Søk...",
+    "transactions.filter.searchAria": "Søk transaksjoner",
+    "transactions.filter.categoryAria": "Kategori",
+    "transactions.filter.allCategories": "Alle kategorier",
+    "transactions.filter.noMatches.title": "Ingen treff",
+    "transactions.filter.noMatches.text":
+      "Prøv et annet søkeord eller kategori.",
+    "transactions.filter.clearFilters": "Tøm filtre",
+
     "transactions.empty.title": "Det finnes ingen transaksjoner ennå",
     "transactions.empty.text": "Når du legger til den første inntekten eller utgiften, vil den vises i denne listen.",
     "transactions.empty.nextStep": "Neste tydelige steg: legg til én post fra hjemmeskjermen.",
@@ -5538,6 +5608,16 @@ const dictionaries = {
     "transactions.error.exportPrepare": "Kunde inte förbereda exportfilen.",
     "transactions.error.renderTitle": "Transaktioner kunde inte visas just nu",
     "transactions.error.renderHint": "Vi kan lugnt kontrollera anslutningen och försöka igen.",
+    "transactions.filter.aria": "Filtrera transaktioner",
+    "transactions.filter.searchPlaceholder": "Sök...",
+    "transactions.filter.searchAria": "Sök transaktioner",
+    "transactions.filter.categoryAria": "Kategori",
+    "transactions.filter.allCategories": "Alla kategorier",
+    "transactions.filter.noMatches.title": "Inga träffar",
+    "transactions.filter.noMatches.text":
+      "Prova ett annat sökord eller kategori.",
+    "transactions.filter.clearFilters": "Rensa filter",
+
     "transactions.empty.title": "Det finns inga transaktioner ännu",
     "transactions.empty.text": "När du lägger till den första inkomsten eller utgiften kommer den att visas i denna lista.",
     "transactions.empty.nextStep": "Nästa tydliga steg: lägg till en post från startsidan.",
@@ -6195,6 +6275,16 @@ const dictionaries = {
     "transactions.error.exportPrepare": "エクスポートファイルを準備できませんでした。",
     "transactions.error.renderTitle": "取引は現在表示できませんでした",
     "transactions.error.renderHint": "落ち着いて接続を確認し、もう一度試すことができます。",
+    "transactions.filter.aria": "取引を絞り込む",
+    "transactions.filter.searchPlaceholder": "検索...",
+    "transactions.filter.searchAria": "取引を検索",
+    "transactions.filter.categoryAria": "カテゴリ",
+    "transactions.filter.allCategories": "すべてのカテゴリ",
+    "transactions.filter.noMatches.title": "見つかりません",
+    "transactions.filter.noMatches.text":
+      "別の検索語やカテゴリをお試しください。",
+    "transactions.filter.clearFilters": "フィルターをクリア",
+
     "transactions.empty.title": "取引はまだありません",
     "transactions.empty.text": "最初の収入または支出を追加すると、このリストに表示されます。",
     "transactions.empty.nextStep": "次の明確なステップ：ホーム画面から一つの項目を追加しましょう。",
@@ -6852,6 +6942,16 @@ const dictionaries = {
     "transactions.error.exportPrepare": "无法准备导出文件。",
     "transactions.error.renderTitle": "交易目前无法显示",
     "transactions.error.renderHint": "我们可以从容地检查连接并重试。",
+    "transactions.filter.aria": "筛选交易",
+    "transactions.filter.searchPlaceholder": "搜索...",
+    "transactions.filter.searchAria": "搜索交易",
+    "transactions.filter.categoryAria": "类别",
+    "transactions.filter.allCategories": "所有类别",
+    "transactions.filter.noMatches.title": "未找到结果",
+    "transactions.filter.noMatches.text":
+      "请尝试其他搜索词或类别。",
+    "transactions.filter.clearFilters": "清除筛选",
+
     "transactions.empty.title": "还没有交易",
     "transactions.empty.text": "当您添加第一笔收入或支出时，它将显示在此列表中。",
     "transactions.empty.nextStep": "下一个明确的步骤：从主页添加一条条目。",
@@ -7652,6 +7752,16 @@ const dictionaries = {
       "Les transactions n'ont pas pu être affichées pour le moment",
     "transactions.error.renderHint":
       "Nous pouvons calmement vérifier la connexion et réessayer.",
+
+    "transactions.filter.aria": "Filtrer les transactions",
+    "transactions.filter.searchPlaceholder": "Rechercher...",
+    "transactions.filter.searchAria": "Rechercher des transactions",
+    "transactions.filter.categoryAria": "Catégorie",
+    "transactions.filter.allCategories": "Toutes les catégories",
+    "transactions.filter.noMatches.title": "Aucun résultat",
+    "transactions.filter.noMatches.text":
+      "Essayez un autre mot-clé ou une autre catégorie.",
+    "transactions.filter.clearFilters": "Effacer les filtres",
 
     "transactions.empty.title": "Il n'y a pas encore de transactions",
     "transactions.empty.text":
@@ -8534,6 +8644,16 @@ const dictionaries = {
     "transactions.error.renderHint":
       "Possiamo verificare con calma la connessione e riprovare.",
 
+    "transactions.filter.aria": "Filtra transazioni",
+    "transactions.filter.searchPlaceholder": "Cerca...",
+    "transactions.filter.searchAria": "Cerca transazioni",
+    "transactions.filter.categoryAria": "Categoria",
+    "transactions.filter.allCategories": "Tutte le categorie",
+    "transactions.filter.noMatches.title": "Nessun risultato",
+    "transactions.filter.noMatches.text":
+      "Prova un altro termine di ricerca o categoria.",
+    "transactions.filter.clearFilters": "Cancella filtri",
+
     "transactions.empty.title": "Non ci sono ancora transazioni",
     "transactions.empty.text":
       "Quando aggiungerà la prima entrata o uscita, apparirà in questa lista.",
@@ -9414,6 +9534,16 @@ const dictionaries = {
       "Транзакції не вдалося відобразити зараз",
     "transactions.error.renderHint":
       "Ми можемо спокійно перевірити з'єднання та спробувати ще раз.",
+
+    "transactions.filter.aria": "Фільтр транзакцій",
+    "transactions.filter.searchPlaceholder": "Пошук...",
+    "transactions.filter.searchAria": "Пошук транзакцій",
+    "transactions.filter.categoryAria": "Категорія",
+    "transactions.filter.allCategories": "Усі категорії",
+    "transactions.filter.noMatches.title": "Нічого не знайдено",
+    "transactions.filter.noMatches.text":
+      "Спробуйте інший запит або категорію.",
+    "transactions.filter.clearFilters": "Очистити фільтри",
 
     "transactions.empty.title": "Транзакцій поки що немає",
     "transactions.empty.text":
@@ -10313,6 +10443,16 @@ const dictionaries = {
       "As transações não puderam ser exibidas agora",
     "transactions.error.renderHint":
       "Podemos verificar calmamente a conexão e tentar novamente.",
+
+    "transactions.filter.aria": "Filtrar transações",
+    "transactions.filter.searchPlaceholder": "Pesquisar...",
+    "transactions.filter.searchAria": "Pesquisar transações",
+    "transactions.filter.categoryAria": "Categoria",
+    "transactions.filter.allCategories": "Todas as categorias",
+    "transactions.filter.noMatches.title": "Nenhum resultado",
+    "transactions.filter.noMatches.text":
+      "Tente outro termo de pesquisa ou categoria.",
+    "transactions.filter.clearFilters": "Limpar filtros",
 
     "transactions.empty.title": "Ainda não há transações",
     "transactions.empty.text":

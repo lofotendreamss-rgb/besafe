@@ -23,6 +23,11 @@ export class TransactionsPage {
     this.isActionBusy = false;
     this.pendingRefresh = false;
     this.ignoreNextDeletedEvent = false;
+
+    this.filterState = {
+      search: "",
+      category: "all",
+    };
   }
 
   async onBeforeEnter() {
@@ -317,7 +322,38 @@ export class TransactionsPage {
   }
 
   getVisibleTransactions() {
-    return this.latestTransactions;
+    const all = this.latestTransactions || [];
+    const { search, category } = this.filterState;
+    const searchLower = String(search || "").trim().toLowerCase();
+    const hasCategoryFilter = category && category !== "all";
+
+    if (!searchLower && !hasCategoryFilter) return all;
+
+    return all.filter((tx) => {
+      if (hasCategoryFilter) {
+        const txCategory = this.normalizeCategoryKey(tx?.category || "");
+        if (txCategory !== category) return false;
+      }
+
+      if (searchLower) {
+        const haystack = [
+          tx?.note || "",
+          tx?.place || "",
+          tx?.categoryDetail || "",
+          this.getCategoryLabel(tx?.category || ""),
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (!haystack.includes(searchLower)) return false;
+      }
+
+      return true;
+    });
+  }
+
+  hasActiveFilters() {
+    const { search, category } = this.filterState;
+    return Boolean((search || "").trim()) || (category && category !== "all");
   }
 
   normalizeTransactionNote(note = "") {
@@ -594,6 +630,71 @@ export class TransactionsPage {
     return "";
   }
 
+  renderFilterBar() {
+    const categoryKeys = [
+      "food",
+      "transport",
+      "housing",
+      "health",
+      "education",
+      "shopping",
+      "entertainment",
+      "bills",
+      "travel",
+      "family",
+      "pets",
+      "gifts",
+      "other",
+    ];
+    const options = categoryKeys
+      .map(
+        (key) =>
+          `<option value="${this.escapeHtml(key)}" ${
+            this.filterState.category === key ? "selected" : ""
+          }>${this.escapeHtml(this.getCategoryLabel(key))}</option>`
+      )
+      .join("");
+
+    return `
+      <div class="transactions-filter-bar" role="search" aria-label="${this.escapeHtml(
+        this.t("transactions.filter.aria", "Filter transactions")
+      )}">
+        <input
+          type="search"
+          class="transactions-filter-bar__search"
+          data-filter-search
+          placeholder="${this.escapeHtml(
+            this.t(
+              "transactions.filter.searchPlaceholder",
+              "Search transactions..."
+            )
+          )}"
+          value="${this.escapeHtml(this.filterState.search)}"
+          aria-label="${this.escapeHtml(
+            this.t("transactions.filter.searchAria", "Search transactions")
+          )}"
+        />
+        <select
+          class="transactions-filter-bar__category"
+          data-filter-category
+          aria-label="${this.escapeHtml(
+            this.t(
+              "transactions.filter.categoryAria",
+              "Filter by category"
+            )
+          )}"
+        >
+          <option value="all" ${
+            this.filterState.category === "all" ? "selected" : ""
+          }>${this.escapeHtml(
+      this.t("transactions.filter.allCategories", "All categories")
+    )}</option>
+          ${options}
+        </select>
+      </div>
+    `;
+  }
+
   renderSummary(summary = {}) {
     return `
       <section class="transactions-summary" aria-label="${this.escapeHtml(
@@ -661,6 +762,88 @@ export class TransactionsPage {
         )}</p>
       </div>
     `;
+  }
+
+  renderNoMatchesState() {
+    return `
+      <div class="transactions-empty transactions-empty--no-matches">
+        <strong>${this.escapeHtml(
+          this.t("transactions.filter.noMatches.title", "No matches")
+        )}</strong>
+        <p>${this.escapeHtml(
+          this.t(
+            "transactions.filter.noMatches.text",
+            "Try a different search term or category."
+          )
+        )}</p>
+        <button
+          type="button"
+          class="button button--secondary button--small"
+          data-filter-clear
+        >${this.escapeHtml(
+          this.t("transactions.filter.clearFilters", "Clear filters")
+        )}</button>
+      </div>
+    `;
+  }
+
+  rerenderTransactionsList() {
+    const pageRoot = this.getPageRoot();
+    if (!pageRoot) return;
+    const groupsContainer = pageRoot.querySelector(".transactions-groups");
+    if (!groupsContainer) return;
+
+    const visibleTransactions = this.getVisibleTransactions();
+    const incomeTransactions = visibleTransactions.filter(
+      (tx) => tx?.type === "income"
+    );
+    const expenseTransactions = visibleTransactions.filter(
+      (tx) => tx?.type === "expense"
+    );
+
+    let items;
+    if (visibleTransactions.length > 0) {
+      items = `
+        ${this.renderTransactionGroup(
+          this.t("home.transactions.income", "Income"),
+          incomeTransactions
+        )}
+        ${this.renderTransactionGroup(
+          this.t("home.transactions.expense", "Expenses"),
+          expenseTransactions
+        )}
+      `;
+    } else if (
+      (this.latestTransactions || []).length > 0 &&
+      this.hasActiveFilters()
+    ) {
+      items = this.renderNoMatchesState();
+    } else {
+      items = this.renderEmptyState();
+    }
+
+    groupsContainer.innerHTML = items;
+
+    // Summary + guidance also depend on filtered data — keep them in sync.
+    const summaryNode = pageRoot.querySelector(".transactions-summary");
+    if (summaryNode) {
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = this.renderSummary(this.buildSummary(visibleTransactions));
+      const replacement = wrapper.querySelector(".transactions-summary");
+      if (replacement) summaryNode.replaceWith(replacement);
+    }
+
+    const guidanceNode = pageRoot.querySelector(".transactions-guidance");
+    if (guidanceNode) {
+      const guidanceHtml =
+        visibleTransactions.length === 0 && this.hasActiveFilters()
+          ? `<section class="transactions-guidance transactions-guidance--hidden" aria-hidden="true"></section>`
+          : this.renderPageGuidance(visibleTransactions.length > 0);
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = guidanceHtml;
+      const replacement = wrapper.querySelector(".transactions-guidance");
+      if (replacement) guidanceNode.replaceWith(replacement);
+    }
   }
 
   renderErrorState(message) {
@@ -961,6 +1144,13 @@ export class TransactionsPage {
   }
 
   async handleActionClick(event) {
+    const clearButton = event.target.closest("[data-filter-clear]");
+    if (clearButton) {
+      event.preventDefault();
+      this.clearFilters();
+      return;
+    }
+
     const actionButton = event.target.closest("[data-transaction-action]");
     if (!actionButton || this.isActionBusy) return;
 
@@ -1001,11 +1191,12 @@ export class TransactionsPage {
       const transactions = await this.transactionService.getTransactions();
       const safeTransactions = Array.isArray(transactions) ? transactions : [];
       const sortedTransactions = this.sortTransactions(safeTransactions);
-      const summary = this.buildSummary(sortedTransactions);
 
       this.latestTransactions = sortedTransactions;
 
       const visibleTransactions = this.getVisibleTransactions();
+      const summary = this.buildSummary(visibleTransactions);
+
       const incomeTransactions = visibleTransactions.filter(
         (tx) => tx?.type === "income"
       );
@@ -1013,8 +1204,7 @@ export class TransactionsPage {
         (tx) => tx?.type === "expense"
       );
 
-      let items = this.renderEmptyState();
-
+      let items;
       if (visibleTransactions.length > 0) {
         items = `
           ${this.renderTransactionGroup(
@@ -1026,6 +1216,10 @@ export class TransactionsPage {
             expenseTransactions
           )}
         `;
+      } else if (sortedTransactions.length > 0 && this.hasActiveFilters()) {
+        items = this.renderNoMatchesState();
+      } else {
+        items = this.renderEmptyState();
       }
 
       return `
@@ -1035,9 +1229,15 @@ export class TransactionsPage {
               ${this.renderHeaderActions()}
             </div>
 
+            ${this.renderFilterBar()}
+
             ${this.renderSummary(summary)}
 
-            ${this.renderPageGuidance(sortedTransactions.length > 0)}
+            ${
+              visibleTransactions.length === 0 && this.hasActiveFilters()
+                ? `<section class="transactions-guidance transactions-guidance--hidden" aria-hidden="true"></section>`
+                : this.renderPageGuidance(visibleTransactions.length > 0)
+            }
 
             <div
               class="transactions-groups"
@@ -1101,6 +1301,37 @@ export class TransactionsPage {
 
     pageRoot.removeEventListener("click", this.boundActionClick);
     pageRoot.addEventListener("click", this.boundActionClick);
+
+    const searchInput = pageRoot.querySelector("[data-filter-search]");
+    if (searchInput) {
+      searchInput.addEventListener("input", (event) => {
+        this.filterState.search = String(event.target.value || "");
+        this.rerenderTransactionsList();
+      });
+    }
+
+    const categorySelect = pageRoot.querySelector("[data-filter-category]");
+    if (categorySelect) {
+      categorySelect.addEventListener("change", (event) => {
+        this.filterState.category = String(event.target.value || "all");
+        this.rerenderTransactionsList();
+      });
+    }
+  }
+
+  clearFilters() {
+    this.filterState.search = "";
+    this.filterState.category = "all";
+
+    const pageRoot = this.getPageRoot();
+    if (pageRoot) {
+      const searchInput = pageRoot.querySelector("[data-filter-search]");
+      if (searchInput) searchInput.value = "";
+      const categorySelect = pageRoot.querySelector("[data-filter-category]");
+      if (categorySelect) categorySelect.value = "all";
+    }
+
+    this.rerenderTransactionsList();
   }
 
   removeEventListeners() {
