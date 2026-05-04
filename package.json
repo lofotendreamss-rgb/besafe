@@ -47,7 +47,15 @@
     "electron": "^33.0.0",
     "electron-builder": "^25.1.8"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.90.0",
+    "@supabase/supabase-js": "^2.103.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.22.1",
+    "nodemailer": "^8.0.5",
+    "stripe": "^22.0.1"
+  },
   "keywords": [],
   "author": {
     "name": "BeSafe",
