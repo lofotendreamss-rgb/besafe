@@ -44,8 +44,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1.25re
 .hero{position:relative;padding:7rem 3rem 6rem;max-width:1000px;margin:0 auto;overflow:hidden}
 .hero-bg{position:absolute;top:-100px;right:-200px;width:600px;height:600px;background:radial-gradient(ellipse,rgba(46,204,138,0.06) 0%,transparent 70%);pointer-events:none}
 .hero-bg2{position:absolute;bottom:-50px;left:-100px;width:400px;height:400px;background:radial-gradient(ellipse,rgba(46,204,138,0.04) 0%,transparent 70%);pointer-events:none}
-.badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--accent-dim);border:1px solid var(--border2);color:var(--accent);font-size:0.72rem;letter-spacing:0.1em;padding:0.35rem 1rem;border-radius:2rem;margin-bottom:2.5rem;text-transform:uppercase}
-.badge-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+.hero-tagline{display:block;color:var(--accent);font-size:0.95rem;font-weight:500;letter-spacing:0;margin:0 0 1.5rem 0;line-height:1.5;max-width:42rem;text-transform:none}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
 h1{font-family:var(--font-display);font-size:clamp(2.8rem,6vw,5rem);line-height:1.05;color:var(--text);margin-bottom:1.5rem;font-weight:400;max-width:800px}
 h1 em{color:var(--accent);font-style:italic}
@@ -316,7 +315,7 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-bg2"></div>
-  <div class="badge fade-up"><span class="badge-dot"></span><span data-i18n="badge">Privacy without compromise</span></div>
+  <p class="hero-tagline fade-up" data-i18n="badge">Understand, manage, and grow your finances in one system.</p>
   <h1 class="fade-up"><span data-i18n="hero.t1">Your data.</span><br><em data-i18n="hero.t2">Your property.</em></h1>
   <p class="hero-sub fade-up" data-i18n="hero.sub">BeSafe protects what matters to you &#8212; only on your device. No servers, no tracking, no surveillance.</p>
   <div class="hero-btns fade-up">

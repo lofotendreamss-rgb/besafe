@@ -5,7 +5,7 @@ let currentLang=localStorage.getItem("besafe_website_lang")||"en";
 const T={
 en:{
 "nav.about":"About us","nav.how":"How it works","nav.pricing":"Plans","nav.start":"Get started","nav.signin":"Sign in","nav.trial":"14 days free",
-"badge":"Privacy without compromise",
+"badge":"Understand, manage, and grow your finances in one system.",
 "hero.t1":"Your data.","hero.t2":"Your property.",
 "hero.sub":"BeSafe protects what matters to you \u2014 only on your device. No servers, no tracking, no surveillance.",
 "hero.btn1":"Start 14-day trial","hero.btn2":"How it works \u2192",
@@ -66,7 +66,7 @@ en:{
 },
 lt:{
 "nav.about":"Apie mus","nav.how":"Kaip veikia","nav.pricing":"Planai","nav.start":"Pradėti","nav.signin":"Prisijungti","nav.trial":"14 dienų nemokamai",
-"badge":"Privatumas be kompromisų",
+"badge":"Suprask, valdyk ir augink savo finansus vienoje sistemoje.",
 "hero.t1":"Jūsų duomenys.","hero.t2":"Jūsų nuosavybė.",
 "hero.sub":"BeSafe saugo tai, kas jums svarbu \u2014 tik jūsų įrenginyje. Nei serveriai, nei sekimas, nei stebėjimas.",
 "hero.btn1":"Pradėti 14 dienų bandymą","hero.btn2":"Kaip tai veikia \u2192",
@@ -127,7 +127,7 @@ lt:{
 },
 de:{
 "nav.about":"Uber uns","nav.how":"Wie es funktioniert","nav.pricing":"Preise","nav.start":"Loslegen","nav.signin":"Anmelden","nav.trial":"14 Tage kostenlos",
-"badge":"Privatsphare ohne Kompromisse",
+"badge":"Verstehen, verwalten und vermehren Sie Ihre Finanzen in einem System.",
 "hero.t1":"Ihre Daten.","hero.t2":"Ihr Eigentum.",
 "hero.sub":"BeSafe schutzt, was Ihnen wichtig ist \u2014 nur auf Ihrem Gerat. Keine Server, kein Tracking, keine Uberwachung.",
 "hero.btn1":"14-Tage-Test starten","hero.btn2":"Wie es funktioniert \u2192",
@@ -185,7 +185,7 @@ de:{
 },
 fr:{
 "nav.about":"A propos","nav.how":"Comment ca marche","nav.pricing":"Tarifs","nav.start":"Commencer","nav.signin":"Se connecter","nav.trial":"14 jours gratuits",
-"badge":"Confidentialite sans compromis",
+"badge":"Comprenez, gérez et faites croître vos finances dans un seul système.",
 "hero.t1":"Vos donnees.","hero.t2":"Votre propriete.",
 "hero.sub":"BeSafe protege ce qui compte pour vous \u2014 uniquement sur votre appareil. Pas de serveurs, pas de suivi.",
 "hero.btn1":"Essai gratuit de 14 jours","hero.btn2":"Comment ca marche \u2192",
@@ -243,7 +243,7 @@ fr:{
 },
 es:{
 "nav.about":"Sobre nosotros","nav.how":"Como funciona","nav.pricing":"Precios","nav.start":"Empezar","nav.signin":"Iniciar sesión","nav.trial":"14 dias gratis",
-"badge":"Privacidad sin compromisos",
+"badge":"Comprende, gestiona y haz crecer tus finanzas en un solo sistema.",
 "hero.t1":"Tus datos.","hero.t2":"Tu propiedad.",
 "hero.sub":"BeSafe protege lo que te importa \u2014 solo en tu dispositivo. Sin servidores, sin rastreo, sin vigilancia.",
 "hero.btn1":"Prueba gratuita de 14 dias","hero.btn2":"Como funciona \u2192",
@@ -301,7 +301,7 @@ es:{
 },
 it:{
 "nav.about":"Chi siamo","nav.how":"Come funziona","nav.pricing":"Prezzi","nav.start":"Inizia","nav.signin":"Accedi","nav.trial":"14 giorni gratis",
-"badge":"Privacy senza compromessi","hero.t1":"I tuoi dati.","hero.t2":"La tua proprieta.",
+"badge":"Comprendi, gestisci e fai crescere le tue finanze in un unico sistema.","hero.t1":"I tuoi dati.","hero.t2":"La tua proprieta.",
 "hero.sub":"BeSafe protegge cio che conta per te \u2014 solo sul tuo dispositivo.",
 "hero.btn1":"Prova gratuita di 14 giorni","hero.btn2":"Come funziona \u2192",
 "trust.1":"Offline 99% del tempo","trust.2":"2 dispositivi per piano","trust.3":"14 lingue","trust.4":"Dati mai cancellati",
@@ -356,7 +356,7 @@ it:{
 },
 pl:{
 "nav.about":"O nas","nav.how":"Jak to dziala","nav.pricing":"Cennik","nav.start":"Zacznij","nav.signin":"Zaloguj się","nav.trial":"14 dni za darmo",
-"badge":"Prywatnosc bez kompromisow","hero.t1":"Twoje dane.","hero.t2":"Twoja wlasnosc.",
+"badge":"Zrozum, zarządzaj i pomnażaj swoje finanse w jednym systemie.","hero.t1":"Twoje dane.","hero.t2":"Twoja wlasnosc.",
 "hero.sub":"BeSafe chroni to, co dla Ciebie wazne \u2014 tylko na Twoim urzadzeniu.",
 "hero.btn1":"14-dniowy okres probny","hero.btn2":"Jak to dziala \u2192",
 "trust.1":"Offline 99% czasu","trust.2":"2 urzadzenia na plan","trust.3":"14 jezykow","trust.4":"Dane nigdy nie usuwane",
@@ -411,7 +411,7 @@ pl:{
 },
 ru:{
 "nav.about":"О нас","nav.how":"Как это работает","nav.pricing":"Цены","nav.start":"Начать","nav.signin":"Войти","nav.trial":"14 дней бесплатно",
-"badge":"\u041A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0431\u0435\u0437 \u043A\u043E\u043C\u043F\u0440\u043E\u043C\u0438\u0441\u0441\u043E\u0432",
+"badge":"\u041F\u043E\u043D\u0438\u043C\u0430\u0439\u0442\u0435, \u0443\u043F\u0440\u0430\u0432\u043B\u044F\u0439\u0442\u0435 \u0438 \u043F\u0440\u0438\u0443\u043C\u043D\u043E\u0436\u0430\u0439\u0442\u0435 \u0441\u0432\u043E\u0438 \u0444\u0438\u043D\u0430\u043D\u0441\u044B \u0432 \u043E\u0434\u043D\u043E\u0439 \u0441\u0438\u0441\u0442\u0435\u043C\u0435.",
 "hero.t1":"\u0412\u0430\u0448\u0438 \u0434\u0430\u043D\u043D\u044B\u0435.","hero.t2":"\u0412\u0430\u0448\u0430 \u0441\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0441\u0442\u044C.",
 "hero.sub":"BeSafe \u0437\u0430\u0449\u0438\u0449\u0430\u0435\u0442 \u0442\u043E, \u0447\u0442\u043E \u0432\u0430\u043C \u0432\u0430\u0436\u043D\u043E \u2014 \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430 \u0432\u0430\u0448\u0435\u043C \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0435.",
 "hero.btn1":"14 \u0434\u043D\u0435\u0439 \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E","hero.btn2":"\u041A\u0430\u043A \u044D\u0442\u043E \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u2192",
@@ -467,7 +467,7 @@ ru:{
 },
 uk:{
 "nav.about":"Про нас","nav.how":"Як це працює","nav.pricing":"Ціни","nav.start":"Почати","nav.signin":"Увійти","nav.trial":"14 днів безкоштовно",
-"badge":"Конфіденційність без компромісів","hero.t1":"Ваші дані.","hero.t2":"Ваша власність.",
+"badge":"Розумійте, керуйте та примножуйте свої фінанси в одній системі.","hero.t1":"Ваші дані.","hero.t2":"Ваша власність.",
 "hero.sub":"BeSafe захищає те, що вам важливо \u2014 тільки на вашому пристрої.",
 "hero.btn1":"14 днів безкоштовно","hero.btn2":"Як це працює \u2192",
 "trust.1":"99% офлайн","trust.2":"2 пристрої","trust.3":"14 мов","trust.4":"Дані ніколи не видаляються",
@@ -522,7 +522,7 @@ uk:{
 },
 ja:{
 "nav.about":"私たちについて","nav.how":"仕組み","nav.pricing":"料金","nav.start":"始める","nav.signin":"ログイン","nav.trial":"14日間無料",
-"badge":"妥協なきプライバシー","hero.t1":"あなたのデータ。","hero.t2":"あなたの財産。",
+"badge":"理解し、管理し、増やす — あなたの資産をひとつのシステムで。","hero.t1":"あなたのデータ。","hero.t2":"あなたの財産。",
 "hero.sub":"BeSafeはあなたの大切なものを守ります \u2014 デバイス上のみに。サーバーなし、追跡なし。",
 "hero.btn1":"14日間無料トライアル","hero.btn2":"仕組みを見る \u2192",
 "trust.1":"99%オフライン","trust.2":"プランごとに2台","trust.3":"14言語","trust.4":"データは削除されません",
@@ -577,7 +577,7 @@ ja:{
 },
 no:{
 "nav.about":"Om oss","nav.how":"Slik fungerer det","nav.pricing":"Priser","nav.start":"Kom i gang","nav.signin":"Logg inn","nav.trial":"14 dager gratis",
-"badge":"Personvern uten kompromisser",
+"badge":"Forstå, administrer og få økonomien til å vokse — alt i ett system.",
 "hero.t1":"Dine data.","hero.t2":"Din eiendom.",
 "hero.sub":"BeSafe beskytter det som betyr noe for deg — kun på din enhet. Ingen servere, ingen sporing, ingen overvåkning.",
 "hero.btn1":"Start 14-dagers prøveperiode","hero.btn2":"Slik fungerer det \u2192",
@@ -638,7 +638,7 @@ no:{
 },
 sv:{
 "nav.about":"Om oss","nav.how":"Så fungerar det","nav.pricing":"Priser","nav.start":"Kom igång","nav.signin":"Logga in","nav.trial":"14 dagar gratis",
-"badge":"Integritet utan kompromisser",
+"badge":"Förstå, hantera och få din ekonomi att växa — allt i ett system.",
 "hero.t1":"Dina data.","hero.t2":"Din egendom.",
 "hero.sub":"BeSafe skyddar det som är viktigt för dig \u2014 bara på din enhet. Inga servrar, ingen spårning, ingen övervakning.",
 "hero.btn1":"Starta 14 dagars provperiod","hero.btn2":"Så fungerar det \u2192",
@@ -699,7 +699,7 @@ sv:{
 },
 zh:{
 "nav.about":"\u5173\u4E8E\u6211\u4EEC","nav.how":"\u5982\u4F55\u8FD0\u4F5C","nav.pricing":"\u4EF7\u683C\u65B9\u6848","nav.start":"\u7ACB\u5373\u5F00\u59CB","nav.signin":"\u767B\u5F55","nav.trial":"14\u5929\u514D\u8D39\u8BD5\u7528",
-"badge":"\u9690\u79C1\u4FDD\u62A4\uFF0C\u7EDD\u4E0D\u59A5\u534F",
+"badge":"\u7406\u89E3\u3001\u7BA1\u7406\u5E76\u589E\u957F\u60A8\u7684\u8D22\u52A1\uFF0C\u5168\u5728\u4E00\u4E2A\u7CFB\u7EDF\u4E2D\u3002",
 "hero.t1":"\u60A8\u7684\u6570\u636E\u3002","hero.t2":"\u60A8\u7684\u8D22\u4EA7\u3002",
 "hero.sub":"BeSafe \u4FDD\u62A4\u60A8\u91CD\u89C6\u7684\u4E00\u5207 \u2014 \u4EC5\u5728\u60A8\u7684\u8BBE\u5907\u4E0A\u3002\u65E0\u670D\u52A1\u5668\uFF0C\u65E0\u8DDF\u8E2A\uFF0C\u65E0\u76D1\u63A7\u3002",
 "hero.btn1":"\u5F00\u59CB14\u5929\u514D\u8D39\u8BD5\u7528","hero.btn2":"\u4E86\u89E3\u8FD0\u4F5C\u65B9\u5F0F \u2192",
@@ -760,7 +760,7 @@ zh:{
 },
 pt:{
 "nav.about":"Sobre nós","nav.how":"Como funciona","nav.pricing":"Planos","nav.start":"Comece agora","nav.signin":"Entrar","nav.trial":"14 dias grátis",
-"badge":"Privacidade sem compromisso",
+"badge":"Compreenda, gira e faça crescer as suas finanças num só sistema.",
 "hero.t1":"Seus dados.","hero.t2":"Sua propriedade.",
 "hero.sub":"O BeSafe protege o que importa para você \u2014 apenas no seu dispositivo. Sem servidores, sem rastreamento, sem vigilância.",
 "hero.btn1":"Iniciar teste de 14 dias","hero.btn2":"Como funciona \u2192",
