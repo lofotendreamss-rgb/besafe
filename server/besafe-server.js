@@ -337,6 +337,10 @@ async function sendLicenseEmail(email, licenseKey, plan) {
             After ${TRIAL_DAYS} days you can choose to subscribe or continue in read-only mode.<br>
             Your data is <strong>never deleted</strong> &#8212; it always stays on your device.
           </p>
+          <p style="font-size:0.65rem;color:#5a7d67;line-height:1.6;margin:0.75rem 0 0;text-align:center;opacity:0.8">
+            This email is in English. The BeSafe app supports your language
+            &#8212; you can change it anytime in Settings.
+          </p>
         </div>
       </div>
     `,
@@ -456,6 +460,10 @@ app.post("/api/register", async (req, res) => {
                 </div>
                 <p style="font-size:0.72rem;color:#5a7d67;line-height:1.7;text-align:center">
                   Status: <strong style="color:#2ecc8a">${existingLicense.status}</strong> &#183; Plan: <strong style="color:#f2f8f4">${existingLicense.plan || "personal"}</strong>
+                </p>
+                <p style="font-size:0.65rem;color:#5a7d67;line-height:1.6;margin:0.75rem 0 0;text-align:center;opacity:0.8">
+                  This email is in English. The BeSafe app supports your language
+                  &#8212; you can change it anytime in Settings.
                 </p>
               </div>
             `,
@@ -1320,6 +1328,8 @@ app.post("/api/create-checkout", async (req, res) => {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: "https://besafe-oga3.onrender.com/upgrade.html?success=true",
       cancel_url: "https://besafe-oga3.onrender.com/upgrade.html?cancelled=true",
+      // Auto-detect browser locale (Stripe supports 35+ langs natively)
+      locale: "auto",
       metadata: {
         besafe_user_id: user.id,
         plan: selectedPlan,
