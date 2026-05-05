@@ -680,8 +680,6 @@ function switchTab(el,type){
   el.classList.add('active');
   const isReg = type === 'reg';
   document.getElementById('pwd-wrap').style.display = 'block';
-  document.getElementById('plan-wrap').style.display = isReg ? 'block' : 'none';
-  document.getElementById('payment-wrap').style.display = isReg ? 'block' : 'none';
   document.getElementById('reg-error').style.display = 'none';
   const btn = document.getElementById('submit-btn');
   btn.textContent = isReg ? 'Pradeti 14 dienu bandyma \u2192' : 'Prisijungti \u2192';
