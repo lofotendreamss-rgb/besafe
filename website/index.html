@@ -664,9 +664,11 @@ function setBilling(val){
 }
 
 function selectPlan(plan){
+  // Stores selectedPlan for downstream registration flow.
+  // Plan-card visual feedback was removed when registration form was
+  // simplified (free trial — no Stripe pre-payment selection). DOM
+  // elements `ro-personal`/`ro-business` no longer exist.
   selectedPlan=plan;
-  document.getElementById('ro-personal').classList.toggle('sel',plan==='personal');
-  document.getElementById('ro-business').classList.toggle('sel',plan==='business');
 }
 
 // REGISTRATION
@@ -684,34 +686,6 @@ function switchTab(el,type){
   const btn = document.getElementById('submit-btn');
   btn.textContent = isReg ? 'Pradeti 14 dienu bandyma \u2192' : 'Prisijungti \u2192';
   btn.onclick = isReg ? doRegister : doLogin;
-}
-
-function regTogglePlan(plan){
-  selectedPlan=plan;
-  document.getElementById('ro-personal').classList.toggle('sel',plan==='personal');
-  document.getElementById('ro-business').classList.toggle('sel',plan==='business');
-}
-
-function toggleRegBilling(){
-  regAnnual=!regAnnual;
-  const p1=regAnnual?'\u20AC2,50':'\u20AC3,50';
-  const p2=regAnnual?'\u20AC5,66':'\u20AC7,99';
-  document.getElementById('ro-p1-price').textContent=p1;
-  document.getElementById('ro-p2-price').textContent=p2;
-  const row=document.getElementById('billing-toggle-reg');
-  if(regAnnual){
-    document.getElementById('billing-toggle-text').textContent='Annual plan active';
-    document.getElementById('billing-toggle-sub').textContent='Pay once per year \u2014 save 2 months';
-    row.style.borderColor='var(--accent)';
-    document.getElementById('billing-pill-label').textContent='AKTYVUS \u2713';
-    document.getElementById('billing-pill-label').style.background='rgba(46,204,138,0.2)';
-  } else {
-    document.getElementById('billing-toggle-text').textContent='Switch to annual plan';
-    document.getElementById('billing-toggle-sub').textContent='Save 2 months \u2014 pay once';
-    row.style.borderColor='';
-    document.getElementById('billing-pill-label').textContent='METINIS';
-    document.getElementById('billing-pill-label').style.background='';
-  }
 }
 
 const API_URL = 'https://besafe-oga3.onrender.com';
