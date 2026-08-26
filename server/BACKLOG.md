@@ -302,6 +302,57 @@ else. Recording this as future-self note rather than a code change.
   "shortcut commands" vs. "spoken chat with Claude." Different UX,
   different cost (Claude-per-request vs. free local regex).
 
+## Subscription lifecycle
+
+### [ ] `cancel_at_period_end` is never recorded — BeSafe cannot tell the
+user their cancellation registered
+
+**Priority:** Medium — this is the exact UX gap that prompted the
+2026-08-26 review in the first place
+**Effort:** Low-Medium (one webhook field, one DB column, one UI line)
+**Impact:** Between cancelling and the period ending, the app shows no
+sign that anything happened
+
+**Problem:**
+Cancelling from the Stripe Customer Portal defaults to *cancel at period
+end*. Stripe fires `customer.subscription.updated` with
+`cancel_at_period_end: true`, but the subscription `status` stays
+`active` (or, after a failed payment, `past_due`).
+
+The handler at [besafe-server.js:903-918](besafe-server.js#L903-L918)
+maps `active` → `active` and `trialing` → `trial`, and otherwise leaves
+`license.status` untouched. `cancel_at_period_end` does not appear
+anywhere in the codebase — `grep` returns zero hits.
+
+So nothing changes anywhere in BeSafe until the period actually ends and
+`customer.subscription.deleted` arrives. Until then the user has just
+cancelled and sees: no confirmation email, no banner, no Settings
+indication. Their only evidence is the Stripe page itself.
+
+Observed live on 2026-08-26: the portal showed "Atšaukiama 09-24" while
+the licence carried on as before.
+
+**Solution:**
+1. Read `subscription.cancel_at_period_end` and
+   `subscription.current_period_end` in the `customer.subscription.updated`
+   branch.
+2. Persist them on `licenses` (e.g. `cancel_at_period_end boolean`,
+   `current_period_end timestamptz`) — needs a migration.
+3. Surface it: return the fields from `/api/verify-license`, and have the
+   Settings Subscription section render "Active until <date>" instead of
+   the plain manage link when a cancellation is scheduled.
+4. Optional: a confirmation email on the transition, so the user gets
+   something outside Stripe.
+
+**Why separate sprint:**
+Needs a schema migration, and step 3 is a product decision about how much
+to say and where. Not a bug — the current behaviour is correct, it is
+just silent.
+
+**Related:**
+The `/api/create-portal` fix in `4ca0d04` made cancelling reachable;
+this is the other half — telling the user it worked.
+
 ## Security follow-ups
 
 ### [ ] Electron security upgrade (v36 → v41)
