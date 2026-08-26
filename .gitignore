@@ -23,3 +23,6 @@ Thumbs.db
 # ...except value-free templates
 !.env.example
 !*.env.example
+
+# electron-builder output (dist/ is already covered above)
+output/
