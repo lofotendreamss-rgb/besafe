@@ -99,6 +99,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1.25re
 .btn-checkout:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 .secure-row{display:flex;align-items:center;justify-content:center;gap:0.5rem;font-size:0.7rem;color:var(--muted);margin-top:1rem;opacity:0.7}
 .error-msg{display:none;background:rgba(204,68,68,0.1);border:1px solid rgba(204,68,68,0.3);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#e88}
+.notice-msg{display:none;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.3);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#2ecc8a;line-height:1.6}
 .success-msg{display:none;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.3);border-radius:10px;padding:1.5rem;text-align:center;font-size:0.9rem;color:var(--accent)}
 .cancelled-msg{display:none;background:rgba(255,165,0,0.08);border:1px solid rgba(255,165,0,0.25);border-radius:10px;padding:1.5rem;text-align:center;font-size:0.9rem;color:#ffa726}
 
@@ -250,12 +251,14 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
   <div class="manage-section">
     <div class="manage-divider"><span>Already subscribed?</span></div>
     <div class="manage-card">
-      <p>Manage your subscription, update payment method, or cancel.</p>
+      <p>Manage your subscription, update payment method, or cancel. We&rsquo;ll email a secure link to the address on your subscription.</p>
+      <div class="notice-msg" id="portal-notice"></div>
+      <div class="error-msg" id="portal-error"></div>
       <div class="field-group" style="margin-bottom:1rem">
         <input class="field-input" type="email" placeholder="your@email.com" id="portal-email" style="text-align:center">
       </div>
       <button class="btn-portal" id="btn-portal" onclick="doPortal()">
-        Manage subscription &rarr;
+        Email me a link &rarr;
       </button>
     </div>
   </div>
@@ -403,9 +406,16 @@ async function doCheckout() {
   }
 }
 
+// Requests a Stripe Customer Portal link. The server does NOT return
+// the URL any more — it emails it to the address on the subscription,
+// so controlling that mailbox is what authorises access to invoices,
+// the payment method and the cancel button. Nothing here can tell
+// whether the address is a customer: the response is identical either
+// way, by design.
 async function doPortal() {
   const email = document.getElementById('portal-email').value.trim();
   const btn = document.getElementById('btn-portal');
+  const notice = document.getElementById('portal-notice');
 
   if (!email || !email.includes('@')) {
     const input = document.getElementById('portal-email');
@@ -415,8 +425,9 @@ async function doPortal() {
     return;
   }
 
+  notice.style.display = 'none';
   btn.disabled = true;
-  btn.textContent = 'Opening portal...';
+  btn.textContent = 'Sending link...';
 
   try {
     const res = await fetch(API_URL + '/api/create-portal', {
@@ -427,18 +438,26 @@ async function doPortal() {
 
     const data = await res.json();
 
+    // 400 is a malformed address; 429 is the rate limit (3/min per
+    // address, so a double-click gets a clear answer instead of a
+    // silent no-op). Everything else is the deliberately uniform
+    // success body.
     if (!res.ok) {
-      alert(data.error || 'Could not open subscription portal.');
+      showError('portal-error', data.error || 'Could not send the link. Please try again.');
       btn.disabled = false;
-      btn.textContent = 'Manage subscription \u2192';
+      btn.textContent = 'Email me a link →';
       return;
     }
 
-    window.location.href = data.portal_url;
+    notice.textContent = data.message || 'If that address has a BeSafe subscription, we’ve emailed a link to manage it. Please check your inbox.';
+    notice.style.display = 'block';
+    btn.textContent = 'Link sent ✓';
+    // Stays disabled: re-sending immediately would only burn the
+    // 3/min budget. Reloading the page resets it.
   } catch (err) {
-    alert('Connection error. Please try again.');
+    showError('portal-error', 'Connection error. Please try again.');
     btn.disabled = false;
-    btn.textContent = 'Manage subscription \u2192';
+    btn.textContent = 'Email me a link →';
   }
 }
 </script>
