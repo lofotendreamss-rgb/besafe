@@ -62,7 +62,7 @@ en:{
 "lic.i1":"The app","lic.i1b":"once a month","lic.i1c":"silently verifies your key.",
 "lic.i2":"Trial period ends after","lic.i2b":"14 days","lic.i2c":"\u2014 we'll notify you by email.",
 "lic.i3":"If you cancel, your data is","lic.i3b":"never deleted","lic.i3c":".",
-"ft.priv":"Privacy policy","ft.terms":"Terms of use","ft.docs":"Documentation","ft.contact":"Contact","ft.copy":"\u00A9 2026 BeSafe. All rights reserved."
+"ft.priv":"Privacy policy","ft.terms":"Terms of use","ft.docs":"Documentation","ft.contact":"Contact","ft.manage":"Manage subscription","ft.copy":"\u00A9 2026 BeSafe. All rights reserved."
 },
 lt:{
 "nav.about":"Apie mus","nav.how":"Kaip veikia","nav.pricing":"Planai","nav.start":"Pradėti","nav.signin":"Prisijungti","nav.trial":"14 dienų nemokamai",
@@ -123,7 +123,7 @@ lt:{
 "lic.i1":"Programa","lic.i1b":"kartą per mėnesį","lic.i1c":"tyliai patikrina jūsų raktą.",
 "lic.i2":"Bandymo laikotarpis baigiasi po","lic.i2b":"14 dienų","lic.i2c":"\u2014 informuosime el. paštu.",
 "lic.i3":"Atšaukus prenumeratą, jūsų duomenys","lic.i3b":"niekada neištrinami","lic.i3c":".",
-"ft.priv":"Privatumo politika","ft.terms":"Naudojimo sąlygos","ft.docs":"Dokumentacija","ft.contact":"Kontaktai","ft.copy":"\u00A9 2026 BeSafe. Visos teisės saugomos."
+"ft.priv":"Privatumo politika","ft.terms":"Naudojimo sąlygos","ft.docs":"Dokumentacija","ft.contact":"Kontaktai","ft.manage":"Valdyti prenumeratą","ft.copy":"\u00A9 2026 BeSafe. Visos teisės saugomos."
 },
 de:{
 "nav.about":"Uber uns","nav.how":"Wie es funktioniert","nav.pricing":"Preise","nav.start":"Loslegen","nav.signin":"Anmelden","nav.trial":"14 Tage kostenlos",
@@ -181,7 +181,7 @@ de:{
 "lic.i1":"Die App","lic.i1b":"einmal im Monat","lic.i1c":"pruft Ihren Schlussel.",
 "lic.i2":"Testphase endet nach","lic.i2b":"14 Tagen","lic.i2c":"\u2014 wir benachrichtigen Sie.",
 "lic.i3":"Nach Kundigung werden Ihre Daten","lic.i3b":"nie geloscht","lic.i3c":".",
-"ft.priv":"Datenschutz","ft.terms":"Nutzungsbedingungen","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alle Rechte vorbehalten."
+"ft.priv":"Datenschutz","ft.terms":"Nutzungsbedingungen","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.manage":"Abonnement verwalten","ft.copy":"\u00A9 2026 BeSafe. Alle Rechte vorbehalten."
 },
 fr:{
 "nav.about":"A propos","nav.how":"Comment ca marche","nav.pricing":"Tarifs","nav.start":"Commencer","nav.signin":"Se connecter","nav.trial":"14 jours gratuits",
@@ -239,7 +239,7 @@ fr:{
 "lic.i1":"L'app","lic.i1b":"une fois par mois","lic.i1c":"verifie votre cle.",
 "lic.i2":"La periode d'essai se termine apres","lic.i2b":"14 jours","lic.i2c":"\u2014 nous vous informerons.",
 "lic.i3":"Si vous annulez, vos donnees ne sont","lic.i3b":"jamais supprimees","lic.i3c":".",
-"ft.priv":"Confidentialite","ft.terms":"Conditions","ft.docs":"Documentation","ft.contact":"Contact","ft.copy":"\u00A9 2026 BeSafe. Tous droits reserves."
+"ft.priv":"Confidentialite","ft.terms":"Conditions","ft.docs":"Documentation","ft.contact":"Contact","ft.manage":"Gérer l'abonnement","ft.copy":"\u00A9 2026 BeSafe. Tous droits reserves."
 },
 es:{
 "nav.about":"Sobre nosotros","nav.how":"Como funciona","nav.pricing":"Precios","nav.start":"Empezar","nav.signin":"Iniciar sesión","nav.trial":"14 dias gratis",
@@ -297,7 +297,7 @@ es:{
 "lic.i1":"La app","lic.i1b":"una vez al mes","lic.i1c":"verifica tu clave.",
 "lic.i2":"El periodo de prueba termina en","lic.i2b":"14 dias","lic.i2c":"\u2014 te avisaremos.",
 "lic.i3":"Si cancelas, tus datos","lic.i3b":"nunca se eliminan","lic.i3c":".",
-"ft.priv":"Privacidad","ft.terms":"Terminos","ft.docs":"Documentacion","ft.contact":"Contacto","ft.copy":"\u00A9 2026 BeSafe. Todos los derechos reservados."
+"ft.priv":"Privacidad","ft.terms":"Terminos","ft.docs":"Documentacion","ft.contact":"Contacto","ft.manage":"Gestionar suscripción","ft.copy":"\u00A9 2026 BeSafe. Todos los derechos reservados."
 },
 it:{
 "nav.about":"Chi siamo","nav.how":"Come funziona","nav.pricing":"Prezzi","nav.start":"Inizia","nav.signin":"Accedi","nav.trial":"14 giorni gratis",
@@ -352,7 +352,7 @@ it:{
 "lic.keyl":"La tua chiave di licenza","lic.copy":"Copia chiave",
 "lic.sent":"Chiave di licenza inviata alla tua email","lic.trial":"14 giorni di prova gratuita — senza costi","lic.safe":"I tuoi dati restano sul tuo dispositivo — mai cancellati",
 "lic.i1":"L'app","lic.i1b":"una volta al mese","lic.i1c":"verifica la chiave.","lic.i2":"Il periodo di prova termina dopo","lic.i2b":"14 giorni","lic.i2c":".","lic.i3":"Se cancelli, i tuoi dati","lic.i3b":"non vengono mai eliminati","lic.i3c":".",
-"ft.priv":"Privacy","ft.terms":"Termini","ft.docs":"Documentazione","ft.contact":"Contatti","ft.copy":"\u00A9 2026 BeSafe. Tutti i diritti riservati."
+"ft.priv":"Privacy","ft.terms":"Termini","ft.docs":"Documentazione","ft.contact":"Contatti","ft.manage":"Gestisci abbonamento","ft.copy":"\u00A9 2026 BeSafe. Tutti i diritti riservati."
 },
 pl:{
 "nav.about":"O nas","nav.how":"Jak to dziala","nav.pricing":"Cennik","nav.start":"Zacznij","nav.signin":"Zaloguj się","nav.trial":"14 dni za darmo",
@@ -407,7 +407,7 @@ pl:{
 "lic.keyl":"Twoj klucz licencyjny","lic.copy":"Kopiuj klucz",
 "lic.sent":"Klucz licencyjny wysłany na email","lic.trial":"14 dni za darmo — bez opłat","lic.safe":"Twoje dane pozostają na Twoim urządzeniu — nigdy nie usuwane",
 "lic.i1":"Aplikacja","lic.i1b":"raz w miesiacu","lic.i1c":"weryfikuje klucz.","lic.i2":"Okres probny konczy sie po","lic.i2b":"14 dniach","lic.i2c":".","lic.i3":"Po rezygnacji dane","lic.i3b":"nigdy nie sa usuwane","lic.i3c":".",
-"ft.priv":"Polityka prywatnosci","ft.terms":"Regulamin","ft.docs":"Dokumentacja","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Wszelkie prawa zastrzezone."
+"ft.priv":"Polityka prywatnosci","ft.terms":"Regulamin","ft.docs":"Dokumentacja","ft.contact":"Kontakt","ft.manage":"Zarządzaj subskrypcją","ft.copy":"\u00A9 2026 BeSafe. Wszelkie prawa zastrzezone."
 },
 ru:{
 "nav.about":"О нас","nav.how":"Как это работает","nav.pricing":"Цены","nav.start":"Начать","nav.signin":"Войти","nav.trial":"14 дней бесплатно",
@@ -463,7 +463,7 @@ ru:{
 "lic.keyl":"\u0412\u0430\u0448 \u043A\u043B\u044E\u0447","lic.copy":"\u041A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C",
 "lic.sent":"Ключ лицензии отправлен на email","lic.trial":"14 дней бесплатно — без оплаты","lic.safe":"Ваши данные остаются на вашем устройстве — никогда не удаляются",
 "lic.i1":"\u041F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435","lic.i1b":"\u0440\u0430\u0437 \u0432 \u043C\u0435\u0441\u044F\u0446","lic.i1c":"\u043F\u0440\u043E\u0432\u0435\u0440\u044F\u0435\u0442 \u043A\u043B\u044E\u0447.","lic.i2":"\u041F\u0440\u043E\u0431\u043D\u044B\u0439 \u043F\u0435\u0440\u0438\u043E\u0434 \u0437\u0430\u043A\u0430\u043D\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0447\u0435\u0440\u0435\u0437","lic.i2b":"14 \u0434\u043D\u0435\u0439","lic.i2c":".","lic.i3":"\u0412\u0430\u0448\u0438 \u0434\u0430\u043D\u043D\u044B\u0435","lic.i3b":"\u043D\u0438\u043A\u043E\u0433\u0434\u0430 \u043D\u0435 \u0443\u0434\u0430\u043B\u044F\u044E\u0442\u0441\u044F","lic.i3c":".",
-"ft.priv":"\u041A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C","ft.terms":"\u0423\u0441\u043B\u043E\u0432\u0438\u044F","ft.docs":"\u0414\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u044F","ft.contact":"\u041A\u043E\u043D\u0442\u0430\u043A\u0442\u044B","ft.copy":"\u00A9 2026 BeSafe. \u0412\u0441\u0435 \u043F\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043D\u044B."
+"ft.priv":"\u041A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C","ft.terms":"\u0423\u0441\u043B\u043E\u0432\u0438\u044F","ft.docs":"\u0414\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u044F","ft.contact":"\u041A\u043E\u043D\u0442\u0430\u043A\u0442\u044B","ft.manage":"Управление подпиской","ft.copy":"\u00A9 2026 BeSafe. \u0412\u0441\u0435 \u043F\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043D\u044B."
 },
 uk:{
 "nav.about":"Про нас","nav.how":"Як це працює","nav.pricing":"Ціни","nav.start":"Почати","nav.signin":"Увійти","nav.trial":"14 днів безкоштовно",
@@ -518,7 +518,7 @@ uk:{
 "lic.keyl":"Ваш ключ","lic.copy":"Копіювати",
 "lic.sent":"Ключ ліцензії надіслано на email","lic.trial":"14 днів безкоштовно — без оплати","lic.safe":"Ваші дані залишаються на вашому пристрої — ніколи не видаляються",
 "lic.i1":"Додаток","lic.i1b":"раз на місяць","lic.i1c":"перевіряє ключ.","lic.i2":"Пробний період закінчується через","lic.i2b":"14 днів","lic.i2c":".","lic.i3":"Ваші дані","lic.i3b":"ніколи не видаляються","lic.i3c":".",
-"ft.priv":"Конфіденційність","ft.terms":"Умови","ft.docs":"Документація","ft.contact":"Контакти","ft.copy":"\u00A9 2026 BeSafe. Всі права захищені."
+"ft.priv":"Конфіденційність","ft.terms":"Умови","ft.docs":"Документація","ft.contact":"Контакти","ft.manage":"Керувати підпискою","ft.copy":"\u00A9 2026 BeSafe. Всі права захищені."
 },
 ja:{
 "nav.about":"私たちについて","nav.how":"仕組み","nav.pricing":"料金","nav.start":"始める","nav.signin":"ログイン","nav.trial":"14日間無料",
@@ -573,7 +573,7 @@ ja:{
 "lic.keyl":"ライセンスキー","lic.copy":"キーをコピー",
 "lic.sent":"ライセンスキーをメールで送信しました","lic.trial":"14日間無料トライアル — 料金なし","lic.safe":"データはデバイスに保存 — 削除されません",
 "lic.i1":"アプリは","lic.i1b":"月に1回","lic.i1c":"キーを確認します。","lic.i2":"トライアル期間は","lic.i2b":"14日後","lic.i2c":"に終了します。","lic.i3":"解約してもデータは","lic.i3b":"削除されません","lic.i3c":"。",
-"ft.priv":"プライバシーポリシー","ft.terms":"利用規約","ft.docs":"ドキュメント","ft.contact":"お問い合わせ","ft.copy":"\u00A9 2026 BeSafe. All rights reserved."
+"ft.priv":"プライバシーポリシー","ft.terms":"利用規約","ft.docs":"ドキュメント","ft.contact":"お問い合わせ","ft.manage":"サブスクリプションを管理","ft.copy":"\u00A9 2026 BeSafe. All rights reserved."
 },
 no:{
 "nav.about":"Om oss","nav.how":"Slik fungerer det","nav.pricing":"Priser","nav.start":"Kom i gang","nav.signin":"Logg inn","nav.trial":"14 dager gratis",
@@ -634,7 +634,7 @@ no:{
 "lic.i1":"Appen","lic.i1b":"én gang i måneden","lic.i1c":"verifiserer nøkkelen din stille.",
 "lic.i2":"Prøveperioden utløper etter","lic.i2b":"14 dager","lic.i2c":"— vi varsler deg på e-post.",
 "lic.i3":"Hvis du avbryter, blir dataene dine","lic.i3b":"aldri slettet","lic.i3c":".",
-"ft.priv":"Personvernerklæring","ft.terms":"Bruksvilkår","ft.docs":"Dokumentasjon","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alle rettigheter forbeholdt."
+"ft.priv":"Personvernerklæring","ft.terms":"Bruksvilkår","ft.docs":"Dokumentasjon","ft.contact":"Kontakt","ft.manage":"Administrer abonnement","ft.copy":"\u00A9 2026 BeSafe. Alle rettigheter forbeholdt."
 },
 sv:{
 "nav.about":"Om oss","nav.how":"Så fungerar det","nav.pricing":"Priser","nav.start":"Kom igång","nav.signin":"Logga in","nav.trial":"14 dagar gratis",
@@ -695,7 +695,7 @@ sv:{
 "lic.i1":"Appen","lic.i1b":"en gång i månaden","lic.i1c":"verifierar din nyckel tyst.",
 "lic.i2":"Provperioden upphör efter","lic.i2b":"14 dagar","lic.i2c":"\u2014 vi meddelar dig via e-post.",
 "lic.i3":"Om du avslutar förblir dina data","lic.i3b":"aldrig raderade","lic.i3c":".",
-"ft.priv":"Integritetspolicy","ft.terms":"Användarvillkor","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.copy":"\u00A9 2026 BeSafe. Alla rättigheter förbehållna."
+"ft.priv":"Integritetspolicy","ft.terms":"Användarvillkor","ft.docs":"Dokumentation","ft.contact":"Kontakt","ft.manage":"Hantera prenumeration","ft.copy":"\u00A9 2026 BeSafe. Alla rättigheter förbehållna."
 },
 zh:{
 "nav.about":"\u5173\u4E8E\u6211\u4EEC","nav.how":"\u5982\u4F55\u8FD0\u4F5C","nav.pricing":"\u4EF7\u683C\u65B9\u6848","nav.start":"\u7ACB\u5373\u5F00\u59CB","nav.signin":"\u767B\u5F55","nav.trial":"14\u5929\u514D\u8D39\u8BD5\u7528",
@@ -756,7 +756,7 @@ zh:{
 "lic.i1":"\u5E94\u7528\u7A0B\u5E8F","lic.i1b":"\u6BCF\u6708\u4E00\u6B21","lic.i1c":"\u9759\u9ED8\u9A8C\u8BC1\u60A8\u7684\u5BC6\u94A5\u3002",
 "lic.i2":"\u8BD5\u7528\u671F\u5728","lic.i2b":"14\u5929\u540E","lic.i2c":"\u7ED3\u675F \u2014 \u6211\u4EEC\u5C06\u901A\u8FC7\u90AE\u4EF6\u901A\u77E5\u60A8\u3002",
 "lic.i3":"\u5982\u679C\u60A8\u53D6\u6D88\uFF0C\u60A8\u7684\u6570\u636E\u5C06","lic.i3b":"\u6C38\u4E0D\u5220\u9664","lic.i3c":"\u3002",
-"ft.priv":"\u9690\u79C1\u653F\u7B56","ft.terms":"\u4F7F\u7528\u6761\u6B3E","ft.docs":"\u6587\u6863","ft.contact":"\u8054\u7CFB\u6211\u4EEC","ft.copy":"\u00A9 2026 BeSafe. \u7248\u6743\u6240\u6709\u3002"
+"ft.priv":"\u9690\u79C1\u653F\u7B56","ft.terms":"\u4F7F\u7528\u6761\u6B3E","ft.docs":"\u6587\u6863","ft.contact":"\u8054\u7CFB\u6211\u4EEC","ft.manage":"管理订阅","ft.copy":"\u00A9 2026 BeSafe. \u7248\u6743\u6240\u6709\u3002"
 },
 pt:{
 "nav.about":"Sobre nós","nav.how":"Como funciona","nav.pricing":"Planos","nav.start":"Comece agora","nav.signin":"Entrar","nav.trial":"14 dias grátis",
@@ -817,7 +817,7 @@ pt:{
 "lic.i1":"O app","lic.i1b":"uma vez por mês","lic.i1c":"verifica silenciosamente sua chave.",
 "lic.i2":"O período de teste encerra após","lic.i2b":"14 dias","lic.i2c":"\u2014 notificaremos por email.",
 "lic.i3":"Se você cancelar, seus dados são","lic.i3b":"nunca excluídos","lic.i3c":".",
-"ft.priv":"Política de privacidade","ft.terms":"Termos de uso","ft.docs":"Documentação","ft.contact":"Contato","ft.copy":"\u00A9 2026 BeSafe. Todos os direitos reservados."
+"ft.priv":"Política de privacidade","ft.terms":"Termos de uso","ft.docs":"Documentação","ft.contact":"Contato","ft.manage":"Gerir subscrição","ft.copy":"\u00A9 2026 BeSafe. Todos os direitos reservados."
 }
 };
 

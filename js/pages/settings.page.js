@@ -47,6 +47,14 @@
  */
 
 import { createTranslator, getCurrentLanguage, setLanguage } from "../core/i18n.js";
+import { SITE_BASE, openSitePage } from "../core/api.base.js";
+
+// Root-relative paths, resolved against SITE_BASE at render time.
+// Bare "/upgrade.html" is dead in the desktop build: the app runs
+// from file://, so the link would point at file:///upgrade.html.
+const UPGRADE_PATH = "/upgrade.html";
+const PRIVACY_PATH = "/privacy.html";
+const TERMS_PATH   = "/terms.html";
 import {
   SUPPORTED_CURRENCIES,
   getCurrencyName,
@@ -82,6 +90,7 @@ export class SettingsPage {
   constructor() {
     this.handleSaveClick = this.handleSaveClick.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
+    this.handleSiteLinkClick = this.handleSiteLinkClick.bind(this);
     this.statusClearTimer = null;
   }
 
@@ -194,16 +203,73 @@ export class SettingsPage {
           ></span>
         </div>
 
+        ${this.renderSubscriptionSection()}
+
         <section class="settings-page__section settings-page__section--legal" aria-label="${this.escapeHtml(privacyLabel)} / ${this.escapeHtml(termsLabel)}">
           <div class="settings-page__legal-links">
-            <a href="/privacy.html" class="settings-page__legal-link">${this.escapeHtml(privacyLabel)}</a>
+            <a href="${SITE_BASE + PRIVACY_PATH}" class="settings-page__legal-link" data-site-link="${PRIVACY_PATH}">${this.escapeHtml(privacyLabel)}</a>
             <span class="settings-page__legal-separator" aria-hidden="true">·</span>
-            <a href="/terms.html" class="settings-page__legal-link">${this.escapeHtml(termsLabel)}</a>
+            <a href="${SITE_BASE + TERMS_PATH}" class="settings-page__legal-link" data-site-link="${TERMS_PATH}">${this.escapeHtml(termsLabel)}</a>
           </div>
           <p class="settings-page__legal-disclaimer">${this.escapeHtml(langDisclaimer)}</p>
         </section>
       </div>
     `;
+  }
+
+  // Subscription — the only route to cancelling from inside the app.
+  //
+  // Before this existed, the sole in-app path to upgrade.html was the
+  // subscription-ended banner in license.checker.js, which appears
+  // only AFTER a subscription lapses. Someone with an ACTIVE
+  // subscription had no way to reach the billing portal at all, while
+  // the trial email promises "cancel anytime". This closes that gap.
+  //
+  // The link is deliberately plain and unhidden: cancelling should not
+  // be harder to find than subscribing was.
+  renderSubscriptionSection() {
+    const label  = this.t("settings.subscription.label", "Subscription");
+    const help   = this.t(
+      "settings.subscription.help",
+      "Update your payment method, download invoices, or cancel your subscription. We'll email a secure link to your address."
+    );
+    const button = this.t("settings.subscription.button", "Manage subscription");
+
+    return `
+      <section class="settings-page__section" aria-labelledby="settings-subscription-label">
+        <span
+          id="settings-subscription-label"
+          class="settings-page__label"
+        >${this.escapeHtml(label)}</span>
+
+        <p id="settings-subscription-help" class="settings-page__help">
+          ${this.escapeHtml(help)}
+        </p>
+
+        <a
+          id="settings-subscription-link"
+          class="settings-page__legal-link"
+          href="${SITE_BASE + UPGRADE_PATH}"
+          data-site-link="${UPGRADE_PATH}"
+          target="_blank"
+          rel="noopener"
+          aria-describedby="settings-subscription-help"
+        >${this.escapeHtml(button)} &rarr;</a>
+      </section>
+    `;
+  }
+
+  // One handler for every outbound link on this page. The absolute
+  // href already makes them resolve everywhere; this additionally
+  // keeps the desktop build from opening a second chrome-less Electron
+  // window, handing the URL to the OS browser instead. If it never
+  // runs, the plain href still works.
+  handleSiteLinkClick(event) {
+    const anchor = event.currentTarget;
+    const path = anchor?.getAttribute("data-site-link");
+    if (!path) return;
+    event.preventDefault();
+    openSitePage(path, { target: "_blank" });
   }
 
   renderLanguageSection() {
@@ -259,6 +325,9 @@ export class SettingsPage {
     if (saveBtn) saveBtn.addEventListener("click", this.handleSaveClick);
     const langSelect = root.querySelector("#settings-language-picker");
     if (langSelect) langSelect.addEventListener("change", this.handleLanguageChange);
+    root.querySelectorAll("[data-site-link]").forEach((a) => {
+      a.addEventListener("click", this.handleSiteLinkClick);
+    });
   }
 
   unwireListeners() {
@@ -268,6 +337,9 @@ export class SettingsPage {
     if (saveBtn) saveBtn.removeEventListener("click", this.handleSaveClick);
     const langSelect = root.querySelector("#settings-language-picker");
     if (langSelect) langSelect.removeEventListener("change", this.handleLanguageChange);
+    root.querySelectorAll("[data-site-link]").forEach((a) => {
+      a.removeEventListener("click", this.handleSiteLinkClick);
+    });
   }
 
   refreshSettingsContent() {
