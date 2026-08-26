@@ -23,6 +23,9 @@ audit purposes only.
 
 For licensing terms, see [LICENSE](./LICENSE).
 
+Known open work is tracked in [BACKLOG.md](./BACKLOG.md)
+(project-wide) and [server/BACKLOG.md](./server/BACKLOG.md) (server internals).
+
 ## Distribution
 
 - **Web app** — primary distribution at https://besafe.fyi
