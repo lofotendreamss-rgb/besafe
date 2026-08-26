@@ -344,7 +344,7 @@ async function sendLicenseEmail(email, licenseKey, plan) {
         </div>
 
         <div style="text-align:center;margin-bottom:1.5rem">
-          <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;font-size:0.95rem;text-decoration:none;letter-spacing:0.04em">Open BeSafe &#8594;</a>
+          <a href="https://besafe-oga3.onrender.com/app?activate=1" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;font-size:0.95rem;text-decoration:none;letter-spacing:0.04em">Open BeSafe &#8594;</a>
         </div>
 
         <div style="background:rgba(46,204,138,0.06);border:1px solid rgba(46,204,138,0.12);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem">
@@ -390,7 +390,7 @@ async function sendReactivationEmail(email, licenseKey, plan) {
           All your transactions, categories, and AI conversation history are ready to use.
         </p>
         <div style="text-align:center;margin:1.5rem 0">
-          <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;text-decoration:none">Open BeSafe &#8594;</a>
+          <a href="https://besafe-oga3.onrender.com/app?activate=1" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;text-decoration:none">Open BeSafe &#8594;</a>
         </div>
         <p style="font-size:0.72rem;color:#5a7d67;text-align:center;margin-top:1.5rem">
           License: <code style="color:#2ecc8a">${licenseKey}</code>
@@ -418,7 +418,7 @@ async function sendWelcomeToPaidEmail(email, licenseKey, plan) {
           You now have full access to the AI assistant, plus everything else that makes BeSafe yours.
         </p>
         <div style="text-align:center;margin:1.5rem 0">
-          <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;text-decoration:none">Open BeSafe &#8594;</a>
+          <a href="https://besafe-oga3.onrender.com/app?activate=1" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;text-decoration:none">Open BeSafe &#8594;</a>
         </div>
         <p style="font-size:0.72rem;color:#5a7d67;text-align:center;margin-top:1.5rem">
           License: <code style="color:#2ecc8a">${licenseKey}</code> &#183; Plan: ${planLabel}
@@ -480,7 +480,7 @@ app.post("/api/register", async (req, res) => {
                   <div style="font-family:'Courier New',monospace;font-size:1.15rem;color:#2ecc8a;letter-spacing:0.18em">${existingLicense.license_key}</div>
                 </div>
                 <div style="text-align:center;margin-bottom:1.5rem">
-                  <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;font-size:0.95rem;text-decoration:none">Open BeSafe &#8594;</a>
+                  <a href="https://besafe-oga3.onrender.com/app?activate=1" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;font-size:0.95rem;text-decoration:none">Open BeSafe &#8594;</a>
                 </div>
                 <p style="font-size:0.72rem;color:#5a7d67;line-height:1.7;text-align:center">
                   Status: <strong style="color:#2ecc8a">${existingLicense.status}</strong> &#183; Plan: <strong style="color:#f2f8f4">${existingLicense.plan || "personal"}</strong>
@@ -623,7 +623,7 @@ app.post("/api/login", async (req, res) => {
               <tr><td style="padding:0.4rem 0">Status</td><td style="text-align:right;color:#2ecc8a">${license.status || "active"}</td></tr>
             </table>
             <div style="text-align:center;margin-top:1.5rem">
-              <a href="https://besafe-oga3.onrender.com/app" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.75rem 2rem;border-radius:2rem;font-weight:600;font-size:0.9rem;text-decoration:none">Open BeSafe \u2192</a>
+              <a href="https://besafe-oga3.onrender.com/app?activate=1" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.75rem 2rem;border-radius:2rem;font-weight:600;font-size:0.9rem;text-decoration:none">Open BeSafe \u2192</a>
             </div>
           </div>
         `,
