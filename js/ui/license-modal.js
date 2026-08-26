@@ -19,6 +19,7 @@
  */
 
 import { createTranslator, getCurrentLanguage } from "../core/i18n.js";
+import { API_BASE } from "../core/api.base.js";
 
 const LICENSE_KEY_PATTERN = /^BSAFE-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
 
@@ -208,7 +209,7 @@ async function handleSubmit() {
     // (400), which the modal would misreport as "Invalid key".
     const deviceFp = generateDeviceFingerprint();
 
-    const res = await fetch("/api/verify-license", {
+    const res = await fetch(API_BASE + "/api/verify-license", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({

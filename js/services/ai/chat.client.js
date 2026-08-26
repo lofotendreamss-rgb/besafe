@@ -84,6 +84,7 @@
 import { createTranslator, getCurrentLanguage } from "../../core/i18n.js";
 import { buildFinanceContext } from "./finance.context.js";
 import { getUserPlan } from "../finance/user-plan.js";
+import { API_BASE } from "../../core/api.base.js";
 
 // ============================================================
 // i18n helpers — modulio private. Ta pati semantika kaip
@@ -277,7 +278,7 @@ export async function sendChatMessage(text) {
 
   let resp;
   try {
-    resp = await fetch("/api/chat", {
+    resp = await fetch(API_BASE + "/api/chat", {
       method:  "POST",
       headers,
       body:    JSON.stringify({
