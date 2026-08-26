@@ -26,6 +26,11 @@ For licensing terms, see [LICENSE](./LICENSE).
 Known open work is tracked in [BACKLOG.md](./BACKLOG.md)
 (project-wide) and [server/BACKLOG.md](./server/BACKLOG.md) (server internals).
 
+[server/analytics.sql](./server/analytics.sql) holds read-only queries for
+the Supabase SQL editor — registrations, licence status, how many people
+actually opened the app, trial conversion and AI usage. No telemetry is
+involved; it reads records the service already keeps to function.
+
 ## Distribution
 
 - **Web app** — primary distribution at https://besafe.fyi
