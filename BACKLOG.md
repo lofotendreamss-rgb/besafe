@@ -61,6 +61,99 @@ Git history was checked and is clean: `server/.env` was in the original
 local commit but `filter-branch` stripped it two minutes before the first
 push, so the secrets never reached GitHub.
 
+## ✅ Investigated — 2026-08-26: nobody had ever activated a licence
+
+Kept because the numbers below are the baseline any future funnel work
+is measured against, and because it took four wrong turns to reach the
+right answer. Anyone re-running this should know where the traps are.
+
+**The question:** is anyone actually interested in the app?
+
+**What the database said** (queries in
+[server/analytics.sql](server/analytics.sql)):
+
+| | |
+|---|---|
+| Registered users | 30 |
+| — of them tests | 19 (13 from the **FeeHunt** project, 3 `@example.com`, 3 with "test", 1 owner) |
+| — genuinely real | **10**, all between 2026-04-13 and 2026-05-07 |
+| Real users who activated a licence | **0** |
+| Real users who became paying | **0** |
+| Trials expired unused | 10 |
+
+**Two causes, both real, both now fixed:**
+
+1. **The key-bearing emails never reached the activation prompt.**
+   `license-modal.js` opens the prompt only on `?activate=1`, and every
+   "Open BeSafe →" button pointed at a bare `/app`. Register, receive a
+   key, click through, and land in an app that never asks for it —
+   `checkLicenseStatus()` finds no key, returns "free" without calling
+   the server, and the trial is attached to nothing. Fixed in PR #6.
+
+2. **Mail delivery was unreliable before 2026-04-25.** 8 of the 10
+   registered while the server still used Gmail SMTP; one of those also
+   predates `8389688`, which fixed a broken link in the same email. The
+   Resend migration (`22dcfab`) fixed delivery, confirmed on 2026-08-26
+   — a fresh registration reached the inbox immediately, not spam.
+
+**Traps that produced wrong answers along the way:**
+
+- `users` is polluted with another project's test registrations. Any
+  headline count is meaningless until `email ILIKE '%feehunt%'` and the
+  `@example.com` addresses are filtered out. See the open item below.
+- `devices.last_seen_at` does NOT mean "opened the app". A device row is
+  only written when `/api/verify-license` runs, and that only happens
+  when a key is already in localStorage. It measures **activations**,
+  not opens. The app tracks nothing otherwise, by design — so whether
+  those 10 ever opened it is unknowable, and always will be.
+- `users` had 30 rows but `licenses` only 28. Registration inserts the
+  user first and the licence second, returning 500 if the second fails
+  ([besafe-server.js:532-546](server/besafe-server.js#L532-L546)) — the
+  user row survives. Two accounts exist with no licence.
+
+**Still worth doing:**
+
+- Write to those 10 by hand. Their keys are still valid and activation
+  now works. It is also the cheapest possible user research — if they
+  reply "I never got an email", cause 2 is confirmed outright.
+- Check the Resend delivery log for the 2 who registered after
+  2026-04-25 and still did not activate. Two is too few to conclude
+  anything from, but the log would say plainly whether mail reached them.
+- Confirm SPF/DKIM are complete for the domain in Resend.
+
+---
+
+### [ ] FeeHunt test registrations are landing in BeSafe's database
+
+**Priority:** Medium — cosmetic today, potentially destructive
+**Effort:** Low to diagnose, unknown to fix
+**Impact:** Every BeSafe metric is wrong until this is separated
+
+**Problem:**
+13 of the 30 rows in `users` are FeeHunt test registrations —
+`feehunt-test-<timestamp>@example.com`,
+`feehunt-desktop-e2e-<timestamp>@example.com`, `support@feehunt.pro`.
+They hold BeSafe licences and count toward every total.
+
+Three possibilities, none yet ruled out: the two products share one
+Supabase project; one project's `.env` points at the other; or FeeHunt's
+end-to-end tests were pointed at production.
+
+Today the cost is only distorted numbers. But a test suite that can
+INSERT into this database can also UPDATE and DELETE, and BeSafe's rows
+sit in the same tables.
+
+**Next step:**
+Compare `SUPABASE_URL` in the two projects' `.env` files (not recorded
+here — this repository is public). If they match, decide whether to split
+the projects apart or at minimum point FeeHunt's tests at a staging
+instance. If they differ, the pollution came from somewhere else and the
+test rows can simply be deleted.
+
+**Why deferred:**
+Diagnosing it means reading another project's configuration, which was
+out of scope for the session that found it.
+
 ---
 
 ## Open
