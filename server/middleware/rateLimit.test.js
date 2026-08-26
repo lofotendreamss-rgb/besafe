@@ -4,6 +4,7 @@ import {
   createMultiDeviceDetector,
   keyByLicenseHeader,
   keyByLicenseBody,
+  keyByEmailBody,
   keyByIp,
   keyByLicenseBodyOrIp,
 } from './rateLimit.js';
@@ -156,6 +157,30 @@ describe('Key extractors', () => {
     expect(keyByLicenseBody({ body: {} })).toBeNull();
     expect(keyByLicenseBody({ body: null })).toBeNull();
     expect(keyByLicenseBody({})).toBeNull();
+  });
+
+  it('8b. keyByEmailBody: trims + lowercases so casing variants share one bucket; no @ / empty / absent -> null', () => {
+    expect(keyByEmailBody({ body: { email: 'user@example.com' } })).toBe('user@example.com');
+
+    // The handler normalises with trim+toLowerCase before the DB
+    // lookup; the extractor must agree, or 'User@X.com' and
+    // 'user@x.com' would each get a fresh 3/min budget and defeat
+    // the mailbox-flood guard.
+    expect(keyByEmailBody({ body: { email: '  User@Example.COM  ' } })).toBe('user@example.com');
+
+    expect(keyByEmailBody({ body: { email: 'not-an-address' } })).toBeNull();
+    expect(keyByEmailBody({ body: { email: '' } })).toBeNull();
+    expect(keyByEmailBody({ body: { email: 42 } })).toBeNull();
+    expect(keyByEmailBody({ body: {} })).toBeNull();
+    expect(keyByEmailBody({ body: null })).toBeNull();
+    expect(keyByEmailBody({})).toBeNull();
+  });
+
+  it('8c. keyByEmailBody: caps length so an oversized address cannot bloat the bucket map', () => {
+    const huge = 'a'.repeat(5000) + '@example.com';
+    const key = keyByEmailBody({ body: { email: huge } });
+    expect(key).not.toBeNull();
+    expect(key.length).toBe(256);
   });
 
   it('9. keyByIp: XFF first (first IP in comma list), req.ip fallback', () => {

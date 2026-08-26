@@ -5,6 +5,7 @@
 
 import { createTranslator, getCurrentLanguage } from "./i18n.js";
 import { safeSetItem } from "./safe-storage.js";
+import { SITE_BASE, openSitePage } from "./api.base.js";
 
 function t(key, fallback) {
   try {
@@ -15,7 +16,10 @@ function t(key, fallback) {
 }
 
 const API_URL = "https://besafe-oga3.onrender.com";
-const UPGRADE_URL = "/upgrade.html";
+// Root-relative path, resolved against SITE_BASE at render time.
+// A bare "/upgrade.html" is dead in Electron: the app runs from
+// file://, so the link would point at file:///upgrade.html.
+const UPGRADE_PATH = "/upgrade.html";
 const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // localStorage key constants — DRY, single source of truth
@@ -201,7 +205,7 @@ export function showUpgradeBanner(customMessage) {
 
   banner.innerHTML = `
     <span>${message}</span>
-    <a href="${UPGRADE_URL}" target="_blank" rel="noopener"
+    <a href="${SITE_BASE + UPGRADE_PATH}" target="_blank" rel="noopener" data-upgrade-link
        style="background:#1a1000;color:#d4a017;padding:5px 16px;border-radius:20px;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap;transition:opacity .2s"
        onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
       Upgrade &rarr;
@@ -213,6 +217,18 @@ export function showUpgradeBanner(customMessage) {
 
   document.body.prepend(banner);
   document.body.style.paddingTop = banner.offsetHeight + "px";
+
+  // The absolute href above already makes the link work everywhere;
+  // this handler additionally keeps the desktop build out of a
+  // second chrome-less Electron window by handing the URL to the OS
+  // browser. If it never runs, the plain href is still correct.
+  const upgradeLink = banner.querySelector("[data-upgrade-link]");
+  if (upgradeLink) {
+    upgradeLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      openSitePage(UPGRADE_PATH, { target: "_blank" });
+    });
+  }
 }
 
 function removeUpgradeBanner() {

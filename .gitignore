@@ -15,3 +15,14 @@ Thumbs.db
 *.tmp.mjs
 *.tmp.cjs
 *.tmp.js
+
+# Secrets - every .env variant (.env.txt, .env.local, .env.backup, prod.env)
+.env.*
+*.env
+
+# ...except value-free templates
+!.env.example
+!*.env.example
+
+# electron-builder output (dist/ is already covered above)
+output/

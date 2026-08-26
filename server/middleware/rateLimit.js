@@ -141,6 +141,26 @@ export function keyByLicenseBody(req) {
   return LICENSE_KEY_REGEX.test(normalized) ? normalized : null;
 }
 
+// Reads req.body.email, normalised the same way the handlers
+// normalise it before a DB lookup (trim + lowercase) so that
+// "User@X.com" and "user@x.com" share one bucket instead of two.
+// Intended for /api/create-portal, where the rate limit doubles as a
+// guard against using BeSafe to flood someone else's mailbox.
+// REQUIREMENT: express.json() must have run before this middleware.
+export function keyByEmailBody(req) {
+  const v = req?.body?.email;
+  if (typeof v !== 'string' || v.length === 0) return null;
+  const normalized = v.trim().toLowerCase();
+  // Check for @ BEFORE truncating. Slicing first would strip the @ off
+  // an over-long address, the extractor would return null, and a null
+  // key makes createRateLimit pass the request through unlimited — so
+  // padding the local part would have been a way around this limiter.
+  if (!normalized.includes('@')) return null;
+  // Cap length like the other extractors. Two addresses sharing a
+  // 256-char prefix share a bucket; that is the intended trade.
+  return normalized.slice(0, MAX_KEY_LENGTH);
+}
+
 // Extracts the real client IP. Mirrors authLicense's XFF-first
 // logic until TODO(infra) (trust proxy) lands — see BACKLOG.md.
 export function keyByIp(req) {

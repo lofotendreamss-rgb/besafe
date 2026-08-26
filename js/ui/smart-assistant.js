@@ -47,6 +47,10 @@ import { showLicenseModal } from "./license-modal.js";
 import { showActionConfirmation } from "./action-confirmation.js";
 import { registry } from "../core/service.registry.js";
 import { todayLocal } from "../core/date.js";
+import { SITE_BASE, openSitePage } from "../core/api.base.js";
+
+// Root-relative; resolved against SITE_BASE where it is used.
+const UPGRADE_PATH = "/upgrade.html?plan=personal";
 
 // ============================================================
 // i18n — mirror the voice-assistant helpers so translator keys
@@ -324,19 +328,26 @@ function addBubble(role, text) {
 }
 
 // Renders a standalone upgrade button below the most recent bubble.
-// Target is a RELATIVE /upgrade.html so the link works regardless of
-// which host the app is deployed on (Render now, potentially Vercel
-// or a custom domain later). `?plan=personal` pre-selects the lower
-// tier — user can still switch on upgrade.html. `_self` nav keeps
-// mobile UX simple (browser back returns to chat).
+// The URL is built from SITE_BASE rather than left relative: in
+// Electron the app runs from file://, where "/upgrade.html" resolves
+// to file:///upgrade.html and the button is dead. openSitePage also
+// routes the desktop case to the OS browser instead of navigating the
+// chrome-less app window, which would strand the user with no way
+// back. `?plan=personal` pre-selects the lower tier — the user can
+// still switch on upgrade.html. On the web the nav stays `_self` so
+// the browser back button returns to chat.
 function addUpgradeCta() {
   if (!messagesEl) return null;
   const link = document.createElement("a");
   link.className = "smart-chat__upgrade-cta";
-  link.href      = "/upgrade.html?plan=personal";
+  link.href      = SITE_BASE + UPGRADE_PATH;
   link.target    = "_self";
   link.rel       = "noopener noreferrer";
   link.textContent = t("assistant.error.trialNoAiButton", "Atnaujinti planą →");
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    openSitePage(UPGRADE_PATH, { target: "_self" });
+  });
   messagesEl.appendChild(link);
   scrollToBottom();
   return link;

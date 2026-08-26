@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import {
   createRateLimit,
   keyByLicenseBody,
+  keyByEmailBody,
   keyByIp,
   keyByLicenseHeader,
 } from "./middleware/rateLimit.js";
@@ -96,6 +97,29 @@ const verifyLicenseRateLimitKey = createRateLimit({
   windowMs: 60_000,
   keyExtractor: keyByLicenseBody,
   action: "rate_limit_verify_key",
+  supabase,
+});
+// ============================================================
+// /api/create-portal rate limits (both must pass)
+// ============================================================
+//
+// This endpoint sends mail to an address the CALLER supplies, so the
+// email-keyed limit is not just abuse control — without it BeSafe
+// could be aimed at a stranger's inbox as a flooding tool. Kept
+// deliberately tighter than the IP limit: a real person clicks
+// "Manage subscription" once, maybe twice if the first mail is slow.
+const portalRateLimitIp = createRateLimit({
+  limit: 10,
+  windowMs: 60_000,
+  keyExtractor: keyByIp,
+  action: "rate_limit_portal_ip",
+  supabase,
+});
+const portalRateLimitEmail = createRateLimit({
+  limit: 3,
+  windowMs: 60_000,
+  keyExtractor: keyByEmailBody,
+  action: "rate_limit_portal_email",
   supabase,
 });
 
@@ -1347,56 +1371,124 @@ app.post("/api/create-checkout", async (req, res) => {
 });
 
 // ============================================================
-// POST /api/create-portal — Stripe Customer Portal
+// POST /api/create-portal — emails a Stripe Customer Portal link
 // ============================================================
+//
+// A portal session grants whoever opens it access to invoices, the
+// billing address, the payment method on file, and the cancel button.
+// It therefore needs authentication — and this endpoint previously had
+// none: it took an email address, and handed the portal URL straight
+// back over HTTP. Anyone who knew a subscriber's address could open
+// their billing portal and cancel their subscription.
+//
+// We authenticate by mailbox control instead of by credential. The URL
+// is never returned in the response; it is sent to the address on
+// file. Receiving it proves you own the mailbox that owns the
+// subscription.
+//
+// Why not authLicense: it rejects cancelled / expired / payment_failed
+// licences with 401/403, and those are exactly the people who most
+// need the portal — a lapsed card is fixed from inside it. Mailbox
+// control is orthogonal to licence status, so it still works for them.
+//
+// Enumeration: every outcome below the input-format check returns the
+// SAME body. Unknown address, known address with no Stripe customer,
+// Stripe/mail/DB failure and success are indistinguishable, so the
+// endpoint cannot be used to test whether an address is a BeSafe
+// customer. The previous version answered 404 "User not found" vs 400
+// "No active subscription" vs 200, which enumerated both facts.
+//
+// Trade-off, deliberate: because failures must not be distinguishable
+// from success, a genuine outage (Supabase down, Resend rejecting)
+// also answers "check your inbox" while no mail arrives. That is the
+// price of a non-leaking response. Both paths console.error with a
+// [Portal] prefix so Render logs still show the truth.
+//
+// Rate limits — two, both required to pass:
+//   10/min/IP    — ordinary abuse guard
+//    3/min/email — this endpoint sends mail to an address the caller
+//                  supplies, so without it BeSafe could be pointed at
+//                  a stranger's inbox as a flooding tool.
 
-app.post("/api/create-portal", async (req, res) => {
-  try {
-    const { email } = req.body;
+app.post(
+  "/api/create-portal",
+  portalRateLimitIp,
+  portalRateLimitEmail,
+  async (req, res) => {
+    // Identical for every outcome — see the enumeration note above.
+    const GENERIC_RESPONSE = {
+      ok: true,
+      message:
+        "If that address has a BeSafe subscription, we've emailed a link to manage it. Please check your inbox.",
+    };
 
-    if (!email || !email.includes("@")) {
+    const email = req.body?.email;
+
+    // Format check only. This rejects input that could not belong to
+    // anyone, so it reveals nothing about who is a customer.
+    if (typeof email !== "string" || !email.includes("@")) {
       return res.status(400).json({ error: "Please enter a valid email address." });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Find user and their Stripe customer ID
-    const { data: user } = await supabase
-      .from("users")
-      .select("id, stripe_customer_id")
-      .eq("email", normalizedEmail)
-      .single();
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found." });
-    }
-
-    // Verify Stripe customer exists in current mode
-    let stripeCustomerId = user.stripe_customer_id;
-    if (!stripeCustomerId) {
-      return res.status(400).json({ error: "No active subscription found. Please upgrade first." });
-    }
-
     try {
-      await stripe.customers.retrieve(stripeCustomerId);
-    } catch {
-      return res.status(400).json({ error: "No active subscription in current mode. Please upgrade first." });
+      const { data: user } = await supabase
+        .from("users")
+        .select("id, stripe_customer_id")
+        .eq("email", normalizedEmail)
+        .single();
+
+      // No such user, or a user who never reached checkout.
+      if (!user?.stripe_customer_id) {
+        console.log(`[Portal] No Stripe customer for ${normalizedEmail} — nothing sent`);
+        return res.json(GENERIC_RESPONSE);
+      }
+
+      // Guards against a customer id from the other Stripe mode
+      // (test id in live, or vice versa).
+      try {
+        await stripe.customers.retrieve(user.stripe_customer_id);
+      } catch {
+        console.warn(`[Portal] Stripe customer ${user.stripe_customer_id} not retrievable in current mode`);
+        return res.json(GENERIC_RESPONSE);
+      }
+
+      const portalSession = await stripe.billingPortal.sessions.create({
+        customer:   user.stripe_customer_id,
+        return_url: "https://besafe-oga3.onrender.com/upgrade.html",
+      });
+
+      await mailer.sendMail({
+        from:    `"BeSafe" <${process.env.EMAIL_FROM}>`,
+        to:      normalizedEmail,
+        subject: "BeSafe: Manage your subscription",
+        html: `
+          <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:2rem;background:#0f1812;color:#f2f8f4;border-radius:16px">
+            <h2 style="color:#9dc4a8;margin-bottom:1rem">Manage your subscription</h2>
+            <p style="color:#9dc4a8;line-height:1.7">
+              Use the button below to update your payment method, download invoices, or cancel your BeSafe subscription.
+            </p>
+            <p style="margin:1.75rem 0">
+              <a href="${portalSession.url}" style="display:inline-block;background:#2ecc8a;color:#030d07;padding:0.85rem 2.5rem;border-radius:2rem;font-weight:600;font-size:0.95rem;text-decoration:none;letter-spacing:0.04em">Manage subscription &#8594;</a>
+            </p>
+            <p style="color:#9dc4a8;line-height:1.7;font-size:0.85rem">
+              This link is personal to you and expires after a short time. If you did not request it, you can ignore this email &mdash; nothing has changed on your account.
+            </p>
+          </div>
+        `,
+      });
+
+      console.log(`[Portal] Link emailed to ${normalizedEmail}`);
+      return res.json(GENERIC_RESPONSE);
+    } catch (error) {
+      // Deliberately still GENERIC_RESPONSE — see the trade-off note
+      // above. The log line is the operator's signal.
+      console.error("[Portal] Error:", error.message, error.type, error.code);
+      return res.json(GENERIC_RESPONSE);
     }
-
-    // Create Stripe Customer Portal session
-    const portalSession = await stripe.billingPortal.sessions.create({
-      customer: stripeCustomerId,
-      return_url: "https://besafe-oga3.onrender.com/upgrade.html",
-    });
-
-    console.log(`[Portal] Session created for ${normalizedEmail}`);
-
-    res.json({ portal_url: portalSession.url });
-  } catch (error) {
-    console.error("[Portal] Error:", error.message, error.type, error.code);
-    res.status(500).json({ error: "Portal failed: " + error.message });
-  }
-});
+  },
+);
 
 // ============================================================
 // HEALTH & INFO
