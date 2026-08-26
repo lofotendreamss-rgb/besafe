@@ -253,7 +253,7 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
   <div class="checkout-section">
     <div class="checkout-card">
       <div class="checkout-title" data-i18n="up.co.title">Complete your upgrade</div>
-      <div class="checkout-sub">You'll be redirected to Stripe for secure payment</div>
+      <div class="checkout-sub" data-i18n="up.co.redirect">You'll be redirected to Stripe for secure payment</div>
 
       <div class="field-group">
         <label class="field-label" data-i18n="up.co.email">Email</label>
@@ -271,7 +271,7 @@ footer{padding:2.5rem 3rem;max-width:1000px;margin:0 auto;display:flex;align-ite
       <button class="btn-checkout" id="btn-checkout" onclick="doCheckout()" data-i18n="up.co.btn">
         Upgrade now &rarr;
       </button>
-      <div class="secure-row">&#128274; Secure payment via Stripe &middot; Cancel anytime</div>
+      <div class="secure-row" data-i18n="up.co.secure">&#128274; Secure payment via Stripe &middot; Cancel anytime</div>
     </div>
   </div>
 
@@ -406,6 +406,18 @@ function updateSummary() {
   document.getElementById('sum-billing').textContent = billingLabel;
   document.getElementById('sum-price').textContent = priceLabel;
 }
+
+// Coming back from Stripe restores this page from the browser's
+// bfcache with the DOM exactly as it was left, so the checkout button
+// would still read "Redirecting..." and stay disabled. Reset it.
+window.addEventListener('pageshow', function (e) {
+  if (!e.persisted) return;
+  const btn = document.getElementById('btn-checkout');
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = t('up.co.btn', 'Upgrade now \u2192');
+  }
+});
 
 function showError(id, msg) {
   const el = document.getElementById(id);
