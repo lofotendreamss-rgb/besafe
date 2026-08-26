@@ -46,3 +46,52 @@ export function resolveApiBase() {
 }
 
 export const API_BASE = resolveApiBase();
+
+// ============================================================
+// Site pages
+// ============================================================
+//
+// The marketing pages (upgrade.html, privacy.html, terms.html) are
+// served from the same origin as /api — Express serves the website at
+// root and the app under /app — so SITE_BASE equals API_BASE today.
+// It is a separate constant so that moving the API to a dedicated
+// host later cannot silently break page links.
+export const SITE_BASE = API_BASE;
+
+// True when running inside the Electron shell, judged by the preload
+// bridge rather than the user agent.
+function hasDesktopShell() {
+  try {
+    return typeof window !== "undefined"
+      && typeof window.electronAPI?.openExternal === "function";
+  } catch {
+    return false;
+  }
+}
+
+// Opens one of our own pages, given a root-relative path.
+//
+// In Electron the app runs from file:// inside a window with no
+// browser chrome. Navigating that window to a website strands the
+// user with no back button, and target="_blank" opens a second
+// chrome-less Electron window. Both are wrong, so we hand the URL to
+// the OS browser through the preload bridge instead — the same route
+// electron/license.html already uses.
+//
+// On the web, `target` decides: callers that want the page in place
+// (so the browser back button returns to the app) pass "_self";
+// callers that want a new tab pass "_blank".
+export function openSitePage(path, { target = "_self" } = {}) {
+  const url = SITE_BASE + path;
+
+  if (hasDesktopShell()) {
+    window.electronAPI.openExternal(url);
+    return url;
+  }
+
+  if (typeof window !== "undefined") {
+    if (target === "_blank") window.open(url, "_blank", "noopener");
+    else window.location.href = url;
+  }
+  return url;
+}
