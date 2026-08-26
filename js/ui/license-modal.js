@@ -291,7 +291,16 @@ export function closeLicenseModal() {
 // Electron desktop builds).
 if (typeof window !== "undefined") {
   try {
-    if (new URLSearchParams(window.location.search).get("activate") === "1") {
+    // Skip the prompt on a device that already holds a key. Every
+    // key-bearing email carries ?activate=1, and those emails are also
+    // read by people who activated long ago — they should not be asked
+    // to paste a key they already have.
+    let alreadyActivated = false;
+    try { alreadyActivated = !!localStorage.getItem("besafe_license_key"); }
+    catch { alreadyActivated = false; }
+
+    if (!alreadyActivated
+        && new URLSearchParams(window.location.search).get("activate") === "1") {
       const trigger = () => {
         showLicenseModal(() => {
           // After successful activation, strip the ?activate=1 from the URL
