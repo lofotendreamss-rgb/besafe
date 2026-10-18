@@ -2,5 +2,8 @@
   "buildCommand": "echo 'Static site, no build needed'",
   "outputDirectory": "website",
   "framework": null,
-  "installCommand": "echo 'Skip install for static site'"
+  "installCommand": "echo 'Skip install for static site'",
+  "redirects": [
+    { "source": "/((?!closed\\.html$|favicon\\.svg$).*)", "destination": "/closed.html", "permanent": false }
+  ]
 }
